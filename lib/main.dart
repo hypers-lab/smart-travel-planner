@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/main_screen.dart';
+import 'screens/user/login.dart';
 import 'util/const.dart';
+import 'package:travel_planner/routes.dart';
 
 void main() async {
   runApp(MyApp());
@@ -19,7 +20,8 @@ class _MyAppState extends State<MyApp> {
       title: Constants.appName,
       theme: Constants.lightTheme,
       darkTheme: Constants.darkTheme,
-      home: MainScreen(),
+      initialRoute: LoginPage.id,
+      routes: routes,
     );
   }
 }
