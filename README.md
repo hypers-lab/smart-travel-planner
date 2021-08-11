@@ -1,4 +1,4 @@
-# travel_planner
+# smartTravelPlanner
 
 A new Flutter project.
 

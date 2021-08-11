@@ -1,4 +1,4 @@
-package com.example.travel_planner
+package com.hyperslab.smartTravelPlanner
 
 import io.flutter.embedding.android.FlutterActivity
 

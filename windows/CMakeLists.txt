@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(travel_planner LANGUAGES CXX)
+project(smartTravelPlanner LANGUAGES CXX)
 
-set(BINARY_NAME "travel_planner")
+set(BINARY_NAME "smartTravelPlanner")
 
 cmake_policy(SET CMP0063 NEW)
 

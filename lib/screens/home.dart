@@ -6,6 +6,8 @@ import '../widgets/search_bar.dart';
 import '../widgets/vertical_place_item.dart';
 
 class Home extends StatelessWidget {
+  static const String id = 'home';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +16,8 @@ class Home extends StatelessWidget {
           IconButton(
             icon: IconBadge(
               icon: Icons.notifications_none,
-              color: Colors.amber, size: 24.0,
+              color: Colors.amber,
+              size: 24.0,
             ),
             onPressed: () {},
           ),
@@ -68,6 +71,7 @@ class Home extends StatelessWidget {
         primary: false,
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        // ignore: unnecessary_null_comparison
         itemCount: places == null ? 0 : places.length,
         itemBuilder: (BuildContext context, int index) {
           Map place = places[index];

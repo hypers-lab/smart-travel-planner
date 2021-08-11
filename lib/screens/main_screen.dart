@@ -3,6 +3,7 @@ import 'home.dart';
 import '../widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
+  static const String id = 'mainScreen';
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -63,7 +64,13 @@ class _MainScreenState extends State<MainScreen> {
   Widget barIcon(
       {IconData icon = Icons.home, int page = 0, bool badge = false}) {
     return IconButton(
-      icon: badge ? IconBadge(icon: icon, size: 24.0, color: Colors.amber,) : Icon(icon, size: 24.0),
+      icon: badge
+          ? IconBadge(
+              icon: icon,
+              size: 24.0,
+              color: Colors.amber,
+            )
+          : Icon(icon, size: 24.0),
       color:
           _page == page ? Theme.of(context).accentColor : Colors.blueGrey[300],
       onPressed: () => _pageController.jumpToPage(page),

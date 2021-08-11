@@ -3,6 +3,7 @@ import '../util/places.dart';
 import '../widgets/icon_badge.dart';
 
 class Details extends StatelessWidget {
+  static const String id = 'details';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +17,9 @@ class Details extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: IconBadge(
-              icon: Icons.notifications_none, color: Colors.amber, size: 24.0,
+              icon: Icons.notifications_none,
+              color: Colors.amber,
+              size: 24.0,
             ),
             onPressed: () {},
           ),
@@ -138,6 +141,7 @@ class Details extends StatelessWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         primary: false,
+        // ignore: unnecessary_null_comparison
         itemCount: places == null ? 0 : places.length,
         itemBuilder: (BuildContext context, int index) {
           Map place = places[index];
