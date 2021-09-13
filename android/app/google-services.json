@@ -1,34 +1,41 @@
 {
   "project_info": {
-    "project_number": "37543962334",
-    "project_id": "travel-planner-f4703",
-    "storage_bucket": "travel-planner-f4703.appspot.com"
+    "project_number": "1058023295295",
+    "project_id": "smart-travel-planner-e5cf1",
+    "storage_bucket": "smart-travel-planner-e5cf1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:37543962334:android:3a255da3cee0ecf17a044f",
+        "mobilesdk_app_id": "1:1058023295295:android:ebf2053a8c84e8add52b8a",
         "android_client_info": {
           "package_name": "com.hyperslab.smartTravelPlanner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "37543962334-uhtet5b44o26uctpeto73377sist9ahf.apps.googleusercontent.com",
+          "client_id": "1058023295295-jthq40vm32qkm9o4bndihtmgj3s39n5j.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAmcemAaCx3vMDdfCMmbG0-lKkXTR1_bVQ"
+          "current_key": "AIzaSyCjP_BxgG054ty3-JIQLzy2aaZW_MTcwCA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "37543962334-uhtet5b44o26uctpeto73377sist9ahf.apps.googleusercontent.com",
+              "client_id": "1058023295295-jthq40vm32qkm9o4bndihtmgj3s39n5j.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1058023295295-i37b0elokrdq8t97itokpgc9i04proik.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hyperslab.smartTravelPlanner"
+              }
             }
           ]
         }

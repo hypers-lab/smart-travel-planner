@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../util/places.dart';
-import '../widgets/icon_badge.dart';
+import '../../util/places.dart';
+import '../../widgets/icon_badge.dart';
 
 class Details extends StatelessWidget {
   static const String id = 'details';

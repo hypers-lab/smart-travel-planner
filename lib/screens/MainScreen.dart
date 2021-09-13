@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
+import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
+import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
+import 'HomeScreen.dart';
 import '../widgets/icon_badge.dart';
 
 class MainScreen extends StatefulWidget {
-  static const String id = 'mainScreen';
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -15,11 +16,26 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: IconBadge(
+              icon: Icons.login,
+              color: Colors.amber,
+              size: 24.0,
+            ),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MainScreen()));
+            },
+          ),
+        ],
+      ),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
-        children: List.generate(4, (index) => Home()),
+        children: [HomeScreen(), HomeScreen(), HomeScreen(), SignUpScreen()],
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
