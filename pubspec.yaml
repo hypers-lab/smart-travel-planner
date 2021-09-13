@@ -27,6 +27,9 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   cloud_firestore: ^2.5.2
 
+  #google_maps
+  google_maps_flutter: ^2.0.8
+
   #google sign in
   google_sign_in: ^5.1.0
   email_auth: ^0.0.1+4

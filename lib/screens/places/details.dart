@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/screens/places/MapViewScreen.dart';
 import '../../util/places.dart';
 import '../../widgets/icon_badge.dart';
 
@@ -129,7 +130,12 @@ class Details extends StatelessWidget {
         child: Icon(
           Icons.airplanemode_active,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MapViewScreen()),
+          );
+        },
       ),
     );
   }
