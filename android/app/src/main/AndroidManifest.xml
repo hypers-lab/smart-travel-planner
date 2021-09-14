@@ -1,9 +1,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hyperslab.smartTravelPlanner">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
    <application
         android:label="smartTravelPlanner"
         android:icon="@mipmap/ic_launcher">
-        <activity
+
+       <!-- Google Maps API-->
+       <meta-data
+           android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyAYeZP-shv8xAqcrpRfRDGEYwSblNnrmB4"
+           />
+
+
+       <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
