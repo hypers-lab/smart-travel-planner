@@ -13,7 +13,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   final _formKey = GlobalKey<FormState>();
   final RegExp phoneRegex = new RegExp(r'^[6-9]\d{9}$');
   late String name;
-  late String phoneNumber;
+  late String phoneNumber; 
   late String age;
   late String gender;
   TextEditingController textController = TextEditingController();
