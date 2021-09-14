@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/screens/HomeScreen.dart';
-import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
+import 'package:smart_travel_planner/screens/home.dart';
+import 'package:smart_travel_planner/screens/main_screen.dart';
+import 'screens/User_Profile/profile.dart';
+import 'screens/user/login.dart';
 import 'util/const.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'screens/MainScreen.dart';
+import 'package:smart_travel_planner/routes.dart';
+import 'screens/user/create_account.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  return runApp(MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -22,10 +20,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginScreen(),
       debugShowCheckedModeBanner: false,
+      title: Constants.appName,
       theme: Constants.lightTheme,
       darkTheme: Constants.darkTheme,
+      initialRoute: ProfilePage.id,
+      routes: routes,
     );
   }
 }

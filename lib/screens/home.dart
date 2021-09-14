@@ -4,19 +4,25 @@ import '../widgets/horizontal_place_item.dart';
 import '../widgets/icon_badge.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/vertical_place_item.dart';
-import 'user/LoginScreen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class Home extends StatelessWidget {
+  static const String id = 'home';
 
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: IconBadge(
+              icon: Icons.notifications_none,
+              color: Colors.amber,
+              size: 24.0,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: ListView(
         children: <Widget>[
           Padding(
