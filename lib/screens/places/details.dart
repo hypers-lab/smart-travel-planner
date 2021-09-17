@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/screens/places/MapViewScreen.dart';
-import '../../util/places.dart';
+import 'package:smart_travel_planner/util/location.dart';
 import '../../widgets/icon_badge.dart';
 
 class Details extends StatelessWidget {
+  Details(this.place);
+  final place;
+
   static const String id = 'details';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +33,22 @@ class Details extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           SizedBox(height: 10.0),
-          buildSlider(),
+          Container(
+            padding: EdgeInsets.only(left: 20),
+            height: 250.0,
+            child: Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.network(
+                  "${place["image_url"]}",
+                  height: 250.0,
+                  width: MediaQuery.of(context).size.width - 40.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
           SizedBox(height: 20),
           ListView(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -40,21 +59,24 @@ class Details extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "${places[0]["name"]}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "${place["name"]}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 28,
+                        ),
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
                       ),
-                      maxLines: 2,
-                      textAlign: TextAlign.left,
                     ),
                   ),
                   IconButton(
                     icon: Icon(
                       Icons.bookmark,
+                      size: 40,
                     ),
                     onPressed: () {},
                   ),
@@ -64,17 +86,17 @@ class Details extends StatelessWidget {
                 children: <Widget>[
                   Icon(
                     Icons.location_on,
-                    size: 14,
+                    size: 25,
                     color: Colors.blueGrey[300],
                   ),
                   SizedBox(width: 3),
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${places[0]["location"]}",
+                      "${place["place"]}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 13,
+                        fontSize: 18,
                         color: Colors.blueGrey[300],
                       ),
                       maxLines: 1,
@@ -87,10 +109,10 @@ class Details extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${places[0]["price"]}",
+                  "${place["rating"]}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 17,
+                    fontSize: 18,
                   ),
                   maxLines: 1,
                   textAlign: TextAlign.left,
@@ -103,7 +125,7 @@ class Details extends StatelessWidget {
                   "Details",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 18,
                   ),
                   maxLines: 1,
                   textAlign: TextAlign.left,
@@ -113,12 +135,12 @@ class Details extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${places[0]["details"]}",
+                  "${place["description"]}",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
+                    fontSize: 18.0,
                   ),
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.justify,
                 ),
               ),
               SizedBox(height: 10.0),
@@ -128,44 +150,48 @@ class Details extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
-          Icons.airplanemode_active,
+          Icons.map,
+          size: 25,
         ),
         onPressed: () {
+          PlaceLocation visitPlace =
+              PlaceLocation(place["coordinates"][0], place["coordinates"][1]);
+
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MapViewScreen()),
+            MaterialPageRoute(builder: (context) => MapViewScreen(visitPlace)),
           );
         },
       ),
     );
   }
 
-  buildSlider() {
-    return Container(
-      padding: EdgeInsets.only(left: 20),
-      height: 250.0,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        primary: false,
-        // ignore: unnecessary_null_comparison
-        itemCount: places == null ? 0 : places.length,
-        itemBuilder: (BuildContext context, int index) {
-          Map place = places[index];
-
-          return Padding(
-            padding: EdgeInsets.only(right: 10.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.asset(
-                "${place["img"]}",
-                height: 250.0,
-                width: MediaQuery.of(context).size.width - 40.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  // buildSlider() {
+  //   return Container(
+  //     padding: EdgeInsets.only(left: 20),
+  //     height: 250.0,
+  //     child: ListView.builder(
+  //       scrollDirection: Axis.horizontal,
+  //       primary: false,
+  //       // ignore: unnecessary_null_comparison
+  //       itemCount: places == null ? 0 : places.length,
+  //       itemBuilder: (BuildContext context, int index) {
+  //         Map place = places[index];
+  //
+  //         return Padding(
+  //           padding: EdgeInsets.only(right: 10.0),
+  //           child: ClipRRect(
+  //             borderRadius: BorderRadius.circular(10.0),
+  //             child: Image.network(
+  //               "${place["image_url"]}",
+  //               height: 250.0,
+  //               width: MediaQuery.of(context).size.width - 40.0,
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 }

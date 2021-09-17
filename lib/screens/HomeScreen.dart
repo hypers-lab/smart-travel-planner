@@ -1,10 +1,13 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
-import '../util/places.dart';
 import '../widgets/horizontal_place_item.dart';
 import '../widgets/icon_badge.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/vertical_place_item.dart';
 import 'user/LoginScreen.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,6 +17,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late var places = [];
+
+  final firestoreInstance = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('hotels')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        var place = {
+          "description": doc['description'],
+          "image_url": doc['image'],
+          "name": doc['name'],
+          "place": doc['place'],
+          "rating": doc['rating'],
+          "reviews": doc['reviews'],
+          "status": doc['status'],
+          "coordinates": [7.956944, 80.759720]
+        };
+        places.add(place);
+      });
+    });
+    print(places);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: places == null ? 0 : places.length,
         itemBuilder: (BuildContext context, int index) {
           Map place = places.reversed.toList()[index];
-          return HorizontalPlaceItem(place: place);
+          return HorizontalPlaceItem(place);
         },
       ),
     );
@@ -69,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: places == null ? 0 : places.length,
         itemBuilder: (BuildContext context, int index) {
           Map place = places[index];
-          return VerticalPlaceItem(place: place);
+          return VerticalPlaceItem(place);
         },
       ),
     );

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+enum LocationConstant {
+  CurrentPosition,
+  LastReadPosition,
+}
+
 class Constants {
   static String appName = "Flutter Travel";
 

@@ -5,7 +5,7 @@ import '../screens/places/details.dart';
 class VerticalPlaceItem extends StatelessWidget {
   final Map place;
 
-  VerticalPlaceItem({required this.place});
+  VerticalPlaceItem(this.place);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,8 @@ class VerticalPlaceItem extends StatelessWidget {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(5),
-                child: Image.asset(
-                  "${place["img"]}",
+                child: Image.network(
+                  "${place["image_url"]}",
                   height: 70.0,
                   width: 70.0,
                   fit: BoxFit.cover,
@@ -58,7 +58,7 @@ class VerticalPlaceItem extends StatelessWidget {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "${place["location"]}",
+                            "${place["place"]}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13.0,
@@ -74,7 +74,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place["price"]}",
+                        "${place["rating"]}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16.0,
@@ -93,7 +93,7 @@ class VerticalPlaceItem extends StatelessWidget {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return Details();
+                return Details(place);
               },
             ),
           );

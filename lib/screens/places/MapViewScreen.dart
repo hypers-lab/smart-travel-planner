@@ -2,44 +2,49 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:smart_travel_planner/util/LocationServices.dart';
+import 'package:smart_travel_planner/util/const.dart';
+import 'package:smart_travel_planner/util/location.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MapViewScreen extends StatefulWidget {
+  final PlaceLocation place;
+
+  const MapViewScreen(this.place);
+
   @override
   _MapViewScreenState createState() => _MapViewScreenState();
 }
 
 class _MapViewScreenState extends State<MapViewScreen> {
-  Completer<GoogleMapController> _controller = Completer();
+  late GoogleMapController mapController;
+  late LatLng currentCordinates;
 
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
+  late PlaceLocation place_coo = widget.place;
 
-  MapType _currentMapType = MapType.normal;
+  @override
+  void initState() {
+    super.initState();
+    place_coo = widget.place;
+  }
+
+  late double _lat = place_coo.getLatitude();
+  late double _long = place_coo.getLongitude();
+
+  late LatLng _center = LatLng(_lat, _long);
 
   final Set<Marker> _markers = {};
 
-  LatLng _lastMapPosition = _center;
+  late LatLng _lastMapPosition = _center;
 
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
-
-  void _onMapTypeButtonPressed() {
-    setState(() {
-      _currentMapType = _currentMapType == MapType.normal
-          ? MapType.satellite
-          : MapType.normal;
-    });
-  }
-
-  void _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
+  void _onMapCreated(GoogleMapController controller) async {
+    mapController = controller;
   }
 
   void _onAddMarkerButtonPressed() {
     setState(() {
       _markers.add(Marker(
-        // This marker id can be anything that uniquely identifies each marker.
         markerId: MarkerId(_lastMapPosition.toString()),
         position: _lastMapPosition,
         infoWindow: InfoWindow(
@@ -49,6 +54,59 @@ class _MapViewScreenState extends State<MapViewScreen> {
         icon: BitmapDescriptor.defaultMarker,
       ));
     });
+  }
+
+  getCurrentLocation() async {
+    try {
+      Position initLocation =
+          await LocationService.getPosition(LocationConstant.CurrentPosition);
+      currentCordinates = LatLng(initLocation.latitude, initLocation.longitude);
+      mapController.moveCamera(CameraUpdate.newLatLng(currentCordinates));
+      // setState(() {
+      //   var mark = Marker(
+      //     markerId: MarkerId('Current'),
+      //     position: LatLng(initLocation.latitude, initLocation.longitude),
+      //   );
+      //   print(initLocation.latitude);
+      //   print(initLocation.longitude);
+      //   //Provider.of<Data>(context, listen: false).markers.add(mark);
+      // });
+    } on LocationServiceDisabledException catch (e) {
+      dialogLocationError(
+          'Location disabled in your phone', 'Please on location');
+      print('hello,location service disables');
+    } on PermissionDeniedException catch (e) {
+      dialogLocationError('Location Denied in your phone',
+          'Please give permission to the Application');
+      print('permission denied');
+    } on DeniedForeverException catch (e) {
+      dialogLocationError('Location Denied in your phone',
+          'Please give permission to the Application');
+      print('permission forever denied');
+    } catch (e) {
+      print(e);
+      dialogLocationError('Something went Wrong!!!!!',
+          'Please check your Mobile Location Service');
+    }
+  }
+
+  Future<dynamic> dialogLocationError(String title, String body) {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text('$title'),
+        content: Text('$body'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => {
+              //Navigator.popUntil(
+              //context, ModalRoute.withName(LoginScreen.screenId))
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -76,7 +134,9 @@ class _MapViewScreenState extends State<MapViewScreen> {
                 zoom: 11.0,
               ),
               markers: _markers,
-              onCameraMove: _onCameraMove,
+              //onCameraMove: _onCameraMove,
+              myLocationButtonEnabled: true,
+              myLocationEnabled: true,
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -85,17 +145,20 @@ class _MapViewScreenState extends State<MapViewScreen> {
                 child: Column(
                   children: <Widget>[
                     FloatingActionButton(
-                      onPressed: () => _onMapTypeButtonPressed,
-                      materialTapTargetSize: MaterialTapTargetSize.padded,
-                      backgroundColor: Colors.amber,
-                      child: const Icon(Icons.map, size: 36.0),
-                    ),
-                    SizedBox(height: 16.0),
-                    FloatingActionButton(
                       onPressed: _onAddMarkerButtonPressed,
                       materialTapTargetSize: MaterialTapTargetSize.padded,
-                      backgroundColor: Colors.green,
-                      child: const Icon(Icons.add_location, size: 36.0),
+                      backgroundColor: Colors.lightBlue,
+                      child: const Icon(Icons.add_location, size: 30.0),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    FloatingActionButton(
+                      onPressed: getCurrentLocation,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      backgroundColor: Colors.lightBlue,
+                      child: const Icon(Icons.location_searching_sharp,
+                          size: 30.0),
                     ),
                   ],
                 ),
