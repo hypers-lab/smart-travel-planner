@@ -3,8 +3,6 @@ import 'package:smart_travel_planner/widgets/edit_personal_info_widget.dart';
 import 'profile.dart';
 
 class EditProfilePage extends StatefulWidget {
-  static const String id = 'editProfilePage';
-
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
@@ -21,8 +19,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         leading: BackButton(
           color: Colors.black,
           onPressed: () {
-            Navigator.of(context).pop(true);
-            Navigator.pushNamed(context, ProfilePage.id);
+           Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => ProfilePage()));
           },
         ),
       ),

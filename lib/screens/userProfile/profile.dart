@@ -9,7 +9,6 @@ import '../user/LoginScreen.dart';
 import '../../widgets/profile_pic.dart';
 
 class ProfilePage extends StatefulWidget {
-  static const String id = 'profile';
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -24,7 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
           color: Colors.black,
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MainScreen()));
+              context, 
+              MaterialPageRoute(builder: (context) => MainScreen()));
           },
         ),
       ),
@@ -41,36 +41,41 @@ class _ProfilePageState extends State<ProfilePage> {
                   text: 'Peronal Information',
                   icon: Icon(Icons.person_outline_outlined),
                   press: () {
-                    Navigator.of(context).pop(true);
-                    Navigator.pushNamed(context, PersonalInfoScreen.id);
+                   Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => PersonalInfoScreen()));
                   }),
               ProfileMenu(
                   text: 'Preferences',
                   icon: Icon(Icons.favorite_outline_rounded),
                   press: () {
-                    Navigator.of(context).pop(true);
-                    Navigator.pushNamed(context, Preference.id);
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => Preference()));
                   }),
               ProfileMenu(
                   text: 'History',
                   icon: Icon(Icons.history),
                   press: () {
-                    Navigator.of(context).pop(true);
-                    Navigator.pushNamed(context, History.id);
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => History()));
                   }),
               ProfileMenu(
                   text: 'Change password',
                   icon: Icon(Icons.security_outlined),
                   press: () {
-                    Navigator.of(context).pop(true);
-                    Navigator.pushNamed(context, ChangePassword.id);
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => ChangePassword()));
                   }),
               ProfileMenu(
                   text: 'Signout',
                   icon: Icon(Icons.logout),
                   press: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
                   })
             ],
           ),

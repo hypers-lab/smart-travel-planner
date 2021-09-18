@@ -3,7 +3,6 @@ import 'edit_personal_info.dart';
 import 'profile.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
-  static const String id = 'personalInfo';
   const PersonalInfoScreen({Key? key}) : super(key: key);
 
   @override
@@ -18,49 +17,52 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         leading: BackButton(
           color: Colors.black,
           onPressed: () {
-            Navigator.of(context).pop(true);
-            Navigator.pushNamed(context, ProfilePage.id);
-          },
+            Navigator.push(
+                context, 
+                MaterialPageRoute(builder: (context) => ProfilePage()));},
         ),
         title: Text('Account Personal Info'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
           child: Column(
-        children: [
-          SizedBox(
-            height: 18,
-          ),
-          infoContent(information: 'Sarah@gmail.com', title: 'Email'),
-          infoContent(information: '', title: 'Name'),
-          infoContent(information: '', title: 'Age'),
-          infoContent(information: '', title: 'Phone Number'),
-          infoContent(information: '', title: 'Gender'),
-          Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                  Navigator.pushNamed(context, EditProfilePage.id);
-                },
-                child: Text(
-                  'Edit Personal Info',
-                  style: TextStyle(),
+            children: [
+              SizedBox(
+                height: 18,
+              ),
+              infoContent(information: 'maathangi.18@cse.mrt.ac.lk', title: 'Email'),
+              infoContent(information: '', title: 'Name'),
+              infoContent(information: '', title: 'Age'),
+              infoContent(information: '', title: 'Phone Number'),
+              infoContent(information: '', title: 'Gender'),
+              Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(builder: (context) => EditProfilePage()));
+                    },
+                    child: Text(
+                      'Edit Personal Info',
+                      style: TextStyle(),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.only(left: 50, right: 50),
+                      primary: Colors.teal[900],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+                      ),
+                      onPrimary: Colors.white,
+                      shadowColor: Colors.blueGrey,
+                      elevation: 10,
+                    ),
+                  )
                 ),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.only(left: 50, right: 50),
-                  primary: Colors.teal[900],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
-                  ),
-                  onPrimary: Colors.white,
-                  shadowColor: Colors.blueGrey,
-                  elevation: 10,
-                ),
-              )),
-        ],
-      )),
-    );
+          ],
+      )
+    ),
+  );
   }
 
   Widget infoContent({

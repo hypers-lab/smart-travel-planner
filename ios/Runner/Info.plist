@@ -56,6 +56,16 @@
 	</array>
 	<!-- End of the Google Sign-in Section -->
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<!--For image picker-->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow access to photo library</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>Allow access to camera to capture photos</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow access to microphone</string>
+	<!--End image picker-->
 	<false/>
 </dict>
 </plist>
