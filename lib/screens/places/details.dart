@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/screens/places/MapViewScreen.dart';
-import 'package:smart_travel_planner/util/location.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
+import 'package:smart_travel_planner/appBrain/location.dart';
 import '../../widgets/icon_badge.dart';
+
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 
 class Details extends StatelessWidget {
   Details(this.place);
-  final place;
+  final TravelDestination place;
+
+  @override
+  void initState() {
+    place.retrieveMoreDetails();
+  }
 
   static const String id = 'details';
 
@@ -33,22 +41,7 @@ class Details extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           SizedBox(height: 10.0),
-          Container(
-            padding: EdgeInsets.only(left: 20),
-            height: 250.0,
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.network(
-                  "${place["image_url"]}",
-                  height: 250.0,
-                  width: MediaQuery.of(context).size.width - 40.0,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
+          buildSlider(),
           SizedBox(height: 20),
           ListView(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -63,7 +56,7 @@ class Details extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place["name"]}",
+                        "${place.placeName}",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 28,
@@ -93,7 +86,7 @@ class Details extends StatelessWidget {
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${place["place"]}",
+                      "${place.address}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -109,7 +102,7 @@ class Details extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place["rating"]}",
+                  "${place.reviewScore}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -135,7 +128,7 @@ class Details extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place["description"]}",
+                  "${place.description}",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 18.0,
@@ -155,7 +148,7 @@ class Details extends StatelessWidget {
         ),
         onPressed: () {
           PlaceLocation visitPlace =
-              PlaceLocation(place["coordinates"][0], place["coordinates"][1]);
+              PlaceLocation(place.latitude, place.longitude);
 
           Navigator.push(
             context,
@@ -166,32 +159,33 @@ class Details extends StatelessWidget {
     );
   }
 
-  // buildSlider() {
-  //   return Container(
-  //     padding: EdgeInsets.only(left: 20),
-  //     height: 250.0,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       primary: false,
-  //       // ignore: unnecessary_null_comparison
-  //       itemCount: places == null ? 0 : places.length,
-  //       itemBuilder: (BuildContext context, int index) {
-  //         Map place = places[index];
-  //
-  //         return Padding(
-  //           padding: EdgeInsets.only(right: 10.0),
-  //           child: ClipRRect(
-  //             borderRadius: BorderRadius.circular(10.0),
-  //             child: Image.network(
-  //               "${place["image_url"]}",
-  //               height: 250.0,
-  //               width: MediaQuery.of(context).size.width - 40.0,
-  //               fit: BoxFit.cover,
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
+  buildSlider() {
+    List imageSliderUrls = [place.maxPhotoUrl, place.mapPreviewUrl];
+    return Container(
+      padding: EdgeInsets.only(left: 20),
+      height: 250.0,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        primary: false,
+        // ignore: unnecessary_null_comparison
+        itemCount: imageSliderUrls == null ? 0 : imageSliderUrls.length,
+        itemBuilder: (BuildContext context, int index) {
+          String imgUrl = imageSliderUrls[index];
+
+          return Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                "$imgUrl",
+                height: 250.0,
+                width: MediaQuery.of(context).size.width - 40.0,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

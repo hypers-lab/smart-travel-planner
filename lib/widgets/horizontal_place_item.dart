@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../screens/places/details.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 
 class HorizontalPlaceItem extends StatelessWidget {
-  final Map place;
+  final TravelDestination place;
 
   HorizontalPlaceItem(this.place);
 
@@ -20,7 +21,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
-                  "${place["image_url"]}",
+                  "${place.mainPhotoUrl}",
                   height: 178.0,
                   width: 140.0,
                   fit: BoxFit.cover,
@@ -30,7 +31,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place["name"]}",
+                  "${place.placeName}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
@@ -43,7 +44,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place["place"]}",
+                  "${place.reviewScore}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13.0,

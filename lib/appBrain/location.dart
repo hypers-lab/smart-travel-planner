@@ -1,14 +1,14 @@
 class PlaceLocation {
   PlaceLocation(this.lat, this.long);
 
-  final double lat;
-  final double long;
+  double? lat;
+  double? long;
 
-  double getLatitude() {
+  double? getLatitude() {
     return this.lat;
   }
 
-  double getLongitude() {
+  double? getLongitude() {
     return this.long;
   }
 }

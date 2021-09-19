@@ -31,7 +31,6 @@ dependencies:
   #google_maps
   google_maps_flutter: ^2.0.8
   geolocator: ^7.6.2
-  location: ^4.3.0
 
   #google sign in
   google_sign_in: ^5.1.0
