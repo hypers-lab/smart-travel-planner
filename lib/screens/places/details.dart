@@ -95,7 +95,7 @@ class Details extends StatelessWidget {
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${place.address}",
+                      "${place.address}, ${place.city}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -114,13 +114,26 @@ class Details extends StatelessWidget {
                   "\u{2B50} ${place.reviewScore.toString()} \u{1F4AD} ${place.reviewText}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 16,
                   ),
                   maxLines: 1,
                   textAlign: TextAlign.left,
                 ),
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 10),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "\u{27A1}${place.checkin}\n\u{2B05}${place.checkout}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  maxLines: 2,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              SizedBox(height: 20),
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
