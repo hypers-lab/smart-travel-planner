@@ -21,15 +21,15 @@ class VerticalPlaceItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
                 child: Image.network(
                   "${place.mainPhotoUrl}",
-                  height: 70.0,
-                  width: 70.0,
+                  height: 80.0,
+                  width: 80.0,
                   fit: BoxFit.cover,
                 ),
               ),
               SizedBox(width: 15.0),
               Container(
                 height: 80.0,
-                width: MediaQuery.of(context).size.width - 130.0,
+                width: MediaQuery.of(context).size.width - 140.0,
                 child: ListView(
                   primary: false,
                   physics: NeverScrollableScrollPhysics(),
@@ -41,7 +41,7 @@ class VerticalPlaceItem extends StatelessWidget {
                         "${place.placeName}",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: 14.0,
+                          fontSize: 16.0,
                         ),
                         maxLines: 2,
                         textAlign: TextAlign.left,
@@ -59,7 +59,7 @@ class VerticalPlaceItem extends StatelessWidget {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "${place.city}",
+                            "${place.city},${place.address}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13.0,
@@ -75,10 +75,10 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place.reviewScore}",
+                        place.reviewScore.toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
+                          fontSize: 14.0,
                         ),
                         maxLines: 1,
                         textAlign: TextAlign.left,

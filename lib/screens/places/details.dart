@@ -2,20 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
+import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
 import '../../widgets/icon_badge.dart';
-
-import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:readmore/readmore.dart';
 
 class Details extends StatelessWidget {
   Details(this.place);
   final TravelDestination place;
 
-  @override
-  void initState() {
-    place.retrieveMoreDetails();
-  }
-
-  static const String id = 'details';
+//  static const String id = 'details';
+  List places = TravelDestination.getPlacesDetailsDummy();
 
   @override
   Widget build(BuildContext context) {
@@ -59,27 +57,38 @@ class Details extends StatelessWidget {
                         "${place.placeName}",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: 28,
+                          fontSize: 22,
                         ),
                         maxLines: 2,
                         textAlign: TextAlign.left,
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.bookmark,
-                      size: 40,
+                  FloatingActionButton(
+                    child: Icon(
+                      Icons.map,
+                      size: 25,
+                      color: Colors.deepOrangeAccent,
                     ),
-                    onPressed: () {},
-                  ),
+                    backgroundColor: Colors.amber,
+                    onPressed: () {
+                      PlaceLocation visitPlace =
+                          PlaceLocation(coordinates: place.coordinates);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MapViewScreen(visitPlace)),
+                      );
+                    },
+                  )
                 ],
               ),
               Row(
                 children: <Widget>[
                   Icon(
                     Icons.location_on,
-                    size: 25,
+                    size: 20,
                     color: Colors.blueGrey[300],
                   ),
                   SizedBox(width: 3),
@@ -89,7 +98,7 @@ class Details extends StatelessWidget {
                       "${place.address}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Colors.blueGrey[300],
                       ),
                       maxLines: 1,
@@ -102,7 +111,7 @@ class Details extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place.reviewScore}",
+                  "\u{2B50} ${place.reviewScore.toString()} \u{1F4AD} ${place.reviewText}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -111,11 +120,11 @@ class Details extends StatelessWidget {
                   textAlign: TextAlign.left,
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 30),
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Details",
+                  "Description",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -125,42 +134,56 @@ class Details extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10.0),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "${place.description}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 18.0,
-                  ),
-                  textAlign: TextAlign.justify,
-                ),
+              ReadMoreText(
+                '${place.introduction}',
+                trimLines: 2,
+                colorClickableText: Colors.deepOrange,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: ' ...View more',
+                trimExpandedText: ' Less',
+                style: TextStyle(fontSize: 15.0, color: Colors.black),
               ),
               SizedBox(height: 10.0),
             ],
           ),
+          SizedBox(height: 10.0),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Text(
+              "Suggested Travel Places",
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          buildHorizontalList(context),
+          SizedBox(height: 10.0)
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.map,
-          size: 25,
-        ),
-        onPressed: () {
-          PlaceLocation visitPlace =
-              PlaceLocation(place.latitude, place.longitude);
+    );
+  }
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MapViewScreen(visitPlace)),
-          );
+  buildHorizontalList(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 10.0, left: 20.0),
+      height: 250.0,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        primary: false,
+        // ignore: unnecessary_null_comparison
+        itemCount: places == null ? 0 : places.length,
+        itemBuilder: (BuildContext context, int index) {
+          TravelDestination place = places.reversed.toList()[index];
+          return HorizontalPlaceItem(place);
         },
       ),
     );
   }
 
   buildSlider() {
-    List imageSliderUrls = [place.maxPhotoUrl, place.mapPreviewUrl];
+    List imageSliderUrls = [place.mainPhotoUrl];
     return Container(
       padding: EdgeInsets.only(left: 20),
       height: 250.0,

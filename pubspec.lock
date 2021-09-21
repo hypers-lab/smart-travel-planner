@@ -251,7 +251,7 @@ packages:
       name: geolocator_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.4"
+    version: "2.3.5"
   geolocator_web:
     dependency: transitive
     description:
@@ -476,6 +476,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  readmore:
+    dependency: "direct main"
+    description:
+      name: readmore
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   sign_in_with_apple:
     dependency: "direct main"
     description:

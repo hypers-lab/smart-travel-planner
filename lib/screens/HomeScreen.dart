@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    places = TravelDestination.getPlacesDetails();
+    places = TravelDestination.getPlacesDetailsDummy();
     //print(places);
   }
 
@@ -43,6 +43,27 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: EdgeInsets.all(20.0),
             child: SearchBar(),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Text(
+              "Suggested Travel Places",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          buildHorizontalList(context),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Text(
+              "Recently Visited",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           buildHorizontalList(context),
           buildVerticalList(),

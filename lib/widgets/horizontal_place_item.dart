@@ -11,19 +11,19 @@ class HorizontalPlaceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20.0),
+      padding: const EdgeInsets.only(right: 7.0),
       child: InkWell(
         child: Container(
           height: 250.0,
-          width: 140.0,
+          width: 115.0,
           child: Column(
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
                   "${place.mainPhotoUrl}",
-                  height: 178.0,
-                  width: 140.0,
+                  height: 150.0,
+                  width: 120.0,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -44,7 +44,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place.reviewScore}",
+                  place.reviewScore.toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13.0,
