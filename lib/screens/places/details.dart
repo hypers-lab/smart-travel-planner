@@ -12,8 +12,8 @@ class Details extends StatelessWidget {
   Details(this.place);
   final TravelDestination place;
 
-//  static const String id = 'details';
-  List places = TravelDestination.getPlacesDetailsDummy();
+  //retrieve sugggested places based on selected place
+  List places = TravelDestination.getPlacesDetailsDummy(); //dummy
 
   @override
   Widget build(BuildContext context) {
