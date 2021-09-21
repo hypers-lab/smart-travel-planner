@@ -35,6 +35,7 @@ class TravelDestination {
   String url;
   String introduction;
 
+  //data retrive from firebase
   // static List<TravelDestination> getPlacesDetails() {
   //   List<TravelDestination> places = [];
   //   try {
@@ -48,15 +49,20 @@ class TravelDestination {
   //             placeId: doc["hotelId"],
   //             placeName: doc["hotelName"],
   //             mainPhotoUrl: doc["mainPhotoUrl"],
-  //             reviewScore: double.parse(doc["reviewScore"]),
-  //             reviewScoreWord: doc["reviewScoreWord"]);
+  //             reviewScore: doc["reviewScore"],
+  //             reviewScoreWord: doc["reviewScoreWord"],
+  //             reviewText: doc["reviewText"],
+  //             description: doc["description"],
+  //             coordinates: doc["coordinates"],
+  //             checkin: doc["checkin"],
+  //             checkout: doc["checkout"],
+  //             address: doc["address"],
+  //             url: doc["url"],
+  //             introduction: doc["introduction"]);
   //
-  //         print("placeName:${travelDestination.placeName}, "
-  //             "city:${travelDestination.city}, "
-  //             "placeId:${travelDestination.placeId}, "
-  //             "mainPhotoUrl:${travelDestination.mainPhotoUrl}, "
-  //             "reviewScore:${travelDestination.reviewScore}, "
-  //             "reviewScoreWord:${travelDestination.reviewScoreWord}");
+  //         print("placeName:${travelDestination.placeName}, ");
+  //
+  //         print("placeName:${travelDestination.placeName}");
   //         places.add(travelDestination);
   //       });
   //     });
