@@ -1,7 +1,8 @@
 class PlaceLocation {
-  PlaceLocation({required this.coordinates});
+  PlaceLocation({required this.coordinates, required this.placeName});
 
   String coordinates;
+  String placeName;
 
   List setLatnLong() {
     List<String> coo = this.coordinates.split(',');

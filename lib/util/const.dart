@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum LocationConstant {
-  CurrentPosition,
-  LastReadPosition,
-}
+String GOOGLE_API_KEY = "AIzaSyCJterzzFgLjdTnIlhfJ3C7m-I_484qdNE";
 
 class Constants {
   static String appName = "Flutter Travel";

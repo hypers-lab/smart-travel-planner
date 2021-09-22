@@ -72,8 +72,9 @@ class Details extends StatelessWidget {
                     ),
                     backgroundColor: Colors.amber,
                     onPressed: () {
-                      PlaceLocation visitPlace =
-                          PlaceLocation(coordinates: place.coordinates);
+                      PlaceLocation visitPlace = PlaceLocation(
+                          coordinates: place.coordinates,
+                          placeName: place.placeName);
 
                       Navigator.push(
                         context,
