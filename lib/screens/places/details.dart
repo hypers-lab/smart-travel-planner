@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/screens/places/MapViewScreen.dart';
-import '../../util/places.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
+import 'package:smart_travel_planner/appBrain/location.dart';
+import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
 import '../../widgets/icon_badge.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:readmore/readmore.dart';
 
 class Details extends StatelessWidget {
-  static const String id = 'details';
+  Details(this.place);
+  final TravelDestination place;
+
+  //retrieve sugggested places based on selected place
+  List places = TravelDestination.getPlacesDetailsDummy(); //dummy
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,41 +50,56 @@ class Details extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "${places[0]["name"]}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "${place.placeName}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 22,
+                        ),
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
                       ),
-                      maxLines: 2,
-                      textAlign: TextAlign.left,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.bookmark,
+                  FloatingActionButton(
+                    child: Icon(
+                      Icons.map,
+                      size: 25,
+                      color: Colors.deepOrangeAccent,
                     ),
-                    onPressed: () {},
-                  ),
+                    backgroundColor: Colors.amber,
+                    onPressed: () {
+                      PlaceLocation visitPlace = PlaceLocation(
+                          coordinates: place.coordinates,
+                          placeName: place.placeName);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MapViewScreen(visitPlace)),
+                      );
+                    },
+                  )
                 ],
               ),
               Row(
                 children: <Widget>[
                   Icon(
                     Icons.location_on,
-                    size: 14,
+                    size: 20,
                     color: Colors.blueGrey[300],
                   ),
                   SizedBox(width: 3),
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${places[0]["location"]}",
+                      "${place.address}, ${place.city}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 13,
+                        fontSize: 16,
                         color: Colors.blueGrey[300],
                       ),
                       maxLines: 1,
@@ -87,20 +112,7 @@ class Details extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${places[0]["price"]}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              SizedBox(height: 40),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Details",
+                  "\u{2B50} ${place.reviewScore.toString()} \u{1F4AD} ${place.reviewText}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -109,38 +121,83 @@ class Details extends StatelessWidget {
                   textAlign: TextAlign.left,
                 ),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 10),
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${places[0]["details"]}",
+                  "\u{27A1}${place.checkin}\n\u{2B05}${place.checkout}",
                   style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
                   ),
+                  maxLines: 2,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Description",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                  maxLines: 1,
                   textAlign: TextAlign.left,
                 ),
               ),
               SizedBox(height: 10.0),
+              ReadMoreText(
+                '${place.introduction}',
+                trimLines: 2,
+                colorClickableText: Colors.deepOrange,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: ' ...View more',
+                trimExpandedText: ' Less',
+                style: TextStyle(fontSize: 15.0, color: Colors.black),
+              ),
+              SizedBox(height: 10.0),
             ],
           ),
+          SizedBox(height: 10.0),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Text(
+              "Suggested Travel Places",
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          buildHorizontalList(context),
+          SizedBox(height: 10.0)
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.airplanemode_active,
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MapViewScreen()),
-          );
+    );
+  }
+
+  buildHorizontalList(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 10.0, left: 20.0),
+      height: 250.0,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        primary: false,
+        // ignore: unnecessary_null_comparison
+        itemCount: places == null ? 0 : places.length,
+        itemBuilder: (BuildContext context, int index) {
+          TravelDestination place = places.reversed.toList()[index];
+          return HorizontalPlaceItem(place);
         },
       ),
     );
   }
 
   buildSlider() {
+    List imageSliderUrls = [place.mainPhotoUrl];
     return Container(
       padding: EdgeInsets.only(left: 20),
       height: 250.0,
@@ -148,16 +205,16 @@ class Details extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         primary: false,
         // ignore: unnecessary_null_comparison
-        itemCount: places == null ? 0 : places.length,
+        itemCount: imageSliderUrls == null ? 0 : imageSliderUrls.length,
         itemBuilder: (BuildContext context, int index) {
-          Map place = places[index];
+          String imgUrl = imageSliderUrls[index];
 
           return Padding(
             padding: EdgeInsets.only(right: 10.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: Image.asset(
-                "${place["img"]}",
+              child: Image.network(
+                "$imgUrl",
                 height: 250.0,
                 width: MediaQuery.of(context).size.width - 40.0,
                 fit: BoxFit.cover,

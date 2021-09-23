@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 
 import '../screens/places/details.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 
 class HorizontalPlaceItem extends StatelessWidget {
-  final Map place;
+  final TravelDestination place;
 
-  HorizontalPlaceItem({required this.place});
+  HorizontalPlaceItem(this.place);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20.0),
+      padding: const EdgeInsets.only(right: 7.0),
       child: InkWell(
         child: Container(
           height: 250.0,
-          width: 140.0,
+          width: 115.0,
           child: Column(
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  "${place["img"]}",
-                  height: 178.0,
-                  width: 140.0,
+                child: Image.network(
+                  "${place.mainPhotoUrl}",
+                  height: 150.0,
+                  width: 120.0,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -30,7 +31,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place["name"]}",
+                  "${place.placeName}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
@@ -43,7 +44,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place["location"]}",
+                  place.reviewScore.toString(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13.0,
@@ -60,7 +61,7 @@ class HorizontalPlaceItem extends StatelessWidget {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return Details();
+                return Details(place);
               },
             ),
           );
