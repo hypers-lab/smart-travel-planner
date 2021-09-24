@@ -204,13 +204,10 @@ class _MapViewScreenState extends State<MapViewScreen> {
         );
       }
 
-      _placeDistance = totalDistance.toStringAsFixed(2);
-      print('DISTANCE: $_placeDistance km');
-
-      // setState(() {
-      //   _placeDistance = totalDistance.toStringAsFixed(2);
-      //   print('DISTANCE: $_placeDistance km');
-      // });
+      setState(() {
+        _placeDistance = totalDistance.toStringAsFixed(2);
+        print('DISTANCE: $_placeDistance km');
+      });
     } catch (e) {
       print(e);
     }
@@ -231,20 +228,12 @@ class _MapViewScreenState extends State<MapViewScreen> {
     var polylinePoints = PolylinePoints();
 
     // drawing the polylines
-    // https://maps.googleapis.com/maps/api/directions/json?
-    // origin=37.7680296,-122.4375126
-    // &destination=side_of_road:37.7663444,-122.4412006
-    // &key=YOUR_API_KEY
-
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       GOOGLE_API_KEY, // Google Maps API Key
       PointLatLng(start.latitude, start.longitude),
       PointLatLng(destination.latitude, destination.longitude),
       travelMode: TravelMode.transit,
     );
-    print("poyline result");
-    print(result.status);
-    print(result.points);
 
     // Adding the coordinates to the list
     if (result.points.isNotEmpty) {
@@ -261,7 +250,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
       polylineId: id,
       color: Colors.red,
       points: polylineCoordinates,
-      width: 3,
+      width: 5,
     );
 
     // Adding the polyline to the map
@@ -272,6 +261,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(

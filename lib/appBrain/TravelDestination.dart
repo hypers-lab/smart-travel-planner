@@ -24,7 +24,7 @@ class TravelDestination {
   int placeId;
   String placeName;
   String mainPhotoUrl;
-  double reviewScore;
+  String reviewScore;
   String reviewScoreWord;
   String reviewText;
   String description;
@@ -36,42 +36,42 @@ class TravelDestination {
   String introduction;
 
   //data retrive from firebase
-  // static List<TravelDestination> getPlacesDetails() {
-  //   List<TravelDestination> places = [];
-  //   try {
-  //     FirebaseFirestore.instance
-  //         .collection(collectionName)
-  //         .get()
-  //         .then((QuerySnapshot querySnapshot) {
-  //       querySnapshot.docs.forEach((doc) {
-  //         TravelDestination travelDestination = TravelDestination(
-  //             city: doc["city"],
-  //             placeId: doc["hotelId"],
-  //             placeName: doc["hotelName"],
-  //             mainPhotoUrl: doc["mainPhotoUrl"],
-  //             reviewScore: doc["reviewScore"],
-  //             reviewScoreWord: doc["reviewScoreWord"],
-  //             reviewText: doc["reviewText"],
-  //             description: doc["description"],
-  //             coordinates: doc["coordinates"],
-  //             checkin: doc["checkin"],
-  //             checkout: doc["checkout"],
-  //             address: doc["address"],
-  //             url: doc["url"],
-  //             introduction: doc["introduction"]);
-  //
-  //         print("placeName:${travelDestination.placeName}, ");
-  //
-  //         print("placeName:${travelDestination.placeName}");
-  //         places.add(travelDestination);
-  //       });
-  //     });
-  //   } catch (e) {
-  //     print("Data Fetch Error:$e");
-  //   } finally {
-  //     return places;
-  //   }
-  // }
+  static Future<List<TravelDestination>> getPlacesDetails() async {
+    List<TravelDestination> places = [];
+    try {
+      FirebaseFirestore.instance
+          .collection(collectionName)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          TravelDestination travelDestination = TravelDestination(
+              city: doc["city"],
+              placeId: doc["hotelId"],
+              placeName: doc["hotelName"],
+              mainPhotoUrl: doc["mainPhotoUrl"],
+              reviewScore: doc["reviewScore"].toString(),
+              reviewScoreWord: doc["reviewScoreWord"],
+              reviewText: doc["reviewText"],
+              description: doc["description"],
+              coordinates: doc["coordinates"],
+              checkin: doc["checkin"],
+              checkout: doc["checkout"],
+              address: doc["address"],
+              url: doc["url"],
+              introduction: doc["introduction"]);
+
+          print(
+              "placeName:${travelDestination.placeName}, photo:${travelDestination.mainPhotoUrl} ");
+
+          places.add(travelDestination);
+        });
+      });
+    } catch (e) {
+      print("Data Fetch Error:$e");
+    } finally {
+      return places;
+    }
+  }
 
   //dummy data taking
   static List<TravelDestination> getPlacesDetailsDummy() {
@@ -83,7 +83,7 @@ class TravelDestination {
             placeId: doc["hotelId"],
             placeName: doc["hotelName"],
             mainPhotoUrl: doc["mainPhotoUrl"],
-            reviewScore: doc["reviewScore"],
+            reviewScore: doc["reviewScore"].toString(),
             reviewScoreWord: doc["reviewScoreWord"],
             reviewText: doc["reviewText"],
             description: doc["description"],
@@ -105,3 +105,41 @@ class TravelDestination {
     }
   }
 }
+
+//data retrive from firebase
+// static List<TravelDestination> getPlacesDetails() {
+// List<TravelDestination> places = [];
+// try {
+// FirebaseFirestore.instance
+//     .collection(collectionName)
+//     .get()
+//     .then((QuerySnapshot querySnapshot) {
+// querySnapshot.docs.forEach((doc) {
+// TravelDestination travelDestination = TravelDestination(
+// city: doc["city"],
+// placeId: doc["hotelId"],
+// placeName: doc["hotelName"],
+// mainPhotoUrl: doc["mainPhotoUrl"],
+// reviewScore: doc["reviewScore"],
+// reviewScoreWord: doc["reviewScoreWord"],
+// reviewText: doc["reviewText"],
+// description: doc["description"],
+// coordinates: doc["coordinates"],
+// checkin: doc["checkin"],
+// checkout: doc["checkout"],
+// address: doc["address"],
+// url: doc["url"],
+// introduction: doc["introduction"]);
+//
+// print("placeName:${travelDestination.placeName}, ");
+//
+// print("placeName:${travelDestination.placeName}");
+// places.add(travelDestination);
+// });
+// });
+// } catch (e) {
+// print("Data Fetch Error:$e");
+// } finally {
+// return places;
+// }
+// }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
 import 'package:smart_travel_planner/screens/userProfile/profile.dart';
@@ -13,6 +14,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   late PageController _pageController;
   int _page = 0;
+
+  late List<TravelDestination> places;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,12 @@ class _MainScreenState extends State<MainScreen> {
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
-        children: [HomeScreen(), HomeScreen(), HomeScreen(), ProfilePage()],
+        children: [
+          HomeScreen(places),
+          HomeScreen(places),
+          HomeScreen(places),
+          ProfilePage()
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -73,8 +81,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void onPageChanged(int page) {
-    setState(() {
+    setState(() async {
       this._page = page;
+      places = await TravelDestination.getPlacesDetails();
     });
   }
 

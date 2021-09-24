@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import '../../Constants.dart';
 import '../HomeScreen.dart';
 import 'sign_in_with_social_network.dart';
@@ -305,8 +306,11 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: _email, password: _password);
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        List<TravelDestination> places =
+            await TravelDestination.getPlacesDetails();
+
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => HomeScreen(places)));
       } on FirebaseAuthException catch (e) {
         print(e.code);
 
