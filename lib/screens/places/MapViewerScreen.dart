@@ -98,14 +98,14 @@ class _MapViewScreenState extends State<MapViewScreen> {
         print('Current Location: $_currentPosition');
 
         // For moving the camera to current location
-        mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
-              zoom: 15.0,
-            ),
-          ),
-        );
+        // mapController.animateCamera(
+        //   CameraUpdate.newCameraPosition(
+        //     CameraPosition(
+        //       target: LatLng(position.latitude, position.longitude),
+        //       zoom: 15.0,
+        //     ),
+        //   ),
+        // );
         _setStartMarker();
       });
     }).catchError((e) {
@@ -235,6 +235,8 @@ class _MapViewScreenState extends State<MapViewScreen> {
       travelMode: TravelMode.transit,
     );
 
+    print(result.status);
+
     // Adding the coordinates to the list
     if (result.points.isNotEmpty) {
       result.points.forEach((PointLatLng point) {
@@ -255,6 +257,24 @@ class _MapViewScreenState extends State<MapViewScreen> {
 
     // Adding the polyline to the map
     polylines[id] = polyline;
+  }
+
+  _findPath() async {
+    await _calculateDistance();
+    print('Distance is $_placeDistance');
+    if (_placeDistance != null) {
+      _scaffoldKey.currentState!.showSnackBar(
+        new SnackBar(
+          content: Text('Distance Calculated Sucessfully'),
+        ),
+      );
+    } else {
+      _scaffoldKey.currentState!.showSnackBar(
+        new SnackBar(
+          content: Text('Error Calculating Distance'),
+        ),
+      );
+    }
   }
 
   @override
@@ -391,7 +411,17 @@ class _MapViewScreenState extends State<MapViewScreen> {
                             ),
                             onTap: () {
                               //show current location
-                              _getCurrentLocation();
+                              mapController.animateCamera(
+                                CameraUpdate.newCameraPosition(
+                                  CameraPosition(
+                                    target: LatLng(
+                                      _currentPosition.latitude,
+                                      _currentPosition.longitude,
+                                    ),
+                                    zoom: 15.0,
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ),
@@ -434,28 +464,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 textStyle: const TextStyle(fontSize: 16)),
-                            onPressed: (_currentPosition != null &&
-                                    _placePosition != null)
-                                ? () async {
-                                    await _calculateDistance();
-                                    print('Distance is $_placeDistance');
-                                    if (_placeDistance != null) {
-                                      _scaffoldKey.currentState!.showSnackBar(
-                                        new SnackBar(
-                                          content: Text(
-                                              'Distance Calculated Sucessfully'),
-                                        ),
-                                      );
-                                    } else {
-                                      _scaffoldKey.currentState!.showSnackBar(
-                                        new SnackBar(
-                                          content: Text(
-                                              'Error Calculating Distance'),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                : null,
+                            onPressed: _findPath,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(

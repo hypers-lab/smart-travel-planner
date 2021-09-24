@@ -18,20 +18,22 @@ class HorizontalPlaceItem extends StatelessWidget {
           width: 115.0,
           child: Column(
             children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  "${place.mainPhotoUrl}",
-                  height: 150.0,
-                  width: 120.0,
-                  fit: BoxFit.cover,
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    place.mainPhotoUrl,
+                    height: 150.0,
+                    width: 120.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               SizedBox(height: 7.0),
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "${place.placeName}",
+                  place.placeName,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
@@ -44,7 +46,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  place.reviewScore.toString(),
+                  place.reviewScore,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13.0,

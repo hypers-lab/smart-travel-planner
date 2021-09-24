@@ -18,6 +18,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late List<TravelDestination> places = widget.places;
+  //late final List<TravelDestination> places;
+
+  @override
+  initState() {
+    super.initState();
+    //places = TravelDestination.getPlacesDetails();
+  }
 
   @override
   Widget build(BuildContext context) {

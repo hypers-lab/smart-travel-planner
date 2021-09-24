@@ -38,7 +38,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place.placeName}",
+                        place.placeName,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16.0,
@@ -75,7 +75,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        place.reviewScore.toString(),
+                        place.reviewScore,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
