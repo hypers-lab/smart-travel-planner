@@ -55,7 +55,7 @@ class Details extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place.placeName}",
+                        place.placeName,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 22,
@@ -150,7 +150,7 @@ class Details extends StatelessWidget {
               ),
               SizedBox(height: 10.0),
               ReadMoreText(
-                '${place.introduction}',
+                '${place.description}',
                 trimLines: 2,
                 colorClickableText: Colors.deepOrange,
                 trimMode: TrimMode.Line,
