@@ -82,7 +82,7 @@ class TravelDestination {
             placeId: doc["hotelId"],
             placeName: doc["hotelName"],
             mainPhotoUrl: doc["mainPhotoUrl"],
-            reviewScore: doc["reviewScore"],
+            reviewScore: doc["reviewScore"].toString(),
             reviewScoreWord: doc["reviewScoreWord"],
             reviewText: doc["reviewText"],
             description: doc["description"],
