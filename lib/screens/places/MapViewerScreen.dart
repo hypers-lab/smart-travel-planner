@@ -98,14 +98,14 @@ class _MapViewScreenState extends State<MapViewScreen> {
         print('Current Location: $_currentPosition');
 
         // For moving the camera to current location
-        mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
-              zoom: 15.0,
-            ),
-          ),
-        );
+        // mapController.animateCamera(
+        //   CameraUpdate.newCameraPosition(
+        //     CameraPosition(
+        //       target: LatLng(position.latitude, position.longitude),
+        //       zoom: 15.0,
+        //     ),
+        //   ),
+        // );
         _setStartMarker();
       });
     }).catchError((e) {
@@ -204,13 +204,10 @@ class _MapViewScreenState extends State<MapViewScreen> {
         );
       }
 
-      _placeDistance = totalDistance.toStringAsFixed(2);
-      print('DISTANCE: $_placeDistance km');
-
-      // setState(() {
-      //   _placeDistance = totalDistance.toStringAsFixed(2);
-      //   print('DISTANCE: $_placeDistance km');
-      // });
+      setState(() {
+        _placeDistance = totalDistance.toStringAsFixed(2);
+        print('DISTANCE: $_placeDistance km');
+      });
     } catch (e) {
       print(e);
     }
@@ -231,20 +228,14 @@ class _MapViewScreenState extends State<MapViewScreen> {
     var polylinePoints = PolylinePoints();
 
     // drawing the polylines
-    // https://maps.googleapis.com/maps/api/directions/json?
-    // origin=37.7680296,-122.4375126
-    // &destination=side_of_road:37.7663444,-122.4412006
-    // &key=YOUR_API_KEY
-
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       GOOGLE_API_KEY, // Google Maps API Key
       PointLatLng(start.latitude, start.longitude),
       PointLatLng(destination.latitude, destination.longitude),
       travelMode: TravelMode.transit,
     );
-    print("poyline result");
+
     print(result.status);
-    print(result.points);
 
     // Adding the coordinates to the list
     if (result.points.isNotEmpty) {
@@ -261,17 +252,36 @@ class _MapViewScreenState extends State<MapViewScreen> {
       polylineId: id,
       color: Colors.red,
       points: polylineCoordinates,
-      width: 3,
+      width: 5,
     );
 
     // Adding the polyline to the map
     polylines[id] = polyline;
   }
 
+  _findPath() async {
+    await _calculateDistance();
+    print('Distance is $_placeDistance');
+    if (_placeDistance != null) {
+      _scaffoldKey.currentState!.showSnackBar(
+        new SnackBar(
+          content: Text('Distance Calculated Sucessfully'),
+        ),
+      );
+    } else {
+      _scaffoldKey.currentState!.showSnackBar(
+        new SnackBar(
+          content: Text('Error Calculating Distance'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -401,7 +411,17 @@ class _MapViewScreenState extends State<MapViewScreen> {
                             ),
                             onTap: () {
                               //show current location
-                              _getCurrentLocation();
+                              mapController.animateCamera(
+                                CameraUpdate.newCameraPosition(
+                                  CameraPosition(
+                                    target: LatLng(
+                                      _currentPosition.latitude,
+                                      _currentPosition.longitude,
+                                    ),
+                                    zoom: 15.0,
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ),
@@ -444,28 +464,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 textStyle: const TextStyle(fontSize: 16)),
-                            onPressed: (_currentPosition != null &&
-                                    _placePosition != null)
-                                ? () async {
-                                    await _calculateDistance();
-                                    print('Distance is $_placeDistance');
-                                    if (_placeDistance != null) {
-                                      _scaffoldKey.currentState!.showSnackBar(
-                                        new SnackBar(
-                                          content: Text(
-                                              'Distance Calculated Sucessfully'),
-                                        ),
-                                      );
-                                    } else {
-                                      _scaffoldKey.currentState!.showSnackBar(
-                                        new SnackBar(
-                                          content: Text(
-                                              'Error Calculating Distance'),
-                                        ),
-                                      );
-                                    }
-                                  }
-                                : null,
+                            onPressed: _findPath,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(

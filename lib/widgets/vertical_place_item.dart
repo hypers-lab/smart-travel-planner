@@ -17,13 +17,15 @@ class VerticalPlaceItem extends StatelessWidget {
           height: 70.0,
           child: Row(
             children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Image.network(
-                  "${place.mainPhotoUrl}",
-                  height: 80.0,
-                  width: 80.0,
-                  fit: BoxFit.cover,
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Image.network(
+                    "${place.mainPhotoUrl}",
+                    height: 80.0,
+                    width: 80.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               SizedBox(width: 15.0),
@@ -38,7 +40,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place.placeName}",
+                        place.placeName,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16.0,
@@ -75,7 +77,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        place.reviewScore.toString(),
+                        place.reviewScore,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,

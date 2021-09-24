@@ -9,20 +9,21 @@ import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen(this.places);
+  final List<TravelDestination> places;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late List<TravelDestination> places = [];
+  late List<TravelDestination> places = widget.places;
+  //late final List<TravelDestination> places;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
-    places = TravelDestination.getPlacesDetailsDummy();
-    //print(places);
+    //places = TravelDestination.getPlacesDetails();
   }
 
   @override
