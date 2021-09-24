@@ -35,7 +35,7 @@ class TravelDestination {
   String url;
   String introduction;
 
-  //data retrive from firebase
+  //data retrieve from firebase
   static List<TravelDestination> getPlacesDetails() {
     List<TravelDestination> places = [];
     try {
