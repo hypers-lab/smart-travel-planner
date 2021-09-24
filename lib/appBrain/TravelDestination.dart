@@ -67,9 +67,8 @@ class TravelDestination {
       });
     } catch (e) {
       print("Data Fetch Error:$e");
-    } finally {
-      return places;
     }
+    return places;
   }
 
   //dummy data taking
