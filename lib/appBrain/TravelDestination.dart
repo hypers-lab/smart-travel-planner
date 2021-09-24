@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:smart_travel_planner/util/hoteldata.dart';
-
-String collectionName = "hotels";
 
 class TravelDestination {
   TravelDestination(
@@ -36,35 +33,63 @@ class TravelDestination {
   String introduction;
 
   //data retrive from firebase
-  // static List<TravelDestination> getPlacesDetails() {
+  static List<TravelDestination> getPlacesDetailsDummy() {
+    List<TravelDestination> places = [];
+    try {
+      FirebaseFirestore.instance
+          .collection("hotels")
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          TravelDestination travelDestination = TravelDestination(
+              city: doc["city"],
+              placeId: doc["hotelId"],
+              placeName: doc["hotelName"],
+              mainPhotoUrl: doc["mainPhotoUrl"],
+              reviewScore: doc["reviewScore"],
+              reviewScoreWord: doc["reviewScoreWord"],
+              reviewText: doc["reviewText"],
+              description: doc["description"],
+              coordinates: doc["coordinates"],
+              checkin: doc["checkin"],
+              checkout: doc["checkout"],
+              address: doc["address"],
+              url: doc["url"],
+              introduction: doc["introduction"]);
+
+          places.add(travelDestination);
+        });
+      });
+    } catch (e) {
+      print("Data Fetch Error:$e");
+    }
+    return places;
+  }
+
+  //dummy data taking
+  // static List<TravelDestination> getPlacesDetailsDummy() {
   //   List<TravelDestination> places = [];
   //   try {
-  //     FirebaseFirestore.instance
-  //         .collection(collectionName)
-  //         .get()
-  //         .then((QuerySnapshot querySnapshot) {
-  //       querySnapshot.docs.forEach((doc) {
-  //         TravelDestination travelDestination = TravelDestination(
-  //             city: doc["city"],
-  //             placeId: doc["hotelId"],
-  //             placeName: doc["hotelName"],
-  //             mainPhotoUrl: doc["mainPhotoUrl"],
-  //             reviewScore: doc["reviewScore"],
-  //             reviewScoreWord: doc["reviewScoreWord"],
-  //             reviewText: doc["reviewText"],
-  //             description: doc["description"],
-  //             coordinates: doc["coordinates"],
-  //             checkin: doc["checkin"],
-  //             checkout: doc["checkout"],
-  //             address: doc["address"],
-  //             url: doc["url"],
-  //             introduction: doc["introduction"]);
-  //
-  //         print("placeName:${travelDestination.placeName}, ");
-  //
-  //         print("placeName:${travelDestination.placeName}");
-  //         places.add(travelDestination);
-  //       });
+  //     hotelsdata.forEach((doc) {
+  //       TravelDestination travelDestination = TravelDestination(
+  //           city: doc["city"],
+  //           placeId: doc["hotelId"],
+  //           placeName: doc["hotelName"],
+  //           mainPhotoUrl: doc["mainPhotoUrl"],
+  //           reviewScore: doc["reviewScore"],
+  //           reviewScoreWord: doc["reviewScoreWord"],
+  //           reviewText: doc["reviewText"],
+  //           description: doc["description"],
+  //           coordinates: doc["coordinates"],
+  //           checkin: doc["checkin"],
+  //           checkout: doc["checkout"],
+  //           address: doc["address"],
+  //           url: doc["url"],
+  //           introduction: doc["introduction"]);
+
+  //       print("placeName:${travelDestination.placeName}, ");
+
+  //       places.add(travelDestination);
   //     });
   //   } catch (e) {
   //     print("Data Fetch Error:$e");
@@ -72,36 +97,4 @@ class TravelDestination {
   //     return places;
   //   }
   // }
-
-  //dummy data taking
-  static List<TravelDestination> getPlacesDetailsDummy() {
-    List<TravelDestination> places = [];
-    try {
-      hotelsdata.forEach((doc) {
-        TravelDestination travelDestination = TravelDestination(
-            city: doc["city"],
-            placeId: doc["hotelId"],
-            placeName: doc["hotelName"],
-            mainPhotoUrl: doc["mainPhotoUrl"],
-            reviewScore: doc["reviewScore"],
-            reviewScoreWord: doc["reviewScoreWord"],
-            reviewText: doc["reviewText"],
-            description: doc["description"],
-            coordinates: doc["coordinates"],
-            checkin: doc["checkin"],
-            checkout: doc["checkout"],
-            address: doc["address"],
-            url: doc["url"],
-            introduction: doc["introduction"]);
-
-        print("placeName:${travelDestination.placeName}, ");
-
-        places.add(travelDestination);
-      });
-    } catch (e) {
-      print("Data Fetch Error:$e");
-    } finally {
-      return places;
-    }
-  }
 }
