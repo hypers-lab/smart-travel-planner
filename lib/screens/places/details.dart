@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
-import 'package:smart_travel_planner/screens/CustomAppBar.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
 import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
+import 'package:smart_travel_planner/widgets/icon_badge.dart';
 
 class Details extends StatelessWidget {
+  static const String id = 'details';
+
   Details({required this.place, required this.suggestions});
+
   final TravelDestination place;
   final List
       suggestions; //Holds the list of places that suggested from the model
@@ -21,7 +24,24 @@ class Details extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: IconBadge(
+              icon: Icons.notifications_none,
+              color: Colors.amber,
+              size: 24.0,
+            ),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: ListView(
         children: <Widget>[
           SizedBox(height: 10.0),
@@ -209,19 +229,6 @@ class Details extends StatelessWidget {
               ),
             ),
           );
-
-          // return Padding(
-          //   padding: EdgeInsets.only(right: 10.0),
-          //   child: ClipRRect(
-          //     borderRadius: BorderRadius.circular(10.0),
-          //     child: Image.network(
-          //       imgUrl,
-          //       height: 250.0,
-          //       width: MediaQuery.of(context).size.width - 40.0,
-          //       fit: BoxFit.cover,
-          //     ),
-          //   ),
-          // );
         },
       ),
     );

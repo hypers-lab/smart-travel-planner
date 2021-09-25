@@ -74,13 +74,14 @@ class TravelDestination {
   }
 
   //get suggestions for a selected place
-  static Future<List<TravelDestination>> getSuggestedPlacesFromModel(int hotelId) async {
-
+  static Future<List<TravelDestination>> getSuggestedPlacesFromModel(
+      int hotelId) async {
     //NEED: change this function to return a list of "TravelDestination" objects with suggested places from model
 
     List<TravelDestination> suggestPlaces = [];
     try {
-      var url=Uri.parse('https://sep-recommender.herokuapp.com/recommend?hotel_id=${hotelId.toString()}');
+      var url = Uri.parse(
+          'https://sep-recommender.herokuapp.com/recommend?hotel_id=${hotelId.toString()}');
       var response = await http.get(url);
       if (response.statusCode == 200) {
         print(response.body);
@@ -96,7 +97,6 @@ class TravelDestination {
       print("Error: $e");
     }
     return suggestPlaces;
-    
   }
 
   //dummy data taking
