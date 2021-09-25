@@ -27,6 +27,7 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   cloud_firestore: ^2.5.2
   firebase_database: ^8.0.0
+  http: ^0.13.3
 
   #google_maps
   google_maps_flutter: ^2.0.8

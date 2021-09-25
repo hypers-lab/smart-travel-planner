@@ -3,14 +3,19 @@ import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
 import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
-import '../../widgets/icon_badge.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
+import 'package:smart_travel_planner/widgets/icon_badge.dart';
 
 class Details extends StatelessWidget {
-  Details(this.place);
+  static const String id = 'details';
+
+  Details({required this.place, required this.suggestions});
+
   final TravelDestination place;
+  final List
+      suggestions; //Holds the list of places that suggested from the model
 
   //retrieve sugggested places based on selected place
   List<TravelDestination> suggestedPlaces =
@@ -97,7 +102,7 @@ class Details extends StatelessWidget {
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${place.address}, ${place.city}",
+                      "${place.address},\n${place.city}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -211,14 +216,16 @@ class Details extends StatelessWidget {
           String imgUrl = imageSliderUrls[index];
 
           return Padding(
-            padding: EdgeInsets.only(right: 10.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.network(
-                imgUrl,
-                height: 250.0,
-                width: MediaQuery.of(context).size.width - 40.0,
-                fit: BoxFit.cover,
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+              width: MediaQuery.of(context).size.width - 40.0,
+              height: 250.0,
+              decoration: new BoxDecoration(
+                borderRadius: new BorderRadius.circular(10.0),
+                image: new DecorationImage(
+                  image: new NetworkImage(place.mainPhotoUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           );

@@ -15,8 +15,6 @@ class _MainScreenState extends State<MainScreen> {
   late PageController _pageController;
   int _page = 0;
 
-  late List<TravelDestination> places;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,12 +37,7 @@ class _MainScreenState extends State<MainScreen> {
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
-        children: [
-          HomeScreen(places),
-          HomeScreen(places),
-          HomeScreen(places),
-          ProfilePage()
-        ],
+        children: [HomeScreen(), HomeScreen(), HomeScreen(), ProfilePage()],
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -83,7 +76,6 @@ class _MainScreenState extends State<MainScreen> {
   void onPageChanged(int page) {
     setState(() async {
       this._page = page;
-      places = await TravelDestination.getPlacesDetails();
     });
   }
 

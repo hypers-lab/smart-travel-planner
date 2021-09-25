@@ -306,11 +306,8 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: _email, password: _password);
 
-        List<TravelDestination> places =
-            await TravelDestination.getPlacesDetails();
-
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => HomeScreen(places)));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       } on FirebaseAuthException catch (e) {
         print(e.code);
 

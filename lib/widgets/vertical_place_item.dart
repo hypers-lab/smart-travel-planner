@@ -17,15 +17,11 @@ class VerticalPlaceItem extends StatelessWidget {
           height: 70.0,
           child: Row(
             children: <Widget>[
-              Expanded(
+              Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: Image.network(
-                    "${place.mainPhotoUrl}",
-                    height: 80.0,
-                    width: 80.0,
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.network(place.mainPhotoUrl,
+                      height: 80.0, width: 80.0, fit: BoxFit.cover),
                 ),
               ),
               SizedBox(width: 15.0),
@@ -93,10 +89,16 @@ class VerticalPlaceItem extends StatelessWidget {
           ),
         ),
         onTap: () {
+          //final List<TravelDestination> suggestions =TravelDestination.getSuggestedPlacesFromModel(place.placeId) as List<TravelDestination>;
+          final List<TravelDestination> suggestions =
+              TravelDestination.getPlacesDetailsDummy();
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return Details(place);
+                return Details(
+                  place: place,
+                  suggestions: suggestions,
+                );
               },
             ),
           );

@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
 import 'package:smart_travel_planner/util/const.dart';
-import 'package:smart_travel_planner/widgets/icon_badge.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:smart_travel_planner/Constants.dart';
 
 class MapViewScreen extends StatefulWidget {
   final PlaceLocation place;
@@ -291,16 +289,6 @@ class _MapViewScreenState extends State<MapViewScreen> {
             ),
             onPressed: () => Navigator.pop(context),
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: IconBadge(
-                icon: Icons.notifications_none,
-                color: Colors.amber,
-                size: 24.0,
-              ),
-              onPressed: () {},
-            ),
-          ],
         ),
         body: Stack(
           children: <Widget>[

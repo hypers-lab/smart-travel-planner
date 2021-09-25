@@ -1,30 +1,22 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import '../widgets/horizontal_place_item.dart';
-import '../widgets/icon_badge.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen(this.places);
-  final List<TravelDestination> places;
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late List<TravelDestination> places = widget.places;
-  //late final List<TravelDestination> places;
+  //retrive places to HomeScreen
+  List<TravelDestination> places =
+      TravelDestination.getPlacesDetails() as List<TravelDestination>;
 
-  @override
-  initState() {
-    super.initState();
-    //places = TravelDestination.getPlacesDetails();
-  }
+  //List<TravelDestination> places = TravelDestination.getPlacesDetailsDummy();
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: ListView(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.only(
+                top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
             child: Text(
               "Where are you \ngoing?",
               style: TextStyle(
