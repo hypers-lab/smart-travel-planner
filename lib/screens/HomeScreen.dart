@@ -1,12 +1,12 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/screens/CustomAppBar.dart';
 import '../widgets/horizontal_place_item.dart';
 import '../widgets/icon_badge.dart';
 import '../widgets/search_bar.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen(this.places);
@@ -18,21 +18,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late List<TravelDestination> places = widget.places;
-  //late final List<TravelDestination> places;
-
-  @override
-  initState() {
-    super.initState();
-    //places = TravelDestination.getPlacesDetails();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(),
       body: ListView(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.only(top:10.0,left: 20.0, right: 20.0, bottom: 20.0),
             child: Text(
               "Where are you \ngoing?",
               style: TextStyle(

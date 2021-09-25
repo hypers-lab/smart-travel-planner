@@ -18,7 +18,7 @@ class HorizontalPlaceItem extends StatelessWidget {
           width: 115.0,
           child: Column(
             children: <Widget>[
-              Expanded(
+              Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -60,10 +60,15 @@ class HorizontalPlaceItem extends StatelessWidget {
           ),
         ),
         onTap: () {
+          //final List<TravelDestination> suggestions =TravelDestination.getSuggestedPlacesFromModel(place.placeId) as List<TravelDestination>;
+          final List<TravelDestination> suggestions=TravelDestination.getPlacesDetailsDummy();
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return Details(place);
+                return Details(
+                  place: place,
+                  suggestions: suggestions,
+                );
               },
             ),
           );

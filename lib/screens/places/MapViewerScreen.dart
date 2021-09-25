@@ -10,6 +10,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:smart_travel_planner/Constants.dart';
 
+import '../CustomAppBar.dart';
+
 class MapViewScreen extends StatefulWidget {
   final PlaceLocation place;
 
@@ -284,24 +286,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: IconBadge(
-                icon: Icons.notifications_none,
-                color: Colors.amber,
-                size: 24.0,
-              ),
-              onPressed: () {},
-            ),
-          ],
-        ),
+        appBar: CustomAppBar(),
         body: Stack(
           children: <Widget>[
             GoogleMap(

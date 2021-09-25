@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_travel_planner/util/hoteldata.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 
 //String collectionName = "hotels";
 
@@ -69,6 +71,32 @@ class TravelDestination {
       print("Data Fetch Error:$e");
     }
     return places;
+  }
+
+  //get suggestions for a selected place
+  static Future<List<TravelDestination>> getSuggestedPlacesFromModel(int hotelId) async {
+
+    //NEED: change this function to return a list of "TravelDestination" objects with suggested places from model
+
+    List<TravelDestination> suggestPlaces = [];
+    try {
+      var url=Uri.parse('https://sep-recommender.herokuapp.com/recommend?hotel_id=${hotelId.toString()}');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        print(response.body);
+        var jsonResponse =
+            convert.jsonDecode(response.body) as Map<String, dynamic>;
+        var suggestPlacesIds = jsonResponse['recommended_hotels'];
+        //NEED: create objects from ids and store into an array
+        print('Suggested Hotels array: $suggestPlacesIds.');
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+    return suggestPlaces;
+    
   }
 
   //dummy data taking

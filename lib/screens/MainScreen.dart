@@ -83,6 +83,7 @@ class _MainScreenState extends State<MainScreen> {
   void onPageChanged(int page) {
     setState(() async {
       this._page = page;
+      // ignore: await_only_futures
       places = await TravelDestination.getPlacesDetails();
     });
   }
