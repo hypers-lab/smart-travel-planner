@@ -9,15 +9,14 @@ import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 
 class Details extends StatelessWidget {
-  Details({
-    required this.place,
-    required this.suggestions
-  });
+  Details({required this.place, required this.suggestions});
   final TravelDestination place;
-  final List suggestions; //Holds the list of places that suggested from the model
+  final List
+      suggestions; //Holds the list of places that suggested from the model
 
   //retrieve sugggested places based on selected place
-  List<TravelDestination> suggestedPlaces =TravelDestination.getPlacesDetailsDummy(); //dummy
+  List<TravelDestination> suggestedPlaces =
+      TravelDestination.getPlacesDetailsDummy(); //dummy
 
   @override
   Widget build(BuildContext context) {

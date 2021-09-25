@@ -286,7 +286,14 @@ class _MapViewScreenState extends State<MapViewScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         key: _scaffoldKey,
-        appBar: CustomAppBar(),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
         body: Stack(
           children: <Widget>[
             GoogleMap(

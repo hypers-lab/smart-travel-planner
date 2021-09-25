@@ -85,6 +85,7 @@ class _MainScreenState extends State<MainScreen> {
       this._page = page;
       // ignore: await_only_futures
       places = await TravelDestination.getPlacesDetails();
+      //places=TravelDestination.getPlacesDetailsDummy();
     });
   }
 

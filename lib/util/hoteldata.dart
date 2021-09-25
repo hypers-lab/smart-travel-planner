@@ -78,5 +78,25 @@ List hotelsdata = [
     'reviewText': "100 reviews",
     'url':
         "https://www.booking.com/hotel/lk/wood-cabana-nuwaraeliya.en-gb.html?aid=304142&label=gen173nr-1FCBkoggI46AdIM1gEaIUBiAEBmAEJuAEHyAEM2AEB6AEB-AECiAIBqAIDuAKxtqGKBsACAdICJGI5ZDg4YTU2LWFlYWUtNGU3MC1iMmE0LTMxZTRkZjVlZWNkMNgCBeACAQ&sid=6dda19d0ae229881c057a1fe5a5a5177&dest_id=-2231099&dest_type=city&group_adults=2&group_children=0&hapos=104&hpos=4&no_rooms=1&sr_order=popularity&srepoch=1632147169&srpvid=2f5563f096f800cb&ucfs=1&from=searchresults ;highlight_room=#hotelTmpl"
+  },
+  {
+    'address': "Bandarawela",
+    'checkin': "12:00 - 23:30",
+    'checkout': "00:00 - 12:00",
+    'city': "Badulla",
+    'coordinates': "6.83237600,80.98581200",
+    'description':
+        "You're eligible for a Genius discount at NELSON GRAND BOUTIQUE HOTEL! To save at this property, all you have to do is sign in. NELSON GRAND BOUTIQUE HOTEL is offering accommodation in Bandarawela. Among the facilities of this property are a restaurant, a 24-hour front desk and a shared kitchen, along with free WiFi. The accommodation offers room service, a shared lounge and organising tours for guests. Guests at the hotel can enjoy an American breakfast. NELSON GRAND BOUTIQUE HOTEL offers a children's playground. Nuwara Eliya is 29.2 miles from the accommodation, while Ella is 7.5 miles away. The nearest airport is Mattala Rajapaksa International, 38.5 miles from NELSON GRAND BOUTIQUE HOTEL, and the property offers a paid airport shuttle service.",
+    'hotelId': 5987623,
+    'hotelName': "NELSON GRAND BOUTIQUE HOTEL",
+    'introduction':
+        "NELSON GRAND BOUTIQUE HOTEL is offering accommodation in Bandarawela. Among the facilities of this property are a restaurant, a 24-hour front desk and a shared kitchen, along with free WiFi.",
+    'mainPhotoUrl':
+        "https://cf.bstatic.com/xdata/images/hotel/square600/278190580.jpg?k=9d0d2adfb3dd24e9195aceecf8f16600df360702bd93fa1ce84118710afbc254&o=",
+    'reviewScore': 9.4,
+    'reviewScoreWord': "Superb",
+    'reviewText': "15 reviews",
+    'url':
+        "https://www.booking.com/hotel/lk/nelson-grand-boutique.en-gb.html?aid=304142&label=gen173nr-1FCBkoggI46AdIM1gEaIUBiAEBmAEJuAEHyAEM2AEB6AEB-AECiAIBqAIDuAKxtqGKBsACAdICJGI5ZDg4YTU2LWFlYWUtNGU3MC1iMmE0LTMxZTRkZjVlZWNkMNgCBeACAQ&sid=9e019cb31144f7ef3ee708167334b1cc&dest_id=-2213252&dest_type=city&group_adults=2&group_children=0&hapos=315&hpos=15&no_rooms=1&sr_order=popularity&srepoch=1632137296&srpvid=3cfb50a714d50046&ucfs=1&from=searchresults ;highlight_room=;spdest=ci/-2213252;spdist=#hotelTmpl"
   }
 ];

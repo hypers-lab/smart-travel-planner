@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/widgets/icon_badge.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -17,21 +16,32 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back,
+    return PreferredSize(
+      preferredSize: Size.fromHeight(50.0),
+      child: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      actions: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Icon(Icons.account_circle_rounded,size: 30.0,),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: PopupMenuButton<String>(
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: Text(
+              'Hi,Dulaj',
+              style: TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          PopupMenuButton<String>(
+            iconSize: 100.0,
+            elevation: 3.2,
+            icon: CircleAvatar(
+              backgroundImage: AssetImage('assets/profile_picture.png'),
+            ),
             onSelected: handleClick,
             itemBuilder: (BuildContext context) {
               return {'Logout', 'Settings'}.map((String choice) {
@@ -42,8 +52,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               }).toList();
             },
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

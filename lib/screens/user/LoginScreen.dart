@@ -306,8 +306,12 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: _email, password: _password);
 
+        //retrive places to HomeScreen
         List<TravelDestination> places =
             await TravelDestination.getPlacesDetails();
+
+        // List<TravelDestination> places =
+        //     TravelDestination.getPlacesDetailsDummy();
 
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => HomeScreen(places)));
