@@ -13,25 +13,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  //retrive places to HomeScreen
+  //List<TravelDestination> places = TravelDestination.getPlacesDetails();
   bool isFetching = false;
   List<TravelDestination> places = [];
-  late ScrollController _hotelScrollController;
+  late ScrollController _chatScrollController;
   int loadMoreMsgs = 25; // at first it will load only 25
   int a = 50;
 
   @override
   void initState() {
-    super.initState();
-    getGroupsData();
-    _hotelScrollController = ScrollController()
+    _chatScrollController = ScrollController()
       ..addListener(() {
-        if (_hotelScrollController.position.atEdge) {
-          if (_hotelScrollController.position.pixels != 0)
+        if (_chatScrollController.position.atEdge) {
+          if (_chatScrollController.position.pixels == 0)
+            print('ListView scrolled to top');
+          else {
             setState(() {
               loadMoreMsgs = loadMoreMsgs + a;
             });
+            print('ListView scrolled to bottom');
+          }
         }
       });
+    super.initState();
+    getGroupsData();
   }
 
   getGroupsData() {
@@ -46,21 +52,20 @@ class _HomeScreenState extends State<HomeScreen> {
         .then((QuerySnapshot snapshot) {
       snapshot.docs.forEach((doc) {
         TravelDestination travelDestination = TravelDestination(
-          city: doc["city"],
-          placeId: doc["hotelId"],
-          placeName: doc["hotelName"],
-          mainPhotoUrl: doc["mainPhotoUrl"],
-          reviewScore: doc["reviewScore"].toString(),
-          reviewScoreWord: doc["reviewScoreWord"],
-          reviewText: doc["reviewText"],
-          description: doc["description"],
-          coordinates: doc["coordinates"],
-          checkin: doc["checkin"],
-          checkout: doc["checkout"],
-          address: doc["address"],
-          url: doc["url"],
-          introduction: doc["introduction"],
-        );
+            city: doc["city"],
+            placeId: doc["hotelId"],
+            placeName: doc["hotelName"],
+            mainPhotoUrl: doc["mainPhotoUrl"],
+            reviewScore: doc["reviewScore"].toString(),
+            reviewScoreWord: doc["reviewScoreWord"],
+            reviewText: doc["reviewText"],
+            description: doc["description"],
+            coordinates: doc["coordinates"],
+            checkin: doc["checkin"],
+            checkout: doc["checkout"],
+            address: doc["address"],
+            url: doc["url"],
+            introduction: doc["introduction"]);
 
         places.add(travelDestination);
       });
@@ -70,11 +75,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  //List<TravelDestination> places = TravelDestination.getPlacesDetailsDummy();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('hotels').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('hotels')
+              .limit(loadMoreMsgs)
+              .snapshots(),
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> streamSnapshot) {
             return ListView(
@@ -130,8 +140,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           // ignore: unnecessary_null_comparison
-                          itemCount: loadMoreMsgs,
-                          controller: _hotelScrollController,
+                          itemCount: streamSnapshot.data!.docs.length,
+                          controller: _chatScrollController,
                           itemBuilder: (BuildContext context, int index) {
                             TravelDestination place = TravelDestination(
                                 city: streamSnapshot.data!.docs[index]['city'],

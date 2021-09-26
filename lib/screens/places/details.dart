@@ -14,12 +14,8 @@ class Details extends StatelessWidget {
   Details({required this.place, required this.suggestions});
 
   final TravelDestination place;
-  final List
+  final List<TravelDestination>
       suggestions; //Holds the list of places that suggested from the model
-
-  //retrieve sugggested places based on selected place
-  List<TravelDestination> suggestedPlaces =
-      TravelDestination.getPlacesDetailsDummy(); //dummy
 
   @override
   Widget build(BuildContext context) {
@@ -193,9 +189,9 @@ class Details extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         primary: false,
         // ignore: unnecessary_null_comparison
-        itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
+        itemCount: suggestions == null ? 0 : suggestions.length,
         itemBuilder: (BuildContext context, int index) {
-          TravelDestination place = suggestedPlaces.reversed.toList()[index];
+          TravelDestination place = suggestions.reversed.toList()[index];
           return HorizontalPlaceItem(place);
         },
       ),

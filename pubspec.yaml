@@ -41,6 +41,7 @@ dependencies:
   #mac
   sign_in_with_apple: ^3.0.0
   crypto: ^3.0.1
+  shimmer: ^2.0.0
 
   #state management
   provider: ^5.0.0
