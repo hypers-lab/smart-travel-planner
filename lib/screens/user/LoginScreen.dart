@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../Constants.dart';
 import '../HomeScreen.dart';
+import '../MainScreen.dart';
 import 'sign_in_with_social_network.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'ResetScreen.dart';
@@ -306,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .signInWithEmailAndPassword(email: _email, password: _password);
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
       } on FirebaseAuthException catch (e) {
         print(e.code);
 

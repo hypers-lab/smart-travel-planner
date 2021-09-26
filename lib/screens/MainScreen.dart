@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
 import 'package:smart_travel_planner/screens/userProfile/profile.dart';
+import 'package:smart_travel_planner/screens/userProfile/travel_itinerary.dart';
 import 'HomeScreen.dart';
 import '../widgets/icon_badge.dart';
 
@@ -36,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
-        children: [HomeScreen(), HomeScreen(), HomeScreen(), ProfilePage()],
+        children: [HomeScreen(), HomeScreen(), TravelItinerary(), ProfilePage()],
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -46,7 +47,7 @@ class _MainScreenState extends State<MainScreen> {
             SizedBox(width: 7.0),
             barIcon(icon: Icons.home, page: 0),
             barIcon(icon: Icons.favorite, page: 1),
-            barIcon(icon: Icons.mode_comment, page: 2, badge: true),
+            barIcon(icon: Icons.mode_comment, page: 2,),
             barIcon(icon: Icons.person, page: 3),
             SizedBox(width: 7.0),
           ],
