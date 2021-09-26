@@ -5,7 +5,7 @@ import 'profile.dart';
 
 class Preference extends StatefulWidget {
   const Preference({Key? key}) : super(key: key);
-  static const String id = 'preference';
+  
   @override
   _PreferenceState createState() => _PreferenceState();
 }
@@ -20,8 +20,9 @@ class _PreferenceState extends State<Preference> {
         leading: BackButton(
           color: Colors.black,
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ProfilePage()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()));
           },
         ),
       ),
@@ -76,8 +77,9 @@ class _PreferenceState extends State<Preference> {
                           text: 'Cancel',
                           color: Colors.red.shade900,
                           onPressed: () {
-                            Navigator.of(context).pop(true);
-                            Navigator.pushNamed(context, ProfilePage.id);
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => ProfilePage()));
                           }),
                       SizedBox(
                         width: 10,
@@ -85,12 +87,14 @@ class _PreferenceState extends State<Preference> {
                       button(
                           text: 'Save',
                           onPressed: () {
-                            Navigator.of(context).pop(true);
-                            Navigator.pushNamed(context, ProfilePage.id);
+                           Navigator.push(
+                            context, 
+                            MaterialPageRoute(builder: (context) => ProfilePage()));
                           },
                           color: Colors.teal.shade900),
                     ],
-                  )),
+                  )
+                ),
             ],
           ),
         ),
