@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:smart_travel_planner/screens/MainScreen.dart';
 import '../../Constants.dart';
 import '../HomeScreen.dart';
 import 'sign_in_with_social_network.dart';
@@ -307,7 +308,7 @@ class _LoginScreenState extends State<LoginScreen> {
             .signInWithEmailAndPassword(email: _email, password: _password);
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
       } on FirebaseAuthException catch (e) {
         print(e.code);
 

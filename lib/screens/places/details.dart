@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
+import 'package:smart_travel_planner/widgets/review_form.dart';
 
 class Details extends StatefulWidget {
   static const String id = 'details';
@@ -77,6 +78,7 @@ class _DetailsState extends State<Details> {
                     ),
                   ),
                   FloatingActionButton(
+                    heroTag: "btn1",
                     child: Icon(
                       Icons.reviews,
                       size: 25,
@@ -105,43 +107,7 @@ class _DetailsState extends State<Details> {
                                       ),
                                     ),
                                   ),
-                                  Form(
-                                    key: _formKey,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              icon: Icon(Icons.star),
-                                              labelText: 'Review Score',
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              icon: Icon(Icons.comment),
-                                              labelText: 'Comments',
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          // ignore: deprecated_member_use
-                                          child: RaisedButton(
-                                            child: Text("Add Review"),
-                                            onPressed: () {
-                                              //save to database under this user
-                                              //need a function: addReview(String msg, Double rating, int placeId)
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
+                                  ReviewForm(formKey: _formKey),
                                 ],
                               ),
                             );
@@ -150,6 +116,7 @@ class _DetailsState extends State<Details> {
                   ),
                   SizedBox(width: 10.0),
                   FloatingActionButton(
+                    heroTag: "btn2",
                     child: Icon(
                       Icons.map_sharp,
                       size: 30,
@@ -170,6 +137,7 @@ class _DetailsState extends State<Details> {
                   )
                 ],
               ),
+              SizedBox(height: 5),
               Row(
                 children: <Widget>[
                   Icon(
