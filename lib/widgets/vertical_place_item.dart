@@ -37,15 +37,16 @@ class VerticalPlaceItem extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "${place.placeName}",
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16.0,
                         ),
-                        maxLines: 2,
+                        maxLines: 1,
                         textAlign: TextAlign.left,
                       ),
                     ),
-                    SizedBox(height: 3.0),
+                    SizedBox(height: 5.0),
                     Row(
                       children: <Widget>[
                         Icon(
@@ -55,9 +56,11 @@ class VerticalPlaceItem extends StatelessWidget {
                         ),
                         SizedBox(width: 3.0),
                         Container(
+                          width: MediaQuery.of(context).size.width - 180,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "${place.city},${place.address}",
+                            "${place.address}",
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13.0,
@@ -69,11 +72,11 @@ class VerticalPlaceItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10.0),
+                    SizedBox(height: 5.0),
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place.reviewScore}",
+                        "Ratings: ${place.reviewScore}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
@@ -90,15 +93,12 @@ class VerticalPlaceItem extends StatelessWidget {
         ),
         onTap: () {
           //final List<TravelDestination> suggestions =TravelDestination.getSuggestedPlacesFromModel(place.placeId) as List<TravelDestination>;
-          final List<TravelDestination> suggestions =
-              TravelDestination.getPlacesDetailsDummy();
 
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
                 return Details(
                   place: place,
-                  suggestedPlaces: suggestions,
                 );
               },
             ),

@@ -5,7 +5,7 @@ import 'util/const.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/MainScreen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   return runApp(MyApp());
