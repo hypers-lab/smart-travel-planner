@@ -3,8 +3,6 @@ import 'package:smart_travel_planner/util/hoteldata.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
-//String collectionName = "hotels";
-
 class TravelDestination {
   TravelDestination(
       {required this.city,
@@ -88,8 +86,8 @@ class TravelDestination {
       var url = Uri.parse(urlName);
       print(urlName);
       var response = await http.get(url);
+
       if (response.statusCode == 200) {
-        //print(response.body);
         var jsonResponse =
             convert.jsonDecode(response.body) as Map<String, dynamic>;
         var suggestPlacesIds = jsonResponse['recommended_hotels'];
@@ -128,7 +126,7 @@ class TravelDestination {
     } catch (e) {
       print("Error: $e");
     }
-    return suggestPlaces;
+    return suggestPlaces; //Uncomment when function complete
   }
 
   //dummy data taking

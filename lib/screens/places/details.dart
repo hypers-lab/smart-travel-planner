@@ -8,14 +8,24 @@ import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
 
-class Details extends StatelessWidget {
+class Details extends StatefulWidget {
   static const String id = 'details';
 
-  Details({required this.place, required this.suggestions});
+  Details({required this.place, required this.suggestedPlaces});
 
   final TravelDestination place;
   final List<TravelDestination>
-      suggestions; //Holds the list of places that suggested from the model
+      suggestedPlaces; //Holds the list of places that suggested from the model
+
+  @override
+  _DetailsState createState() => _DetailsState();
+}
+
+class _DetailsState extends State<Details> {
+  late TravelDestination place = widget.place;
+  late List<TravelDestination> suggestedPlaces = widget.suggestedPlaces;
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +78,84 @@ class Details extends StatelessWidget {
                   ),
                   FloatingActionButton(
                     child: Icon(
-                      Icons.map,
+                      Icons.reviews,
                       size: 25,
-                      color: Colors.deepOrangeAccent,
+                      color: Colors.red,
                     ),
-                    backgroundColor: Colors.amber,
+                    backgroundColor: Colors.orangeAccent,
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Stack(
+                                // ignore: deprecated_member_use
+                                overflow: Overflow.visible,
+                                children: <Widget>[
+                                  Positioned(
+                                    right: -40.0,
+                                    top: -40.0,
+                                    child: InkResponse(
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: CircleAvatar(
+                                        child: Icon(Icons.close),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                  Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              icon: Icon(Icons.star),
+                                              labelText: 'Review Score',
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              icon: Icon(Icons.comment),
+                                              labelText: 'Comments',
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          // ignore: deprecated_member_use
+                                          child: RaisedButton(
+                                            child: Text("Add Review"),
+                                            onPressed: () {
+                                              //save to database under this user
+                                              //need a function: addReview(String msg, Double rating, int placeId)
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
+                    },
+                  ),
+                  SizedBox(width: 10.0),
+                  FloatingActionButton(
+                    child: Icon(
+                      Icons.map_sharp,
+                      size: 30,
+                      color: Colors.lime,
+                    ),
+                    backgroundColor: Colors.blueGrey,
                     onPressed: () {
                       PlaceLocation visitPlace = PlaceLocation(
                           coordinates: place.coordinates,
@@ -189,9 +272,9 @@ class Details extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         primary: false,
         // ignore: unnecessary_null_comparison
-        itemCount: suggestions == null ? 0 : suggestions.length,
+        itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
         itemBuilder: (BuildContext context, int index) {
-          TravelDestination place = suggestions.reversed.toList()[index];
+          TravelDestination place = suggestedPlaces.reversed.toList()[index];
           return HorizontalPlaceItem(place);
         },
       ),
