@@ -92,12 +92,13 @@ class VerticalPlaceItem extends StatelessWidget {
           //final List<TravelDestination> suggestions =TravelDestination.getSuggestedPlacesFromModel(place.placeId) as List<TravelDestination>;
           final List<TravelDestination> suggestions =
               TravelDestination.getPlacesDetailsDummy();
+
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
                 return Details(
                   place: place,
-                  suggestions: suggestions,
+                  suggestedPlaces: suggestions,
                 );
               },
             ),

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' show cos, sqrt, asin;
 
 import 'package:flutter/material.dart';
