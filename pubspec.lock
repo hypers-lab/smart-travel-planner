@@ -702,15 +702,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-<<<<<<< HEAD
-  shimmer:
-    dependency: "direct main"
-    description:
-      name: shimmer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
-=======
   shelf:
     dependency: transitive
     description:
@@ -739,7 +730,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
->>>>>>> 31e937b... Add Review Compenenet added
+  shimmer:
+    dependency: "direct main"
+    description:
+      name: shimmer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   sign_in_with_apple:
     dependency: "direct main"
     description:
@@ -878,12 +875,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-<<<<<<< HEAD
-  wc_form_validators:
-    dependency: "direct main"
-    description:
-      name: wc_form_validators
-=======
   vm_service:
     dependency: transitive
     description:
@@ -898,6 +889,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  wc_form_validators:
+    dependency: "direct main"
+    description:
+      name: wc_form_validators
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   web_socket_channel:
     dependency: transitive
     description:
@@ -909,7 +907,6 @@ packages:
     dependency: transitive
     description:
       name: webkit_inspection_protocol
->>>>>>> 31e937b... Add Review Compenenet added
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"

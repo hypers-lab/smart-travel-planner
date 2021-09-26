@@ -272,9 +272,9 @@ class _DetailsState extends State<Details> {
         scrollDirection: Axis.horizontal,
         primary: false,
         // ignore: unnecessary_null_comparison
-        itemCount: suggestions == null ? 0 : suggestions.length,
+        itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
         itemBuilder: (BuildContext context, int index) {
-          TravelDestination place = suggestions.reversed.toList()[index];
+          TravelDestination place = suggestedPlaces.reversed.toList()[index];
           return HorizontalPlaceItem(place);
         },
       ),
