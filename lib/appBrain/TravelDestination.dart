@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_travel_planner/util/hoteldata.dart';
 import 'dart:convert' as convert;
@@ -82,7 +80,7 @@ class TravelDestination {
 
     List<TravelDestination> suggestPlaces = [];
     try {
-      //print(hotelId);
+
       String urlName =
           'https://sep-recommender.herokuapp.com/recommend?hotel_id=' +
               hotelId.toString();
