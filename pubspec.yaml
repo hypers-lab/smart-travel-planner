@@ -53,6 +53,7 @@ dependencies:
 
   #styles
   readmore: ^2.1.0
+  rating_dialog: ^2.0.1
 
   #testing
   mockito: ^5.0.15

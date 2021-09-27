@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
-import 'package:smart_travel_planner/widgets/review_form.dart';
 
 class Details extends StatefulWidget {
   static const String id = 'details';
@@ -26,7 +26,33 @@ class _DetailsState extends State<Details> {
   late TravelDestination place = widget.place;
   late List<TravelDestination> suggestedPlaces = widget.suggestedPlaces;
 
-  final _formKey = GlobalKey<FormState>();
+  void _showRatingAppDialog() {
+    final _ratingDialog = RatingDialog(
+      ratingColor: Colors.amber,
+      title: 'Rate Travel Place',
+      message: 'Rating the place and tell others what you think.'
+          ' Add a comment if you want.',
+      submitButton: 'Submit',
+      onCancelled: () => print('cancelled'),
+      onSubmitted: (response) {
+        print('rating: ${response.rating}, '
+            'comment: ${response.comment}');
+        //add rating to system
+
+        if (response.rating < 3.0) {
+          print('response.rating: ${response.rating}');
+        } else {
+          Container();
+        }
+      },
+    );
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => _ratingDialog,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,34 +111,7 @@ class _DetailsState extends State<Details> {
                       color: Colors.red,
                     ),
                     backgroundColor: Colors.orangeAccent,
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: Stack(
-                                // ignore: deprecated_member_use
-                                overflow: Overflow.visible,
-                                children: <Widget>[
-                                  Positioned(
-                                    right: -40.0,
-                                    top: -40.0,
-                                    child: InkResponse(
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: CircleAvatar(
-                                        child: Icon(Icons.close),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                  ReviewForm(formKey: _formKey),
-                                ],
-                              ),
-                            );
-                          });
-                    },
+                    onPressed: _showRatingAppDialog,
                   ),
                   SizedBox(width: 10.0),
                   FloatingActionButton(
