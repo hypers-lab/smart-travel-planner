@@ -1,10 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import '../widgets/horizontal_place_item.dart';
-import '../widgets/search_bar.dart';
-import '../widgets/vertical_place_item.dart';
-import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({Key? key}) : super(key: key);
