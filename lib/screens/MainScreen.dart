@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
 import 'package:smart_travel_planner/screens/userProfile/profile.dart';
@@ -74,7 +75,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void onPageChanged(int page) {
-    setState(() {
+    setState(() async {
       this._page = page;
     });
   }

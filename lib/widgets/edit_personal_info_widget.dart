@@ -16,9 +16,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
 
   void initState() {
     super.initState();
-    getUserDetails().whenComplete((){
-          setState(() {});
-       });  
+    getUserDetails();  
   }
 // for send to the details to the server
   late String name;
@@ -27,10 +25,10 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   late String gender;
 
 //Recieve the details from server  
-  String username='';
-  String userphonenumber='';
-  String userage= '';
-  String usergender ='';
+  late String username;
+  late String userphonenumber;
+  late String userage;
+  late String usergender;
   
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -120,6 +118,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for phone number
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
+      //controller: mycontroller,
       initialValue: userphonenumber,
       validator: (value) {        
         if(value!.length < 10 && value.length > 0 ) {
@@ -197,7 +196,6 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for age
   TextFormField buildAgeFormField() {
     return TextFormField(
-      initialValue: userage,
       validator: (value){
         var numValue = int.tryParse(value!);
         if (value.isNotEmpty && numValue!<6){
@@ -209,7 +207,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
           }
         }
       },
-      
+      initialValue: userage,
       onSaved: (value){
         age = value!;
       },

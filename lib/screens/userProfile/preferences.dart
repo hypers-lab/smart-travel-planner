@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -15,28 +16,19 @@ class Preference extends StatefulWidget {
 class _PreferenceState extends State<Preference> {
 
   void initState() {
-    super.initState(); 
-    getData().whenComplete((){
-          setState(() {});
-       });
+    super.initState();
+    //getData();
+    //getUserDetails();  
   }
-//============> List for assigning selected preferences and send it to server<================
+
   List? _myActivities1;
   List? _myActivities2;
   List? _myActivities3;
   List? _myActivities4;
 
-//============> List for assigning initial values of preferences got from server<==============
-  List? _myActivitiesDay = [];
-  List? _myActivitiesTime = [];
-  List? _myActivitiesArea = [];
-  List? _myActivitiesDistrict =[];
-
-//============> List for the preference options get from server<=========================
-  List weekDays =[];
-  List districts=[];
-  List dayTimes = [];
-  List travelAreas =[];
+  List list =["Monday",'Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+ 
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   
   CollectionReference _collectionplaces =
     FirebaseFirestore.instance.collection('places');
@@ -47,39 +39,29 @@ class _PreferenceState extends State<Preference> {
   CollectionReference _collectionAraes =
     FirebaseFirestore.instance.collection('prefered_areas');
 
-  Future<void> getData() async {
+  // Future<void> getData() async {
 
-    QuerySnapshot querySnapshotPlaces = await _collectionplaces.get();
-    final places = querySnapshotPlaces.docs.map((doc) => doc.get('place_name'));
-    districts =places.toList();print(districts);
+  //   QuerySnapshot querySnapshotPlaces = await _collectionplaces.get();
+  //   final places = querySnapshotPlaces.docs.map((doc) => doc.get('place_name'));
+  //   print(places.toList());
 
-    QuerySnapshot querySnapshotDays= await _collectionDays.get();
-    final days = querySnapshotDays.docs.map((doc) => doc.get('day'));
-    weekDays =days.toList();
+  //   QuerySnapshot querySnapshotDays= await _collectionDays.get();
+  //   final days = querySnapshotDays.docs.map((doc) => doc.get('day'));
+  //   //print(days.toList());
+  //   // listDays=days.toList();
+  //   // print(listDays);
 
-    QuerySnapshot querySnapshotAreas= await _collectionAraes.get();
-    final areas = querySnapshotAreas.docs.map((doc) => doc.get('area'));
-    travelAreas = areas.toList();
+  //   QuerySnapshot querySnapshotAreas= await _collectionAraes.get();
+  //   final areas = querySnapshotAreas.docs.map((doc) => doc.get('area'));
+  //   print(areas.toList());
 
-    final QuerySnapshot result = await _collectionTimes.get();
-    final times =result.docs.map((doc) => doc.id);
-    dayTimes = times.toList();
+  //   final QuerySnapshot result = await _collectionTimes.get();
+  //   final times =result.docs.map((doc) => doc.id);
+  //   print(times.toList());
+  // }  
 
-    await FirebaseFirestore.instance
-      .collection('user_preferences')
-      .doc(( FirebaseAuth.instance.currentUser!).uid)
-      .get()
-      .then((value) {
-        setState(() {
-          _myActivitiesArea = value.data()!['prefered_areas'];
-          _myActivitiesDay = value.data()!['prefered_days'];
-          _myActivitiesDistrict = value.data()!['places'];
-          _myActivitiesTime = value.data()!['prefered_times'];
-        });
-      });
-  }  
+ 
 
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,8 +162,15 @@ class _PreferenceState extends State<Preference> {
     return FormBuilderCheckboxGroup(
       name: 'Areas',
       orientation: OptionsOrientation.vertical,
-      options: travelAreas.map((e) => FormBuilderFieldOption(value: e)).toList(),
-      initialValue: _myActivitiesArea,
+      options: [
+        FormBuilderFieldOption(value: "Beach"),
+        FormBuilderFieldOption(value: "Mountains"),
+        FormBuilderFieldOption(value: "Forests"),
+        FormBuilderFieldOption(value: "Waterfalls"),
+        FormBuilderFieldOption(value: "Towns and city"),
+        FormBuilderFieldOption(value: "Areas known for culture and heritage")
+      ],
+      initialValue: _myActivities3 ,
       onSaved: (value) {
         
         setState(() {
@@ -206,7 +195,12 @@ class _PreferenceState extends State<Preference> {
     return FormBuilderCheckboxGroup(
       orientation: OptionsOrientation.vertical,
       name: 'Time',
-      options:dayTimes.map((e) => FormBuilderFieldOption(value: e)).toList(),
+      options: [
+        FormBuilderFieldOption(value: "Morning"),
+        FormBuilderFieldOption(value: "Afternoon"),
+        FormBuilderFieldOption(value: "Evening"),
+        FormBuilderFieldOption(value: "Night"),
+      ],
       initialValue:  _myActivities4,
       onSaved: (value) {
         //optionPlaces.clear();
@@ -231,7 +225,7 @@ FormBuilderCheckboxGroup preferenceItemDays() {
     return FormBuilderCheckboxGroup(
       orientation: OptionsOrientation.vertical,
       name: 'Time',
-      options: weekDays.map((e) => FormBuilderFieldOption(value: e)).toList(),
+      options: list.map((e) => FormBuilderFieldOption(value: e)).toList(),
       initialValue:  _myActivities1,
       onSaved: (value) {
         //optionPlaces.clear();
@@ -256,7 +250,7 @@ FormBuilderCheckboxGroup preferenceItemDays() {
   GFMultiSelect preferenceItemPlaces(){
     return GFMultiSelect(
       //selected:true ,
-      items: districts,
+      items: list,
       onSelect: (value) {
         print('Selected $value');
         setState(() {
@@ -299,7 +293,7 @@ FormBuilderCheckboxGroup preferenceItemDays() {
     );
   }
 
-  //==================> To send the preference values to user_preferences collection<========================
+  // To send the preference values to user_preferences collection
   _sendToServer() async{
       _saveForm();
       var firebaseUser =  FirebaseAuth.instance.currentUser;
@@ -313,12 +307,8 @@ FormBuilderCheckboxGroup preferenceItemDays() {
           'places':_myActivities2
         });
   }
-  //========================>save the values<======================================
+  //save the values
   _saveForm() {
      _formkey.currentState!.save();
   } 
-
-  //========================> Retrieve from server<================================
-
-
 }

@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
@@ -11,7 +10,9 @@ class ChangePassword extends StatefulWidget {
   _ChangePasswordState createState() => _ChangePasswordState();
 }
 class _ChangePasswordState extends State<ChangePassword> {
-  
+  // TextEditingController newpassword = TextEditingController();
+  // TextEditingController oldpassword = TextEditingController();
+  // TextEditingController confirmpassword = TextEditingController();
   String newpassword='';
   String oldpassword='';
   String confirmpassword='';
@@ -169,9 +170,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                             color: Colors.teal.shade900,
                             text: 'Save',
                               onPressed: () {
+                                
                                 if(_formkey.currentState!.validate() ){
+                                  //No error in validator
                                   _formkey.currentState!.save();
                                    _changePassword();
+                                 
                                 }   
                               }, 
                             ),
@@ -229,4 +233,3 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 }
                     
-

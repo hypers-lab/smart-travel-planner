@@ -22,8 +22,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginScreen(),
       debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
       theme: Constants.lightTheme,
       darkTheme: Constants.darkTheme,
     );

@@ -1,3 +1,4 @@
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,9 +24,7 @@ class _ProfilePicState extends State<ProfilePic> {
 
   void initState() {
     super.initState();
-    // asignimage().whenComplete((){
-    //       setState(() {});
-    //    });  
+    asignimage();
   }
   
 
@@ -50,12 +49,10 @@ class _ProfilePicState extends State<ProfilePic> {
     await uploadtask.whenComplete(() async {
       try{
         imgurl = await storageImage.getDownloadURL();
-        
       }catch(onError){
         print("Error");
       }
     _sendToServer();
-    
     });
   }
   
@@ -68,19 +65,20 @@ class _ProfilePicState extends State<ProfilePic> {
         });
     }
 
-  // asignimage()async{
-  //   var firebaseUser =  FirebaseAuth.instance.currentUser;
-  //     await FirebaseFirestore.instance
-  //       .collection('user_personal_information')
-  //       .doc(firebaseUser!.uid)
-  //       .get()
-  //       .then((value){
-  //         imgURL = value.get('img_url').toString();
-  //         print(imgURL);
-  //           image = Image.network(imgURL) as File?;
-          
-  //       }) ;
-  // }
+  asignimage()async{
+    var firebaseUser =  FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+        .collection('user_personal_information')
+        .doc(firebaseUser!.uid)
+        .get()
+        .then((value){
+          imgURL = value.get('img_url');
+          print(imgURL);
+          if (imgURL.isNotEmpty){
+            return image = Image.network(imgURL) as File? ;
+          }
+        }) ;
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -207,4 +205,3 @@ class _ProfilePicState extends State<ProfilePic> {
         ),
       );
   }
-
