@@ -180,8 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         primary: false,
-        // ignore: unnecessary_null_comparison
-        itemCount: places == null ? 0 : places.length,
+        itemCount: places.length,
         itemBuilder: (BuildContext context, int index) {
           TravelDestination place = places.reversed.toList()[index];
           return HorizontalPlaceItem(place);
@@ -197,8 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
         primary: false,
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        // ignore: unnecessary_null_comparison
-        itemCount: places == null ? 0 : places.length,
+        itemCount: places.length,
         itemBuilder: (BuildContext context, int index) {
           TravelDestination place = places[index];
           return VerticalPlaceItem(place);
