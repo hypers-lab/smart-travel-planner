@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
@@ -24,7 +25,34 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late TravelDestination place = widget.place;
-  final _formKey = GlobalKey<FormState>();
+
+  void _showRatingAppDialog() {
+    final _ratingDialog = RatingDialog(
+      ratingColor: Colors.amber,
+      title: 'Rate Travel Place',
+      message: 'Rating the place and tell others what you think.'
+          ' Add a comment if you want.',
+      submitButton: 'Submit',
+      onCancelled: () => print('cancelled'),
+      onSubmitted: (response) {
+        print('rating: ${response.rating}, '
+            'comment: ${response.comment}');
+        //add rating to system
+
+        if (response.rating < 3.0) {
+          print('response.rating: ${response.rating}');
+        } else {
+          Container();
+        }
+      },
+    );
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => _ratingDialog,
+    );
+  }
 
   bool isFetching = false;
   List<TravelDestination> suggestedPlaces = [];
@@ -146,79 +174,18 @@ class _DetailsState extends State<Details> {
                     ),
                   ),
                   FloatingActionButton(
+                    heroTag: "btn1",
                     child: Icon(
                       Icons.reviews,
                       size: 25,
                       color: Colors.red,
                     ),
                     backgroundColor: Colors.orangeAccent,
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: Stack(
-                                // ignore: deprecated_member_use
-                                overflow: Overflow.visible,
-                                children: <Widget>[
-                                  Positioned(
-                                    right: -40.0,
-                                    top: -40.0,
-                                    child: InkResponse(
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: CircleAvatar(
-                                        child: Icon(Icons.close),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                  Form(
-                                    key: _formKey,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              icon: Icon(Icons.star),
-                                              labelText: 'Review Score',
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              icon: Icon(Icons.comment),
-                                              labelText: 'Comments',
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          // ignore: deprecated_member_use
-                                          child: RaisedButton(
-                                            child: Text("Add Review"),
-                                            onPressed: () {
-                                              //save to database under this user
-                                              //need a function: addReview(String msg, Double rating, int placeId)
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          });
-                    },
+                    onPressed: _showRatingAppDialog,
                   ),
                   SizedBox(width: 10.0),
                   FloatingActionButton(
+                    heroTag: "btn2",
                     child: Icon(
                       Icons.map_sharp,
                       size: 30,
@@ -239,6 +206,7 @@ class _DetailsState extends State<Details> {
                   )
                 ],
               ),
+              SizedBox(height: 5),
               Row(
                 children: <Widget>[
                   Icon(
