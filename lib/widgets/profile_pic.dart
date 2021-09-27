@@ -23,7 +23,9 @@ class _ProfilePicState extends State<ProfilePic> {
 
   void initState() {
     super.initState();
-    //asignimage();
+    // asignimage().whenComplete((){
+    //       setState(() {});
+    //    });  
   }
   
 
@@ -48,10 +50,12 @@ class _ProfilePicState extends State<ProfilePic> {
     await uploadtask.whenComplete(() async {
       try{
         imgurl = await storageImage.getDownloadURL();
+        
       }catch(onError){
         print("Error");
       }
     _sendToServer();
+    
     });
   }
   
@@ -71,11 +75,10 @@ class _ProfilePicState extends State<ProfilePic> {
   //       .doc(firebaseUser!.uid)
   //       .get()
   //       .then((value){
-  //         imgURL = value.get('img_url');
+  //         imgURL = value.get('img_url').toString();
   //         print(imgURL);
-  //         if (imgURL.isNotEmpty){
-  //           return image = Image.network(imgURL) as File? ;
-  //         }
+  //           image = Image.network(imgURL) as File?;
+          
   //       }) ;
   // }
   

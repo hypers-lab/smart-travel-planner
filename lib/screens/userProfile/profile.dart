@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/screens/userProfile/travel_itinerary.dart';
 import 'package:smart_travel_planner/widgets/profile_menu_item.dart';
 import 'change_password.dart';
 import 'history.dart';
@@ -23,17 +22,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.green[900],
-      //   leading: BackButton(
-      //     color: Colors.black,
-      //     onPressed: () {
-      //       Navigator.push(
-      //         context, 
-      //         MaterialPageRoute(builder: (context) => MainScreen()));
-      //     },
-      //   ),
-      // ),
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(

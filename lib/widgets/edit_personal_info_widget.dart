@@ -16,7 +16,9 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
 
   void initState() {
     super.initState();
-    getUserDetails();  
+    getUserDetails().whenComplete((){
+          setState(() {});
+       });  
   }
 // for send to the details to the server
   late String name;
@@ -25,10 +27,10 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   late String gender;
 
 //Recieve the details from server  
-  late String username;
-  late String userphonenumber;
-  late String userage;
-  late String usergender;
+  String username='';
+  String userphonenumber='';
+  String userage= '';
+  String usergender ='';
   
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -87,7 +89,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   FormBuilderDropdown buildGenderFormField() {
     return FormBuilderDropdown(
       name: "gender",
-      //initialValue: usergender,
+      initialValue: usergender,
       onSaved: (value){
         gender = value!;
       },
@@ -118,7 +120,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for phone number
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
-      //initialValue: userphonenumber,
+      initialValue: userphonenumber,
       validator: (value) {        
         if(value!.length < 10 && value.length > 0 ) {
           return "Phone number should have 10 numbers";
@@ -161,7 +163,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   TextFormField buildNameFormField() {
     return TextFormField(
       keyboardType: TextInputType.text,
-      //initialValue: username,
+      initialValue: username,
       onSaved: (value){
         name = value!;
       },
@@ -195,7 +197,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for age
   TextFormField buildAgeFormField() {
     return TextFormField(
-      //initialValue: userage,
+      initialValue: userage,
       validator: (value){
         var numValue = int.tryParse(value!);
         if (value.isNotEmpty && numValue!<6){

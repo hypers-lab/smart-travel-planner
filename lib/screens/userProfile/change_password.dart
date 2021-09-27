@@ -11,12 +11,10 @@ class ChangePassword extends StatefulWidget {
   _ChangePasswordState createState() => _ChangePasswordState();
 }
 class _ChangePasswordState extends State<ChangePassword> {
-  // TextEditingController newpassword = TextEditingController();
-  // TextEditingController oldpassword = TextEditingController();
-  // TextEditingController confirmpassword = TextEditingController();
-  late String newpassword;
-  late String oldpassword;
-  late String confirmpassword;
+  
+  String newpassword='';
+  String oldpassword='';
+  String confirmpassword='';
   
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -171,22 +169,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                             color: Colors.teal.shade900,
                             text: 'Save',
                               onPressed: () {
-                                // _changePassword(oldpassword);
                                 if(_formkey.currentState!.validate() ){
-                                  //No error in validator
                                   _formkey.currentState!.save();
-                                  Navigator.push(
-                                context, 
-                                MaterialPageRoute(
-                                builder: (context) => ProfilePage()
-                                )
-                              );
-                                  
-                                  //     Navigator.pushAndRemoveUntil(
-                                  //       context,
-                                  //       MaterialPageRoute(builder: (context) => LoginScreen()),
-                                  //       (Route<dynamic> route) => false,
-                                  // );
+                                   _changePassword();
                                 }   
                               }, 
                             ),
@@ -203,31 +188,45 @@ class _ChangePasswordState extends State<ChangePassword> {
     );
   }
   
-  // void _changePassword(String oldpassword) async {
-    
-  //   String email = '${firebaseUser!.email}';
-  //   print(email);
+ void _changePassword() async {
 
-  //   try {
-  //      await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //         email: email,
-  //         password: oldpassword,
-  //     );
+   var firebaseUser =  FirebaseAuth.instance.currentUser;
+    String email =firebaseUser!.email.toString();print(email);
+
+    //pass the password here
+    String password = oldpassword;
+    String newPassword = newpassword;
+
+    try {
+      // ignore: unused_local_variable
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+      );
       
-  //     firebaseUser!.updatePassword(newpassword).then((_){
-  //       print("Successfully changed password");
-  //     }).catchError((error){
-  //       print("Password can't be changed" + error.toString());
-  //       //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
-  //     });
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'user-not-found') {
-  //       print('No user found for that email.');
-  //     } else if (e.code == 'wrong-password') {
-  //       print('Wrong password provided for that user.');
-  //     }
-  //   }
-  // }
+      firebaseUser.updatePassword(newPassword).then((_){
+        print("Successfully changed password");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Password has been changed, Please login with your new password'),)) ;
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (Route<dynamic> route) => false,
+        );
+      }).catchError((error){
+        print("Password can't be changed" + error.toString());
+        //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ypur old password is incorrect, Please enter your old password correctly'),)) ;
+      }
+    }
+  }
 }
                     
 

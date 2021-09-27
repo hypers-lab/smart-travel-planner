@@ -20,7 +20,6 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
   void initState() {
     super.initState();
-
     getUserDetails();
   }
   final FirebaseAuth auth = FirebaseAuth.instance;
