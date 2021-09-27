@@ -1,23 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:smart_travel_planner/widgets/button.dart';
 import '../screens/userProfile/personal_info.dart';
 
 class EditPersonalInfoItem extends StatefulWidget {
+
   @override
   _EditPersonalInfoItemState createState() => _EditPersonalInfoItemState();
 }
 
 class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
+
+  void initState() {
+    super.initState();
+    getUserDetails();  
+  }
+// for send to the details to the server
+  late String name;
+  late String phonenumber;
+  late String age;
+  late String gender;
+
+//Recieve the details from server  
+  late String username;
+  late String userphonenumber;
+  late String userage;
+  late String usergender;
+  
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  final RegExp phoneRegex = new RegExp(r'^[6-9]\d{9}$');
-  // late String name;
-  // late String phoneNumber;
-  // late String age;
-  // late String gender;
-  //TextEditingController textController = TextEditingController();
-  TextEditingController phonenumber = TextEditingController();
-  //ValueChanged _onChanged = (val) => print(val);
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +46,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
             buildPhoneNumberFormField(),
             SizedBox(height: 30),
             buildGenderFormField(),
-            SizedBox(height: 30),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height:40),
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
               child: Row(
@@ -49,18 +59,19 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
                           context, 
                           MaterialPageRoute(builder: (context) => PersonalInfoScreen()));
                       }),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  SizedBox(width: 10,),
                   button(
                     text: 'Save',
                     color: Colors.teal.shade900,
                     onPressed: () {
-                       if(_formkey.currentState!.validate())
-                        { Navigator.push(
-                            context, 
-                            MaterialPageRoute(builder: (context) => PersonalInfoScreen()));
-                        }
+                      if(_formkey.currentState!.validate()){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('YOUR INFORMATIONS ARE SAVED'),)) ;
+                        _sendToServer();
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(builder: (context) => PersonalInfoScreen()));
+                      }
                     },
                   ),
                 ],
@@ -72,28 +83,29 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     );
   }
 
+  // Form builder for gender
   FormBuilderDropdown buildGenderFormField() {
     return FormBuilderDropdown(
       name: "gender",
+      //initialValue: usergender,
+      onSaved: (value){
+        gender = value!;
+      },
+      validator: (value) => value == null ? 'Select your gender' : null,
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        labelText: "Gender",
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.blue),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: Colors.green[100],
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
-      //onSaved: (newValue) => gender = newValue!,
       hint: Text('Select Gender'),
-      // validator: FormBuilderValidators.compose(
-      //     [FormBuilderValidators.required(context)]),
-      // initialValue: 'Male',
       items: ['Male', 'Female', 'Other']
           .map((gender) => DropdownMenuItem(
                 value: gender,
@@ -103,13 +115,22 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     );
   }
 
+  //TextForm builder for phone number
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
-      controller: phonenumber,
-      validator: (value) {
+      //initialValue: userphonenumber,
+      validator: (value) {        
         if(value!.length < 10 && value.length > 0 ) {
           return "Phone number should have 10 numbers";
         }
+        else{
+          if(value.isEmpty){
+            return 'Please enter your phone number';
+          }
+        }
+      },
+      onSaved: (value){
+        phonenumber = value!;
       },
       keyboardType: TextInputType.phone,
       maxLength: 10,
@@ -117,105 +138,137 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
         new LengthLimitingTextInputFormatter(10)
       ],
-      //onSaved: (newValue) => phoneNumber = newValue!,
+            
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.blue),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        labelText: "Phone Number",
         hintText: "Enter your phone number",
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: Colors.green[100],
         floatingLabelBehavior: FloatingLabelBehavior.always,
+        
       ),
     );
   }
 
+  // TextForm builder for name
   TextFormField buildNameFormField() {
     return TextFormField(
       keyboardType: TextInputType.text,
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
-      ],
-      //onSaved: (newValue) => name = newValue!,
+      //initialValue: username,
+      onSaved: (value){
+        name = value!;
+      },
+      validator: (value) {        
+        if(value!.length >100 && value.isNotEmpty ) {
+          return "Enter a valid name";
+        }
+        else{
+          if(value.isEmpty){
+            return 'Please enter you name';
+          }
+        }
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.blue),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        labelText: "Name",
         hintText: "Enter your name",
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: Colors.green[100],
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
     );
   }
 
+  //TextForm builder for age
   TextFormField buildAgeFormField() {
     return TextFormField(
-      validator: (value)
-        { var numValue = int.tryParse(value!);
-        if (value.length > 0){
-          if(numValue! < 6 ) {
-            return "Age should be greater than 5";
-          }
+      //initialValue: userage,
+      validator: (value){
+        var numValue = int.tryParse(value!);
+        if (value.isNotEmpty && numValue!<6){
+           return "Age should be greater than 5";
         } 
-        },
+        else{
+          if(value.isEmpty){
+            return 'Please enter your age';
+          }
+        }
+      },
+      
+      onSaved: (value){
+        age = value!;
+      },
       keyboardType: TextInputType.number,
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly,
-        
       ],
-      maxLength: 2, // Only numbers can be entered
-      //onSaved: (newValue) => age = newValue!,
+      maxLength: 2,
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.blue),
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        labelText: "Age",
         hintText: "Enter your age",
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: Colors.green[100],
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
     );
   }
 
-  Widget button({
-    required String text,
-    required VoidCallback onPressed,
-    required Color color,
-  }) =>
-      Container(
-        height: 40,
-        width: 100,
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: Text(text),
-          style: ElevatedButton.styleFrom(
-            primary: color,
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(18.0),
-            ),
-            onPrimary: Colors.white,
-            shadowColor: Colors.blueGrey,
-            elevation: 10,
-          ),
-        ),
-      );
+  // to update the values to database
+  _sendToServer() {
+    if (_formkey.currentState!.validate() ){
+      //No error in validator
+      _formkey.currentState!.save();
+      var firebaseUser =  FirebaseAuth.instance.currentUser;
+      FirebaseFirestore.instance
+        .collection('user_personal_information')
+        .doc(firebaseUser!.uid).update({
+          'name':name,
+          'age':age,
+          'phone number':phonenumber,
+          'gender':gender
+        });
+    }
+  }
+
+  //get user info from database
+  Future getUserDetails () async{
+    await FirebaseFirestore.instance
+      .collection('user_personal_information')
+      .doc(( FirebaseAuth.instance.currentUser!).uid)
+      .get()
+      .then((value) {
+        setState(() {
+          username = value.data()!['name'];
+          //username = value.get('name');
+          userphonenumber = value.get('phone number').toString();
+          usergender = value.get('gender').toString();
+          userage = value.get('age').toString();
+        });
+         
+        // userage = value.data()!['age'];
+        // userphonenumber = value.data()!['phone number'];
+        // usergender = value.data()!['gender'];
+      });print('Mine is $username,$userage,$userphonenumber,$usergender');
+      return 'Fetching error';
+  }  
 }
