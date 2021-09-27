@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
@@ -8,15 +9,15 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 
 class Details extends StatefulWidget {
   static const String id = 'details';
 
-  Details({required this.place, required this.suggestedPlaces});
+  Details({required this.place});
 
   final TravelDestination place;
-  final List<TravelDestination>
-      suggestedPlaces; //Holds the list of places that suggested from the model
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -24,7 +25,6 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late TravelDestination place = widget.place;
-  late List<TravelDestination> suggestedPlaces = widget.suggestedPlaces;
 
   void _showRatingAppDialog() {
     final _ratingDialog = RatingDialog(
@@ -52,6 +52,76 @@ class _DetailsState extends State<Details> {
       barrierDismissible: true,
       builder: (context) => _ratingDialog,
     );
+  }
+
+  bool isFetching = false;
+  List<TravelDestination> suggestedPlaces = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getGroupsData();
+  }
+
+  Future<void> getGroupsData() async {
+    setState(() {
+      isFetching = true;
+    });
+
+    String urlName =
+        'https://sep-recommender.herokuapp.com/recommend?hotel_id=' +
+            place.placeId.toString();
+    var url = Uri.parse(urlName);
+    var response = await http.get(url);
+    //print(response);
+
+    if (response.statusCode == 200) {
+      var jsonResponse =
+          convert.jsonDecode(response.body) as Map<String, dynamic>;
+      var suggestPlacesIds =
+          jsonResponse['recommended_hotels'].toSet().toList();
+      //print(suggestPlacesIds);
+
+      for (var i = 0; i < 10; i++) {
+        FirebaseFirestore.instance
+            .collection("hotels")
+            .where("hotelId", isEqualTo: suggestPlacesIds[i])
+            .limit(1)
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((result) {
+            TravelDestination travelDestination = TravelDestination(
+                city: result.data()["city"],
+                placeId: result.data()["hotelId"],
+                placeName: result.data()["hotelName"],
+                mainPhotoUrl: result.data()["mainPhotoUrl"],
+                reviewScore: result.data()["reviewScore"].toString(),
+                reviewScoreWord: result.data()["reviewScoreWord"],
+                reviewText: result.data()["reviewText"],
+                description: result.data()["description"],
+                coordinates: result.data()["coordinates"],
+                checkin: result.data()["checkin"],
+                checkout: result.data()["checkout"],
+                address: result.data()["address"],
+                url: result.data()["url"],
+                introduction: result.data()["introduction"]);
+
+            //print(doc['hotelId']);
+            suggestedPlaces.add(travelDestination);
+            //print(result.data());
+            setState(() {
+              isFetching = false;
+            });
+          });
+
+          //print(suggestPlacesIds);
+        });
+      }
+      //NEED: create objects from ids and store into an array
+      //print('Suggested Hotels array: $suggestPlacesIds.');
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
   }
 
   @override
@@ -223,7 +293,11 @@ class _DetailsState extends State<Details> {
               ),
             ),
           ),
-          buildHorizontalList(context),
+          isFetching
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : buildHorizontalList(context),
           SizedBox(height: 10.0)
         ],
       ),
@@ -241,7 +315,7 @@ class _DetailsState extends State<Details> {
         // ignore: unnecessary_null_comparison
         itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
         itemBuilder: (BuildContext context, int index) {
-          TravelDestination place = suggestedPlaces.reversed.toList()[index];
+          TravelDestination place = suggestedPlaces.toList()[index];
           return HorizontalPlaceItem(place);
         },
       ),
