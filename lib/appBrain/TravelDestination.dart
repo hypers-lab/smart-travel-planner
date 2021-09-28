@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_travel_planner/util/hoteldata.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
@@ -36,6 +37,61 @@ class TravelDestination {
   String address;
   String url;
   String introduction;
+
+  //store places visited information
+  void markPlaceAsVisited() {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    final firestoreInstance = FirebaseFirestore.instance;
+
+    final String docID = uid + this.placeId.toString();
+
+    firestoreInstance
+        .collection("visitedInformation")
+        .doc(docID)
+        .set({"visitedStatus": true, "placeId": this.placeId, "userId": uid});
+  }
+
+  //get place visted marked status
+  bool getPlaceVistedMarkedStatus() {
+    bool vistedStatus = false;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    final firestoreInstance = FirebaseFirestore.instance;
+    final String docID = uid + this.placeId.toString();
+    firestoreInstance
+        .collection("visitedInformation")
+        .doc(docID)
+        .get()
+        .then((value) {
+      var stat = value.data();
+      print(stat!["visitedStatus"]);
+      vistedStatus = stat["visitedStatus"];
+      print(value.data());
+    });
+
+    return vistedStatus;
+  }
+
+  //store user reviews and comments
+  void addReviewComments(double reviewScore, String comment) {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    final firestoreInstance = FirebaseFirestore.instance;
+
+    final String docID = uid + this.placeId.toString();
+
+    firestoreInstance.collection("visitedInformation").doc(docID).set({
+      "visitedStatus": true,
+      "reviewScore": reviewScore,
+      "placeId": this.placeId,
+      "comment": comment,
+      "userId": uid
+    });
+  }
 
   //data retrieve from firebase
   static List<TravelDestination> getPlacesDetails() {

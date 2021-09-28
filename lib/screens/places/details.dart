@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rating_dialog/rating_dialog.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
@@ -26,7 +27,9 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   late TravelDestination place = widget.place;
 
+  //Dialog box for Review the place
   void _showRatingAppDialog() {
+    Navigator.pop(context);
     final _ratingDialog = RatingDialog(
       ratingColor: Colors.amber,
       title: 'Rate Travel Place',
@@ -35,15 +38,9 @@ class _DetailsState extends State<Details> {
       submitButton: 'Submit',
       onCancelled: () => print('cancelled'),
       onSubmitted: (response) {
-        print('rating: ${response.rating}, '
-            'comment: ${response.comment}');
+        print('rating: ${response.rating}, comment: ${response.comment}');
         //add rating to system
-
-        if (response.rating < 3.0) {
-          print('response.rating: ${response.rating}');
-        } else {
-          Container();
-        }
+        place.addReviewComments(response.rating.toDouble(), response.comment);
       },
     );
 
@@ -52,6 +49,38 @@ class _DetailsState extends State<Details> {
       barrierDismissible: true,
       builder: (context) => _ratingDialog,
     );
+  }
+
+  //Dialog box for marking the place as visited
+  _showVistedMarkingDialog(context, String showText) {
+    Alert(
+      context: context,
+      title: showText,
+      image: Image.asset("assets/place_visted_confirm.png",
+          height: 250.0, width: 300.0),
+      desc: "Leave a feedback in your own!",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Confirm",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => {place.markPlaceAsVisited(), Navigator.pop(context)},
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        ),
+        DialogButton(
+          child: Text(
+            "Review",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => _showRatingAppDialog(),
+          gradient: LinearGradient(colors: [
+            Color.fromRGBO(116, 116, 191, 1.0),
+            Color.fromRGBO(52, 138, 199, 1.0)
+          ]),
+        )
+      ],
+    ).show();
   }
 
   bool isFetching = false;
@@ -108,17 +137,12 @@ class _DetailsState extends State<Details> {
 
             //print(doc['hotelId']);
             suggestedPlaces.add(travelDestination);
-            //print(result.data());
             setState(() {
               isFetching = false;
             });
           });
-
-          //print(suggestPlacesIds);
         });
       }
-      //NEED: create objects from ids and store into an array
-      //print('Suggested Hotels array: $suggestPlacesIds.');
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
@@ -126,6 +150,7 @@ class _DetailsState extends State<Details> {
 
   @override
   Widget build(BuildContext context) {
+    var showText;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -176,12 +201,18 @@ class _DetailsState extends State<Details> {
                   FloatingActionButton(
                     heroTag: "btn1",
                     child: Icon(
-                      Icons.reviews,
+                      Icons.beenhere,
                       size: 25,
                       color: Colors.red,
                     ),
                     backgroundColor: Colors.orangeAccent,
-                    onPressed: _showRatingAppDialog,
+                    onPressed: () => {
+                      if (place.getPlaceVistedMarkedStatus())
+                        {showText = "You have Visited"}
+                      else
+                        {showText = "Mark As Visited"},
+                      _showVistedMarkingDialog(context, showText)
+                    },
                   ),
                   SizedBox(width: 10.0),
                   FloatingActionButton(
