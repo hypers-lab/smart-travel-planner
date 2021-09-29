@@ -206,13 +206,8 @@ class _DetailsState extends State<Details> {
                       color: Colors.red,
                     ),
                     backgroundColor: Colors.orangeAccent,
-                    onPressed: () => {
-                      if (place.getPlaceVistedMarkedStatus())
-                        {showText = "You have Visited"}
-                      else
-                        {showText = "Mark As Visited"},
-                      _showVistedMarkingDialog(context, showText)
-                    },
+                    onPressed: () =>
+                        {_showVistedMarkingDialog(context, "Mark As Visited")},
                   ),
                   SizedBox(width: 10.0),
                   FloatingActionButton(

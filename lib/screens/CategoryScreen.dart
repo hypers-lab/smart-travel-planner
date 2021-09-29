@@ -14,9 +14,6 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   bool isFetching = false;
   List<TravelDestination> places = [];
-  late ScrollController _hotelScrollController;
-  int loadMoreMsgs = 25; // at first it will load only 25
-  int a = 50;
 
   //default category name
   String categoryName = "Hotels";
@@ -25,15 +22,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
   void initState() {
     super.initState();
     getGroupsData();
-    _hotelScrollController = ScrollController()
-      ..addListener(() {
-        if (_hotelScrollController.position.atEdge) {
-          if (_hotelScrollController.position.pixels != 0)
-            setState(() {
-              loadMoreMsgs = loadMoreMsgs + a;
-            });
-        }
-      });
   }
 
   getGroupsData() {
