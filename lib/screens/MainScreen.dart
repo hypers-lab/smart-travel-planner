@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/screens/CategoryScreen.dart';
 import 'package:smart_travel_planner/screens/ReviewsScreen.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
@@ -38,7 +39,12 @@ class _MainScreenState extends State<MainScreen> {
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
-        children: [HomeScreen(), HomeScreen(), ReviewScreen(), ProfilePage()],
+        children: [
+          HomeScreen(),
+          CategoryScreen(),
+          ReviewScreen(),
+          ProfilePage()
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
