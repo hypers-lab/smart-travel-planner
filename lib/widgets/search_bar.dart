@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/appBrain/SearchService.dart';
 
 class SearchBar extends StatefulWidget {
   @override
@@ -7,6 +8,40 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   final TextEditingController _searchControl = new TextEditingController();
+
+  var queryResultSet = [];
+  var tempSearchStore = [];
+
+  initiateSearch(value) {
+    print(value);
+    print(queryResultSet);
+    if (value.length == 0) {
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+      });
+    }
+
+    var capitalizedValue =
+        value.substring(0, 1).toUpperCase() + value.substring(1);
+
+    if (queryResultSet.length == 0 && value.length > 0) {
+      SearchService().searchByCity(value).then((querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          queryResultSet.add(doc.data());
+        });
+      });
+    } else {
+      tempSearchStore = [];
+      queryResultSet.forEach((element) {
+        if (element['city'].startsWith(capitalizedValue)) {
+          setState(() {
+            tempSearchStore.add(element);
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +53,9 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ),
       child: TextField(
+        onChanged: (val) {
+          initiateSearch(val);
+        },
         style: TextStyle(
           fontSize: 15.0,
           color: Colors.blueGrey[300],
