@@ -198,7 +198,6 @@ class TravelDestination {
       int hotelId) async {
     List<TravelDestination> suggestPlaces = [];
     try {
-
       String urlName =
           'https://sep-recommender.herokuapp.com/recommend?hotel_id=' +
               hotelId.toString();
