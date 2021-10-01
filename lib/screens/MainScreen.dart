@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/screens/CategoryScreen.dart';
 import 'package:smart_travel_planner/screens/ReviewsScreen.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
 import 'package:smart_travel_planner/screens/userProfile/profile.dart';
 import 'HomeScreen.dart';
 import '../widgets/icon_badge.dart';
+import 'itenerary/IteneraryScreen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -37,7 +39,13 @@ class _MainScreenState extends State<MainScreen> {
         physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: onPageChanged,
-        children: [HomeScreen(), HomeScreen(), ReviewScreen(), ProfilePage()],
+        children: [
+          HomeScreen(),
+          IteneraryScreen(),
+          CategoryScreen(),
+          ReviewScreen(),
+          ProfilePage()
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -46,9 +54,13 @@ class _MainScreenState extends State<MainScreen> {
           children: <Widget>[
             SizedBox(width: 7.0),
             barIcon(icon: Icons.home, page: 0),
-            barIcon(icon: Icons.favorite, page: 1),
-            barIcon(icon: Icons.mode_comment, page: 2,),
-            barIcon(icon: Icons.person, page: 3),
+            barIcon(icon: Icons.add_location, page: 1),
+            barIcon(icon: Icons.favorite, page: 2),
+            barIcon(
+              icon: Icons.mode_comment,
+              page: 3,
+            ),
+            barIcon(icon: Icons.person, page: 4),
             SizedBox(width: 7.0),
           ],
         ),

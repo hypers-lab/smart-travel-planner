@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_travel_planner/appBrain/UserReview.dart';
 import 'package:smart_travel_planner/util/hoteldata.dart';
-import 'dart:convert' as convert;
-import 'package:http/http.dart' as http;
 
 class TravelDestination {
   TravelDestination(
@@ -35,69 +35,121 @@ class TravelDestination {
   String url;
   String introduction;
 
- 
-
-  //get suggestions for a selected place
-  static Future<List<TravelDestination>> getSuggestedPlacesFromModel(
-      int hotelId) async {
-    //NEED: change this function to return a list of "TravelDestination" objects with suggested places from model
-    //print(hotelId);
-
-    List<TravelDestination> suggestPlaces = [];
+  //get Current user's id
+  static String getCurrentUserId() {
     try {
-
-      String urlName =
-          'https://sep-recommender.herokuapp.com/recommend?hotel_id=' +
-              hotelId.toString();
-      var url = Uri.parse(urlName);
-      var response = await http.get(url);
-      //print(response);
-
-      if (response.statusCode == 200) {
-        var jsonResponse =
-            convert.jsonDecode(response.body) as Map<String, dynamic>;
-        var suggestPlacesIds = jsonResponse['recommended_hotels'];
-
-        for (var i = 0; i < 10; i++) {
-          FirebaseFirestore.instance
-              .collection("hotels")
-              .where("hotelId", isEqualTo: suggestPlacesIds[i])
-              .get()
-              .then((querySnapshot) {
-            querySnapshot.docs.forEach((result) {
-              TravelDestination travelDestination = TravelDestination(
-                  city: result.data()["city"],
-                  placeId: result.data()["hotelId"],
-                  placeName: result.data()["hotelName"],
-                  mainPhotoUrl: result.data()["mainPhotoUrl"],
-                  reviewScore: result.data()["reviewScore"].toString(),
-                  reviewScoreWord: result.data()["reviewScoreWord"],
-                  reviewText: result.data()["reviewText"],
-                  description: result.data()["description"],
-                  coordinates: result.data()["coordinates"],
-                  checkin: result.data()["checkin"],
-                  checkout: result.data()["checkout"],
-                  address: result.data()["address"],
-                  url: result.data()["url"],
-                  introduction: result.data()["introduction"]);
-
-              //print(doc['hotelId']);
-              suggestPlaces.add(travelDestination);
-              //print(result.data());
-            });
-
-            //print(suggestPlacesIds);
-          });
-        }
-        //NEED: create objects from ids and store into an array
-        //print('Suggested Hotels array: $suggestPlacesIds.');
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
+      final FirebaseAuth auth = FirebaseAuth.instance;
+      final User? user = auth.currentUser;
+      final uid = user!.uid;
+      return uid;
     } catch (e) {
-      print("Error: $e");
+      print('Firebase Authorization failed!');
     }
-    return suggestPlaces; //Uncomment when function complete
+    return "";
+  }
+
+  //store places visited information
+  void markPlaceAsVisited() {
+    final String uid = getCurrentUserId();
+
+    //create a unique document ID
+    final String docID = uid + this.placeId.toString();
+
+    final userReview = UserReview(
+        placeId: this.placeId, userId: uid, reviewScore: 0.0, comment: "");
+
+    FirebaseFirestore.instance
+        .collection("visitedInformation")
+        .doc(docID)
+        .set({"placeId": userReview.placeId, "userId": userReview.userId});
+  }
+
+  //store user reviews and comments
+  void addReviewComments(double reviewScore, String comment) {
+    final String uid = getCurrentUserId();
+
+    final String docID = uid + this.placeId.toString();
+
+    final userReview = UserReview(
+        placeId: this.placeId,
+        userId: uid,
+        reviewScore: reviewScore,
+        comment: comment);
+
+    FirebaseFirestore.instance.collection("visitedInformation").doc(docID).set({
+      "reviewScore": userReview.reviewScore,
+      "placeId": userReview.placeId,
+      "comment": userReview.comment,
+      "userId": userReview.userId
+    });
+  }
+
+  //search a place using its id
+  static TravelDestination getPlaceById(int placeId) {
+    List<TravelDestination> travelDestinations = [];
+
+    FirebaseFirestore.instance
+        .collection("hotels")
+        .where("hotelId", isEqualTo: placeId)
+        .limit(1)
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        TravelDestination travelDestination = TravelDestination(
+            city: doc.data()["city"],
+            placeId: doc.data()["hotelId"],
+            placeName: doc.data()["hotelName"],
+            mainPhotoUrl: doc.data()["mainPhotoUrl"],
+            reviewScore: doc.data()["reviewScore"].toString(),
+            reviewScoreWord: doc.data()["reviewScoreWord"],
+            reviewText: doc.data()["reviewText"],
+            description: doc.data()["description"],
+            coordinates: doc.data()["coordinates"],
+            checkin: doc.data()["checkin"],
+            checkout: doc.data()["checkout"],
+            address: doc.data()["address"],
+            url: doc.data()["url"],
+            introduction: doc.data()["introduction"]);
+
+        print("placeName: ${travelDestination.placeName}");
+        travelDestinations.add(travelDestination);
+      });
+    });
+    return travelDestinations[0];
+  }
+
+  //data retrieve from firebase
+  static List<TravelDestination> getPlacesDetails() {
+    List<TravelDestination> places = [];
+    try {
+      FirebaseFirestore.instance
+          .collection("hotels")
+          .limit(10)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          TravelDestination travelDestination = TravelDestination(
+              city: doc["city"],
+              placeId: doc["hotelId"],
+              placeName: doc["hotelName"],
+              mainPhotoUrl: doc["mainPhotoUrl"],
+              reviewScore: doc["reviewScore"].toString(),
+              reviewScoreWord: doc["reviewScoreWord"],
+              reviewText: doc["reviewText"],
+              description: doc["description"],
+              coordinates: doc["coordinates"],
+              checkin: doc["checkin"],
+              checkout: doc["checkout"],
+              address: doc["address"],
+              url: doc["url"],
+              introduction: doc["introduction"]);
+          places.add(travelDestination);
+        });
+      });
+    } catch (e) {
+      print("Data Fetch Error:$e");
+    }
+    return places;
   }
 
   //dummy data taking
@@ -120,8 +172,6 @@ class TravelDestination {
             address: doc["address"],
             url: doc["url"],
             introduction: doc["introduction"]);
-
-        //print("placeName:${travelDestination.placeName}, ");
 
         places.add(travelDestination);
       });
