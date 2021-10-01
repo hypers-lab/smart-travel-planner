@@ -1,10 +1,84 @@
+
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ProfilePic extends StatelessWidget {
-  const ProfilePic({
-    Key? key,
-  }) : super(key: key);
+class ProfilePic extends StatefulWidget {
+  
+  @override
+  _ProfilePicState createState() => _ProfilePicState();
+}
+
+class _ProfilePicState extends State<ProfilePic> {
+  File? image;
+  late String imgurl;
+  late String imgURL;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+
+  void initState() {
+    super.initState();
+    asignimage();
+  }
+  
+
+  Future pickImage(ImageSource source) async{
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image ==null) return;
+      
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
+      sendDataToStorage();
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
+  sendDataToStorage()async{
+    var path=image!.path;
+    var storageImage = FirebaseStorage.instance.ref().child('profile_pictures/$path');
+    var uploadtask =storageImage.putFile(image!);
+
+    await uploadtask.whenComplete(() async {
+      try{
+        imgurl = await storageImage.getDownloadURL();
+      }catch(onError){
+        print("Error");
+      }
+    _sendToServer();
+    });
+  }
+  
+  _sendToServer() {
+    var firebaseUser =  FirebaseAuth.instance.currentUser;
+      FirebaseFirestore.instance
+        .collection('user_personal_information')
+        .doc(firebaseUser!.uid).update({
+         'img_url': imgurl.toString()
+        });
+    }
+
+  asignimage()async{
+    var firebaseUser =  FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+        .collection('user_personal_information')
+        .doc(firebaseUser!.uid)
+        .get()
+        .then((value){
+          imgURL = value.get('img_url');
+          print(imgURL);
+          if (imgURL.isNotEmpty){
+            return image = Image.network(imgURL) as File? ;
+          }
+        }) ;
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -15,9 +89,21 @@ class ProfilePic extends StatelessWidget {
           fit: StackFit.expand, 
           clipBehavior: Clip.none, 
           children: [
-            CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLHvzyqlpe7Aw_qH5ZR5fvjErwjzNuqIlc6A&usqp=CAU')),
+            image !=null? 
+            ClipOval(
+              child: Image.file(
+                image!,
+                width: 160,
+                height: 160,
+                fit: BoxFit.cover,),
+            ): ClipOval(
+                child: Image.asset(
+                  'assets/Profile.jpg',
+                  width: 160,
+                  height: 160,
+                  fit: BoxFit.cover,
+                  )
+                ),
             Positioned(
                 right: -16,
                 bottom: 0,
@@ -25,62 +111,61 @@ class ProfilePic extends StatelessWidget {
                     height: 50,
                     width: 50,
                     child: buildEditIcon(
-                      color: Colors.grey,
+                      color: Colors.green.shade200,
                       onPressed: (){
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return Dialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)
-                              ),
-                              backgroundColor: Colors.grey[350],
-                              elevation: 16,
-                              child: Container(
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: <Widget>[
-                                    SizedBox(height: 20),
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                        padding: EdgeInsets.all(20),
-                                        primary: Colors.grey[800],
+                            return Padding(
+                              padding: EdgeInsets.fromLTRB(20, 170, 20, 320),
+                              child: Dialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                backgroundColor: Colors.green[50],
+                                elevation: 20,
+                                child: Container(
+                                  child: ListView(
+                                    //shrinkWrap: true,
+                                    children: <Widget>[
+                                      SizedBox(height: 10),
+                                      TextButton(
+                                        style: TextButton.styleFrom(
+                                          padding: EdgeInsets.all(20),
+                                          primary: Colors.grey[800],
+                                        ),
+                                        onPressed: ()=>pickImage(ImageSource.gallery),
+                                        child: Text(
+                                          'Choose from gallery',
+                                          style: TextStyle(fontSize: 17),)
                                       ),
-                                      onPressed: (){
-                                        
-                                      }, 
-                                      child: Text(
-                                        'Choose from gallery',
-                                        style: TextStyle(
-                                          fontSize: 17
-                                        ),)
-                                    ),
-                                    SizedBox(height: 5),
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                        padding: EdgeInsets.all(20),
-                                        primary: Colors.grey[800],
-                                        
+                                      SizedBox(height: 5),
+                                      Divider(height: 5,thickness: 2,color: Colors.black,),
+                                      TextButton(
+                                        style: TextButton.styleFrom(
+                                          padding: EdgeInsets.all(20),
+                                          primary: Colors.grey[800],
+                                        ),
+                                        onPressed: ()=>pickImage(ImageSource.camera), 
+                                        child: Text(
+                                          'Use your camera',
+                                          style: TextStyle(fontSize: 17),)
                                       ),
-                                      onPressed: (){}, 
-                                      child: Text(
-                                        'Use your camera',
-                                        style: TextStyle(
-                                          fontSize: 17
-                                        ),)
-                                    ),
-                                    SizedBox(height: 20,)
-                                  ],
+                                      SizedBox(height: 20,)
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
                           },
                         );
                       }
-                    ))
+                    )
+                )
             )
           ]
-        ));
+        )
+      );
     }
 
   Widget buildEditIcon({
@@ -119,4 +204,4 @@ class ProfilePic extends StatelessWidget {
           child: child,
         ),
       );
-}
+  }

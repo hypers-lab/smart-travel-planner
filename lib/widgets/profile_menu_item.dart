@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileMenu extends StatelessWidget {
   const ProfileMenu({
@@ -22,7 +23,7 @@ class ProfileMenu extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           primary: Colors.grey[800],
-          backgroundColor: Colors.grey[350],
+          backgroundColor: Colors.green[100],
         ),
         onPressed: press,
         child: Row(
@@ -32,7 +33,11 @@ class ProfileMenu extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: GoogleFonts.shadowsIntoLight(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  letterSpacing: 2
+                ),
               ),
             ),
             Icon(Icons.arrow_forward_ios),

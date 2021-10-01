@@ -1,26 +1,30 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
+import 'package:smart_travel_planner/widgets/button.dart';
 import 'profile.dart';
 
 class ChangePassword extends StatefulWidget {
-  //final TextEditingController _passwordController = TextEditingController();
-  //String get _password => _passwordController.text;
 
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
 }
-
 class _ChangePasswordState extends State<ChangePassword> {
-   //TextController to read text entered in text field
-  TextEditingController password = TextEditingController();
-  TextEditingController oldpassword = TextEditingController();
-  TextEditingController confirmpassword = TextEditingController();
-
+  // TextEditingController newpassword = TextEditingController();
+  // TextEditingController oldpassword = TextEditingController();
+  // TextEditingController confirmpassword = TextEditingController();
+  String newpassword='';
+  String oldpassword='';
+  String confirmpassword='';
+  
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var firebaseUser =  FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //key: _formKey,
         appBar: AppBar(
           title: Text('Change Your Password'),
           centerTitle: true,
@@ -30,310 +34,202 @@ class _ChangePasswordState extends State<ChangePassword> {
               Navigator.push(
                 context, 
                 MaterialPageRoute(builder: (context) => ProfilePage()));
+                
             },
           ),
         ),
         body: SingleChildScrollView(
-          child: Form(
-            key: _formkey,
-            child: Container(
-            padding: EdgeInsets.only(left: 30, right: 30, top: 70),
-            child: Align(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: oldpassword,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your old password';
-                      }
-                      return null;
-                    },
-                    obscureText: true,
-                    obscuringCharacter: "*",
-                    decoration: InputDecoration(
-                      labelText: "Old Password",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-
-                  //For new password
-                  TextFormField(
-                    controller: password,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a new password';
-                      }else{
-                        if (value.length < 6) {
-                          return "Password is too short (minimum is 6 characters)";
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/edit2.jpg'),
+                  fit: BoxFit.fill)),
+            child: Form(
+              key: _formkey,
+              child: Container(
+              padding: EdgeInsets.only(left: 30, right: 30, top: 70),
+              child: Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      onSaved: (value){
+                        oldpassword =value!;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your old password';
                         }
-                      
-                      //   if (!RegExp(
-                      //     r'^(?=.*[A-Z])$')
-                      //       .hasMatch(value)) {
-                      //       return "Password should contain at least one upper case";
-                      //       }
-                      
-                      //   if (!RegExp(
-                      //     r'^(?=.*[a-z])$')
-                      //       .hasMatch(value)) {
-                      //       return "Password should contain at least one lower case";
-                      //       }
-                      
-                      //   if (!RegExp(
-                      //     r'^(?=.*?[0-9])$')
-                      //       .hasMatch(value)) {
-                      //       return "Password should contain at least one digit";
-                      //       }
-                        
-                      //   if (!RegExp(
-                      //     r'^(?=.*?[!@#\$&*~])$')
-                      //       .hasMatch(value)) {
-                      //       return "Password should contain at least one Special character";
-                      //       }
-                       }
-                      return null;
-                    },
-                    obscureText: true,
-                    obscuringCharacter: "*",
-                    decoration: InputDecoration(
-                      labelText: "New Password",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(),
-                        borderRadius: BorderRadius.circular(8.0),
+                      },
+                      obscureText: true,
+                      obscuringCharacter: "*",
+                      decoration: InputDecoration(
+                        hintText: "Old Password",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        filled: true,
+                        fillColor: Colors.green[100],
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      filled: true,
-                      fillColor: Colors.grey[200],
                     ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                    SizedBox(height: 50,),
 
-                  //to confirm password
-                  TextFormField(
-                    controller: confirmpassword,
-                    validator: (value){
-                      if(value!.isEmpty)
-                      {
-                        return 'Please re-enter the new password';
-                      }
-                      print(password.text);
-                      print(confirmpassword.text);
-                      if(password.text!=confirmpassword.text){
-                        return "Password does not match";
-                      }
-                      return null;
-                    },
-                    obscureText: true,
-                    obscuringCharacter: "*",
-                    decoration: InputDecoration(
-                      labelText: "Confirm Password",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(),
-                        borderRadius: BorderRadius.circular(8.0),
+                    //=======>For new password<==========
+                    TextFormField(
+                      onSaved:(value){
+                        newpassword = value!;
+                        },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a new password';
+                        }else{
+                          if (value.length < 6) {
+                            return "Password is too short (minimum is 6 characters)";
+                          }
+                        }
+                        return null;
+                      },
+                      obscureText: true,
+                      obscuringCharacter: "*",
+                      decoration: InputDecoration(
+                        hintText: "New Password",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        filled: true,
+                        fillColor: Colors.green[100],
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      filled: true,
-                      fillColor: Colors.grey[200],
                     ),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
+                    SizedBox(
+                      height: 50,
+                    ),
 
-                  //Buttons
-                  Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: Column(
+                    //===========>To confirm new password<================
+                    TextFormField(
+                      onSaved:(value){
+                        confirmpassword = value!;
+                        },
+                      validator: (value){
+                        if(value!.isEmpty)
+                        {return 'Please re-enter the new password';}
+                        if(newpassword!=confirmpassword){
+                          return "Password does not match";
+                        }
+                        return null;
+                      },
+                      obscureText: true,
+                      obscuringCharacter: "*",
+                      decoration: InputDecoration(
+                        hintText: 'Confirm Password',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        filled: true,
+                        fillColor: Colors.green[100],
+                      ),
+                    ),
+                    SizedBox(height: 40,),
+
+                    //Buttons
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
+                      child: Row(
                         children: [
                           button(
-                              text: 'Change Password',
-                              onPressed: () {
-                                if(_formkey.currentState!.validate())
-                                  {
-                                    print("successful");
-                                    return;
-                                  }else{
-                                    print("UnSuccessfull");
-                                  }
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) => LoginScreen()));
-                              },
-                              color: Colors.teal.shade900),
-                          SizedBox(
-                            height: 20,
+                            text: 'Cancel',
+                            color: Colors.red.shade900,
+                            onPressed: () {
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                builder: (context) => ProfilePage()
+                                )
+                              );
+                            }
                           ),
+                          SizedBox(width: 10,),
                           button(
-                              text: 'Cancel',
-                              color: Colors.red.shade900,
+                            color: Colors.teal.shade900,
+                            text: 'Save',
                               onPressed: () {
-                                Navigator.push(
-                                  context, 
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfilePage()));
-                              })
-                        ],
-                      ))
-                ],
-              ),
-            )),
-        )));
+                                
+                                if(_formkey.currentState!.validate() ){
+                                  //No error in validator
+                                  _formkey.currentState!.save();
+                                   _changePassword();
+                                 
+                                }   
+                              }, 
+                            ),
+                          ],
+                      )
+                    )
+                  ],
+                ),
+              )
+            ),
+          ),
+        )
+      )
+    );
   }
-  Widget button({
-    required String text,
-    required VoidCallback onPressed,
-    required Color color,
-  }) =>
-      Container(
-        height: 40,
-        width: 200,
-        child: ElevatedButton(
-            onPressed: onPressed,
-            child: Text(text),
-            style: ElevatedButton.styleFrom(
-              primary: color,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(15.0),
-              ),
-              onPrimary: Colors.white,
-              shadowColor: Colors.blueGrey,
-              elevation: 10,
-            )),
-      );
-}
-
-              // child: Column(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     SizedBox(
-              //       height: 15,
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.only(bottom: 15,left: 10,right: 10),
-              //       child: TextFormField(
-              //         controller: password,
-              //         keyboardType: TextInputType.text,
-              //         decoration:buildInputDecoration(Icons.lock,"Password"),
-                      
-              //         validator: (value){
-              //           if(value!.isEmpty)
-              //           {
-              //             return 'Please a Enter Password';
-              //           }
-              //           return null;
-              //         },
-              //       ),
-              //     ),
-              //     Padding(
-              //       padding: const EdgeInsets.only(bottom: 15,left: 10,right: 10),
-              //       child: TextFormField(
-              //         controller: confirmpassword,
-              //         obscureText: true,
-              //         keyboardType: TextInputType.text,
-              //         decoration:buildInputDecoration(Icons.lock,"Confirm Password"),
-              //         validator: (value){
-              //           if(value!.isEmpty)
-              //           {
-              //             return 'Please re-enter password';
-              //           }
-              //           print(password.text);
-              //           print(confirmpassword.text);
-              //           if(password.text!=confirmpassword.text){
-              //             return "Password does not match";
-              //           }
-              //           return null;
-              //         },
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: 200,
-              //       height: 50,
-              //       child: ElevatedButton(
-              //         style: ElevatedButton.styleFrom(
-              //           shape: RoundedRectangleBorder(
-              //             borderRadius: BorderRadius.circular(50.0),
-              //             side: BorderSide(color: Colors.blue,width: 2)
-              //         ),
-              //         //textColor:Colors.white,
-              //           primary: Colors.redAccent,
-              //         ),
-                      
-              //         onPressed: (){
-              //           if(_formkey.currentState!.validate())
-              //           {
-              //             print("successful");
-              //             return;
-              //           }else{
-              //             print("UnSuccessfull");
-              //           }
-              //         }, child: Text("Submit"),
-                      
-              //         ),
-              //     )
-              //   ],
-  //             // ),
-  //           ),
-  //         ),
-  //       ),
-  //     );
-    
-  // }
-//   InputDecoration buildInputDecoration(IconData icons,String hinttext) {
-//   return InputDecoration(
-//     hintText: hinttext,
-//     prefixIcon: Icon(icons),
-//     focusedBorder: OutlineInputBorder(
-//       borderRadius: BorderRadius.circular(25.0),
-//       borderSide: BorderSide(
-//           color: Colors.green,
-//           width: 1.5
-//       ),
-//     ),
-//     border: OutlineInputBorder(
-//       borderRadius: BorderRadius.circular(25.0),
-//       borderSide: BorderSide(
-//         color: Colors.blue,
-//         width: 1.5,
-//       ),
-//     ),
-//     enabledBorder:OutlineInputBorder(
-//       borderRadius: BorderRadius.circular(25.0),
-//       borderSide: BorderSide(
-//         color: Colors.blue,
-//         width: 1.5,
-//       ),
-//     ),
-//   );
-// }
-
-
-
-          
   
+ void _changePassword() async {
 
+   var firebaseUser =  FirebaseAuth.instance.currentUser;
+    String email =firebaseUser!.email.toString();print(email);
+
+    //pass the password here
+    String password = oldpassword;
+    String newPassword = newpassword;
+
+    try {
+      // ignore: unused_local_variable
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+      );
+      
+      firebaseUser.updatePassword(newPassword).then((_){
+        print("Successfully changed password");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Password has been changed, Please login with your new password'),)) ;
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (Route<dynamic> route) => false,
+        );
+      }).catchError((error){
+        print("Password can't be changed" + error.toString());
+        //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ypur old password is incorrect, Please enter your old password correctly'),)) ;
+      }
+    }
+  }
+}
+                    

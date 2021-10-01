@@ -25,16 +25,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
           },
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              physics: BouncingScrollPhysics(),
-              children: [const SizedBox(height: 30), EditPersonalInfoItem()],
-            ),
-          )
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/edit2.jpg'),
+            fit: BoxFit.fill)),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                physics: BouncingScrollPhysics(),
+                children: [
+                  const SizedBox(height: 30), 
+                  EditPersonalInfoItem()
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
