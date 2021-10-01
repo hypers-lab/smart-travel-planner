@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/Trip.dart';
-import 'package:smart_travel_planner/util/tripsdata.dart';
 import 'package:smart_travel_planner/widgets/search_bar.dart';
 import 'package:smart_travel_planner/widgets/verticle_trip_item.dart';
 

@@ -34,6 +34,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     await FirebaseFirestore.instance
         .collection("visitedInformation")
         .where("userId", isEqualTo: uid)
+        .limit(10)
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
