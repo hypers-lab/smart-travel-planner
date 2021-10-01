@@ -204,4 +204,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  //search results
+  buildVerticalSearchResultList() {
+    return Padding(
+      padding: EdgeInsets.all(20.0),
+      child: ListView.builder(
+        primary: false,
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: places.length,
+        itemBuilder: (BuildContext context, int index) {
+          TravelDestination place = places[index];
+          return VerticalPlaceItem(place);
+        },
+      ),
+    );
+  }
 }
