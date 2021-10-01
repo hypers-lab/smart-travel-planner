@@ -3,7 +3,6 @@ import 'package:smart_travel_planner/screens/ReviewsScreen.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
 import 'package:smart_travel_planner/screens/userProfile/profile.dart';
-import 'package:smart_travel_planner/screens/userProfile/travel_itinerary.dart';
 import 'HomeScreen.dart';
 import '../widgets/icon_badge.dart';
 

@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/screens/userProfile/travel_itinerary.dart';
 import 'package:smart_travel_planner/widgets/profile_menu_item.dart';
 import 'change_password.dart';
 import 'history.dart';

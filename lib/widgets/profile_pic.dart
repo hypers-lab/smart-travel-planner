@@ -24,7 +24,7 @@ class _ProfilePicState extends State<ProfilePic> {
 
   void initState() {
     super.initState();
-    asignimage();
+    //asignimage();
   }
   
 
@@ -65,20 +65,20 @@ class _ProfilePicState extends State<ProfilePic> {
         });
     }
 
-  asignimage()async{
-    var firebaseUser =  FirebaseAuth.instance.currentUser;
-      await FirebaseFirestore.instance
-        .collection('user_personal_information')
-        .doc(firebaseUser!.uid)
-        .get()
-        .then((value){
-          imgURL = value.get('img_url');
-          print(imgURL);
-          if (imgURL.isNotEmpty){
-            return image = Image.network(imgURL) as File? ;
-          }
-        }) ;
-  }
+  // asignimage()async{
+  //   var firebaseUser =  FirebaseAuth.instance.currentUser;
+  //     await FirebaseFirestore.instance
+  //       .collection('user_personal_information')
+  //       .doc(firebaseUser!.uid)
+  //       .get()
+  //       .then((value){
+  //         imgURL = value.get('img_url');
+  //         print(imgURL);
+  //         if (imgURL.isNotEmpty){
+  //           return image = Image.network(imgURL) as File? ;
+  //         }
+  //       }) ;
+  // }
   
   @override
   Widget build(BuildContext context) {

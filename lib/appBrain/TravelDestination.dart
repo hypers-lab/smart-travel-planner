@@ -35,42 +35,7 @@ class TravelDestination {
   String url;
   String introduction;
 
-  //data retrieve from firebase
-  static List<TravelDestination> getPlacesDetails() {
-    List<TravelDestination> places = [];
-    try {
-      FirebaseFirestore.instance
-          .collection("hotels")
-          .limit(10)
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          TravelDestination travelDestination = TravelDestination(
-              city: doc["city"],
-              placeId: doc["hotelId"],
-              placeName: doc["hotelName"],
-              mainPhotoUrl: doc["mainPhotoUrl"],
-              reviewScore: doc["reviewScore"].toString(),
-              reviewScoreWord: doc["reviewScoreWord"],
-              reviewText: doc["reviewText"],
-              description: doc["description"],
-              coordinates: doc["coordinates"],
-              checkin: doc["checkin"],
-              checkout: doc["checkout"],
-              address: doc["address"],
-              url: doc["url"],
-              introduction: doc["introduction"]);
-
-          //print("placeName:${travelDestination.placeName}, ");
-
-          places.add(travelDestination);
-        });
-      });
-    } catch (e) {
-      print("Data Fetch Error:$e");
-    }
-    return places;
-  }
+ 
 
   //get suggestions for a selected place
   static Future<List<TravelDestination>> getSuggestedPlacesFromModel(

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:smart_travel_planner/appBrain/user.dart';
 import 'package:smart_travel_planner/widgets/button.dart';
 import '../screens/userProfile/personal_info.dart';
 
@@ -20,15 +21,15 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   }
 // for send to the details to the server
   late String name;
-  late String phonenumber;
-  late String age;
+  late int phonenumber;
+  late int age;
   late String gender;
 
 //Recieve the details from server  
-  late String username;
-  late String userphonenumber;
-  late String userage;
-  late String usergender;
+  late String username = '';
+  late String userphonenumber = '';
+  late String userage = '';
+  late String usergender ;
   
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -40,7 +41,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         child: Column(
           children: [
             buildNameFormField(),
-            SizedBox(height: 30),
+            SizedBox(height: 45),
             buildAgeFormField(),
             SizedBox(height: 30),
             buildPhoneNumberFormField(),
@@ -87,7 +88,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   FormBuilderDropdown buildGenderFormField() {
     return FormBuilderDropdown(
       name: "gender",
-      initialValue: usergender,
+      //initialValue: usergender,
       onSaved: (value){
         gender = value!;
       },
@@ -118,8 +119,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for phone number
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
-      //controller: mycontroller,
-      initialValue: userphonenumber,
+      //initialValue: userphonenumber,
       validator: (value) {        
         if(value!.length < 10 && value.length > 0 ) {
           return "Phone number should have 10 numbers";
@@ -131,7 +131,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         }
       },
       onSaved: (value){
-        phonenumber = value!;
+        phonenumber = int.tryParse(value!)!;
       },
       keyboardType: TextInputType.phone,
       maxLength: 10,
@@ -162,7 +162,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   TextFormField buildNameFormField() {
     return TextFormField(
       keyboardType: TextInputType.text,
-      initialValue: username,
+      //initialValue: username,
       onSaved: (value){
         name = value!;
       },
@@ -196,6 +196,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for age
   TextFormField buildAgeFormField() {
     return TextFormField(
+      //initialValue: userage,
       validator: (value){
         var numValue = int.tryParse(value!);
         if (value.isNotEmpty && numValue!<6){
@@ -207,9 +208,8 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
           }
         }
       },
-      initialValue: userage,
       onSaved: (value){
-        age = value!;
+        age = int.tryParse(value!)!;
       },
       keyboardType: TextInputType.number,
       inputFormatters: <TextInputFormatter>[
@@ -257,17 +257,17 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
       .doc(( FirebaseAuth.instance.currentUser!).uid)
       .get()
       .then((value) {
-        setState(() {
-          username = value.data()!['name'];
-          //username = value.get('name');
-          userphonenumber = value.get('phone number').toString();
-          usergender = value.get('gender').toString();
-          userage = value.get('age').toString();
-        });
-         
-        // userage = value.data()!['age'];
-        // userphonenumber = value.data()!['phone number'];
-        // usergender = value.data()!['gender'];
+         UserDetails user = UserDetails(
+          name: value.get('name'), 
+          age: value.get('age'), 
+          gender: value.get('gender'), 
+          phonenumber: value.get('phone number'));
+              
+          username = user.name;
+          userage = user.age .toString() ;
+          userphonenumber = user.phonenumber .toString();
+          usergender = user.gender;
+        
       });print('Mine is $username,$userage,$userphonenumber,$usergender');
       return 'Fetching error';
   }  

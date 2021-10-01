@@ -1,6 +1,5 @@
-
-class User {
-  User(
+class UserDetails {
+  UserDetails(
       {required this.name,
       required this.age,
       required this.gender,
@@ -8,14 +7,8 @@ class User {
       });
 
   String name;
-  String age;
-  String phonenumber;
+  int age;
+  int phonenumber;
   String gender;
 
-  Map <String,dynamic> toJson()=>{
-    'name':name,
-    'age':age,
-    'gender':gender,
-    'phone number':phonenumber,
-  };
 }

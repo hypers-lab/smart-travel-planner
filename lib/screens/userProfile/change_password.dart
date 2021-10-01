@@ -227,7 +227,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       } else if (e.code == 'wrong-password') {
         print('Wrong password provided for that user.');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ypur old password is incorrect, Please enter your old password correctly'),)) ;
+          SnackBar(content: Text('Your old password is incorrect, Please enter your old password correctly'),)) ;
       }
     }
   }
