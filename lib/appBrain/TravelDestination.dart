@@ -111,7 +111,7 @@ class TravelDestination {
             url: doc.data()["url"],
             introduction: doc.data()["introduction"]);
 
-        print("placeName: ${travelDestination.placeName}");
+        //print("placeName: ${travelDestination.placeName}");
         travelDestinations.add(travelDestination);
       });
     });

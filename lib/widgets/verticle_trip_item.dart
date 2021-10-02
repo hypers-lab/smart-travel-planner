@@ -75,7 +75,7 @@ class VerticalTripItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Status: ${trip.status.toString()}",
+                        "Status: ${trip.status}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,

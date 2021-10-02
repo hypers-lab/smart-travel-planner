@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smart_travel_planner/util/tripsdata.dart';
 
 class Trip {
@@ -10,11 +11,11 @@ class Trip {
       required this.status});
 
   String tripName;
-  List<int> places;
+  List<dynamic> places;
   String image;
-  String date;
-  int userId;
-  int status;
+  DateTime date;
+  String userId;
+  String status;
 
   static List<Trip> getTripDetailsDummy() {
     print("Das");
@@ -26,7 +27,7 @@ class Trip {
             places: doc["places"],
             date: doc["date"],
             image: doc["image"],
-            status: doc["status"],
+            status: doc["status"] == 0 ? "Planned" : "Finished",
             userId: doc["userId"]);
         trips.add(trip);
         print(trip);

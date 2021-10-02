@@ -26,11 +26,11 @@ class _SearchBarState extends State<SearchBar> {
         value.substring(0, 1).toUpperCase() + value.substring(1);
 
     if (queryResultSet.length == 0 && value.length > 0) {
-      SearchService().searchByCity(value).then((querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          queryResultSet.add(doc.data());
-        });
-      });
+      // SearchService().searchByCity(value).then((querySnapshot) {
+      //   querySnapshot.docs.forEach((doc) {
+      //     queryResultSet.add(doc.data());
+      //   });
+      // });
     } else {
       tempSearchStore = [];
       queryResultSet.forEach((element) {
