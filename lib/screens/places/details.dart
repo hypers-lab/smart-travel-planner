@@ -12,6 +12,7 @@ import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:smart_travel_planner/widgets/trip_select_popup.dart';
 
 class Details extends StatefulWidget {
   static const String id = 'details';
@@ -157,6 +158,16 @@ class _DetailsState extends State<Details> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.add_box,
+              color: Colors.blue,
+              size: 24.0,
+            ),
+            onPressed: () {
+              _addTripPlan();
+            },
+          ),
           IconButton(
             icon: IconBadge(
               icon: Icons.notifications_none,
@@ -358,35 +369,15 @@ class _DetailsState extends State<Details> {
     );
   }
 
-  // buildSlider() {
-  //   List imageSliderUrls = [place.mainPhotoUrl];
-  //   return Container(
-  //     padding: EdgeInsets.only(left: 20),
-  //     height: 250.0,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       primary: false,
-  //       // ignore: unnecessary_null_comparison
-  //       itemCount: imageSliderUrls == null ? 0 : imageSliderUrls.length,
-  //       itemBuilder: (BuildContext context, int index) {
-  //         String imgUrl = imageSliderUrls[index];
-
-  //         return Padding(
-  //           padding: const EdgeInsets.all(10.0),
-  //           child: Container(
-  //             width: MediaQuery.of(context).size.width - 40.0,
-  //             height: 250.0,
-  //             decoration: new BoxDecoration(
-  //               borderRadius: new BorderRadius.circular(10.0),
-  //               image: new DecorationImage(
-  //                 image: new NetworkImage(place.mainPhotoUrl),
-  //                 fit: BoxFit.cover,
-  //               ),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
+  //dialog box for adding a trip
+  var tripNameController = TextEditingController();
+  Future<void> _addTripPlan() async {
+    return await showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return TripSelectPopUp(tripNameController: tripNameController);
+      },
+    );
+  }
 }

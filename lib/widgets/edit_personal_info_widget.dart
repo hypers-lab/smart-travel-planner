@@ -8,29 +8,28 @@ import 'package:smart_travel_planner/widgets/button.dart';
 import '../screens/userProfile/personal_info.dart';
 
 class EditPersonalInfoItem extends StatefulWidget {
-
   @override
   _EditPersonalInfoItemState createState() => _EditPersonalInfoItemState();
 }
 
 class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
-
   void initState() {
     super.initState();
-    getUserDetails();  
+    getUserDetails();
   }
+
 // for send to the details to the server
   late String name;
   late int phonenumber;
   late int age;
   late String gender;
 
-//Recieve the details from server  
+//Recieve the details from server
   late String username = '';
   late String userphonenumber = '';
   late String userage = '';
-  late String usergender ;
-  
+  late String usergender;
+
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
@@ -47,7 +46,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
             buildPhoneNumberFormField(),
             SizedBox(height: 30),
             buildGenderFormField(),
-            SizedBox(height:40),
+            SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
               child: Row(
@@ -57,21 +56,26 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
                       color: Colors.red.shade900,
                       onPressed: () {
                         Navigator.push(
-                          context, 
-                          MaterialPageRoute(builder: (context) => PersonalInfoScreen()));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PersonalInfoScreen()));
                       }),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   button(
                     text: 'Save',
                     color: Colors.teal.shade900,
                     onPressed: () {
-                      if(_formkey.currentState!.validate()){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('YOUR INFORMATIONS ARE SAVED'),)) ;
+                      if (_formkey.currentState!.validate()) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('YOUR INFORMATIONS ARE SAVED'),
+                        ));
                         _sendToServer();
                         Navigator.push(
-                          context, 
-                          MaterialPageRoute(builder: (context) => PersonalInfoScreen()));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PersonalInfoScreen()));
                       }
                     },
                   ),
@@ -89,7 +93,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     return FormBuilderDropdown(
       name: "gender",
       //initialValue: usergender,
-      onSaved: (value){
+      onSaved: (value) {
         gender = value!;
       },
       validator: (value) => value == null ? 'Select your gender' : null,
@@ -120,17 +124,16 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
       //initialValue: userphonenumber,
-      validator: (value) {        
-        if(value!.length < 10 && value.length > 0 ) {
+      validator: (value) {
+        if (value!.length < 10 && value.length > 0) {
           return "Phone number should have 10 numbers";
-        }
-        else{
-          if(value.isEmpty){
+        } else {
+          if (value.isEmpty) {
             return 'Please enter your phone number';
           }
         }
       },
-      onSaved: (value){
+      onSaved: (value) {
         phonenumber = int.tryParse(value!)!;
       },
       keyboardType: TextInputType.phone,
@@ -139,7 +142,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
         new LengthLimitingTextInputFormatter(10)
       ],
-            
+
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(),
@@ -153,7 +156,6 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         filled: true,
         fillColor: Colors.green[100],
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        
       ),
     );
   }
@@ -163,15 +165,14 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     return TextFormField(
       keyboardType: TextInputType.text,
       //initialValue: username,
-      onSaved: (value){
+      onSaved: (value) {
         name = value!;
       },
-      validator: (value) {        
-        if(value!.length >100 && value.isNotEmpty ) {
+      validator: (value) {
+        if (value!.length > 100 && value.isNotEmpty) {
           return "Enter a valid name";
-        }
-        else{
-          if(value.isEmpty){
+        } else {
+          if (value.isEmpty) {
             return 'Please enter you name';
           }
         }
@@ -197,18 +198,17 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   TextFormField buildAgeFormField() {
     return TextFormField(
       //initialValue: userage,
-      validator: (value){
+      validator: (value) {
         var numValue = int.tryParse(value!);
-        if (value.isNotEmpty && numValue!<6){
-           return "Age should be greater than 5";
-        } 
-        else{
-          if(value.isEmpty){
+        if (value.isNotEmpty && numValue! < 6) {
+          return "Age should be greater than 5";
+        } else {
+          if (value.isEmpty) {
             return 'Please enter your age';
           }
         }
       },
-      onSaved: (value){
+      onSaved: (value) {
         age = int.tryParse(value!)!;
       },
       keyboardType: TextInputType.number,
@@ -235,40 +235,41 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
 
   // to update the values to database
   _sendToServer() {
-    if (_formkey.currentState!.validate() ){
+    if (_formkey.currentState!.validate()) {
       //No error in validator
       _formkey.currentState!.save();
-      var firebaseUser =  FirebaseAuth.instance.currentUser;
+      var firebaseUser = FirebaseAuth.instance.currentUser;
       FirebaseFirestore.instance
-        .collection('user_personal_information')
-        .doc(firebaseUser!.uid).update({
-          'name':name,
-          'age':age,
-          'phone number':phonenumber,
-          'gender':gender
-        });
+          .collection('user_personal_information')
+          .doc(firebaseUser!.uid)
+          .update({
+        'name': name,
+        'age': age,
+        'phone number': phonenumber,
+        'gender': gender
+      });
     }
   }
 
   //get user info from database
-  Future getUserDetails () async{
+  Future getUserDetails() async {
     await FirebaseFirestore.instance
-      .collection('user_personal_information')
-      .doc(( FirebaseAuth.instance.currentUser!).uid)
-      .get()
-      .then((value) {
-         UserDetails user = UserDetails(
-          name: value.get('name'), 
-          age: value.get('age'), 
-          gender: value.get('gender'), 
+        .collection('user_personal_information')
+        .doc((FirebaseAuth.instance.currentUser!).uid)
+        .get()
+        .then((value) {
+      UserDetails user = UserDetails(
+          name: value.get('name'),
+          age: value.get('age'),
+          gender: value.get('gender'),
           phonenumber: value.get('phone number'));
-              
-          username = user.name;
-          userage = user.age .toString() ;
-          userphonenumber = user.phonenumber .toString();
-          usergender = user.gender;
-        
-      });print('Mine is $username,$userage,$userphonenumber,$usergender');
-      return 'Fetching error';
-  }  
+
+      username = user.name;
+      userage = user.age.toString();
+      userphonenumber = user.phonenumber.toString();
+      usergender = user.gender;
+    });
+    print('Mine is $username,$userage,$userphonenumber,$usergender');
+    return 'Fetching error';
+  }
 }
