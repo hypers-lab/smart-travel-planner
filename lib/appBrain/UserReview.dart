@@ -7,6 +7,6 @@ class UserReview {
 
   final int placeId;
   final String userId;
-  final double reviewScore;
+  final String reviewScore;
   final String comment;
 }

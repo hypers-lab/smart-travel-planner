@@ -24,12 +24,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
     getGroupsData();
   }
 
-  getGroupsData() {
+  //retrive data for categories
+  Future<void> getGroupsData() async {
     setState(() {
       isFetching = true;
     });
 
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection("hotels")
         .limit(10)
         .get()
