@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/appBrain/Trip.dart';
-import 'package:smart_travel_planner/screens/places/TripDetails.dart';
+import 'package:smart_travel_planner/screens/MainScreen.dart';
 
-class VerticalTripItem extends StatelessWidget {
-  final Trip trip;
+import '../screens/places/details.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 
-  VerticalTripItem(this.trip);
+import 'icon_badge.dart';
+
+class VerticalTripPlaceItem extends StatelessWidget {
+  final TravelDestination place;
+
+  VerticalTripPlaceItem(this.place);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class VerticalTripItem extends StatelessWidget {
               Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: Image.network("${trip.image}",
+                  child: Image.network("${place.mainPhotoUrl}",
                       height: 80.0, width: 80.0, fit: BoxFit.cover),
                 ),
               ),
@@ -35,7 +39,7 @@ class VerticalTripItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${trip.tripName}",
+                        "${place.placeName}",
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -49,7 +53,7 @@ class VerticalTripItem extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Icon(
-                          Icons.calendar_today,
+                          Icons.location_on,
                           size: 13.0,
                           color: Colors.blueGrey[300],
                         ),
@@ -58,7 +62,7 @@ class VerticalTripItem extends StatelessWidget {
                           width: MediaQuery.of(context).size.width - 200,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "${trip.date}",
+                            "${place.address}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -75,7 +79,7 @@ class VerticalTripItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Status: ${trip.status}",
+                        "Ratings: ${place.reviewScore}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
@@ -102,8 +106,8 @@ class VerticalTripItem extends StatelessWidget {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
-                return TripDetails(
-                  trip: trip,
+                return Details(
+                  place: place,
                 );
               },
             ),

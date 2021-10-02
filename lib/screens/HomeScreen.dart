@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isFetching = false;
+  bool isFetching = true;
   List<TravelDestination> places = [];
   late ScrollController _hotelScrollController;
   int loadMoreMsgs = 25; // at first it will load only 25

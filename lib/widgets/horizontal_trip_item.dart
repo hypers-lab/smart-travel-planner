@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/Trip.dart';
 import 'package:smart_travel_planner/screens/places/TripDetails.dart';
+import 'package:intl/intl.dart';
 
 class HorizontalTripItem extends StatelessWidget {
   final Trip trip;
 
   HorizontalTripItem(this.trip);
+
+  getCustomFormattedDateTime(String givenDateTime, String dateFormat) {
+    final DateTime docDateTime = DateTime.parse(givenDateTime);
+    return DateFormat(dateFormat).format(docDateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +49,33 @@ class HorizontalTripItem extends StatelessWidget {
               ),
               SizedBox(height: 3.0),
               Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  trip.date.toString(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13.0,
-                    color: Colors.blueGrey[300],
-                  ),
-                  maxLines: 1,
-                  textAlign: TextAlign.left,
+                width: 115,
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: 80,
+                      child: Text(
+                        getCustomFormattedDateTime(
+                            trip.date.toString(), 'yyyy-MM-dd'),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13.0,
+                          color: Colors.blueGrey[300],
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Container(
+                      width: 35,
+                      child: IconButton(
+                        icon: Icon(Icons.add_circle_outline),
+                        color: Colors.blue,
+                        iconSize: 20,
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

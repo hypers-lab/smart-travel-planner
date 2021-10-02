@@ -14,7 +14,7 @@ class IteneraryScreen extends StatefulWidget {
 }
 
 class _IteneraryScreenState extends State<IteneraryScreen> {
-  bool isFetching = false;
+  bool isFetching = true;
   bool isDataExist = true;
   //final List<Trip> _trips = Trip.getTripDetailsDummy();
   List<Trip> trips = [];

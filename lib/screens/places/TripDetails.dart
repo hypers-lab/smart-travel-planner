@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/Trip.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
 import 'package:smart_travel_planner/widgets/vertical_place_item.dart';
+import 'package:smart_travel_planner/widgets/vertical_trip_place_item.dart';
 import '../../widgets/horizontal_place_item.dart';
 import '../../widgets/search_bar.dart';
 import '../../widgets/vertical_place_item.dart';
@@ -130,7 +131,7 @@ class _TripDetailsState extends State<TripDetails> {
         itemCount: places.length,
         itemBuilder: (BuildContext context, int index) {
           TravelDestination place = places[index];
-          return VerticalPlaceItem(place);
+          return VerticalTripPlaceItem(place);
         },
       ),
     );
