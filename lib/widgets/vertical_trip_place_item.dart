@@ -17,10 +17,10 @@ class VerticalTripPlaceItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15.0),
       child: InkWell(
         child: Container(
-          height: 70.0,
           child: Row(
             children: <Widget>[
-              Flexible(
+              Container(
+                width: MediaQuery.of(context).size.width - 320.0,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image.network("${place.mainPhotoUrl}",
@@ -29,18 +29,19 @@ class VerticalTripPlaceItem extends StatelessWidget {
               ),
               SizedBox(width: 15.0),
               Container(
-                height: 80.0,
-                width: MediaQuery.of(context).size.width - 170.0,
+                width: 210,
                 child: ListView(
                   primary: false,
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   children: <Widget>[
                     Container(
+                      width: 200,
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "${place.placeName}",
                         overflow: TextOverflow.ellipsis,
+                        softWrap: false,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16.0,
@@ -77,26 +78,41 @@ class VerticalTripPlaceItem extends StatelessWidget {
                     ),
                     SizedBox(height: 5.0),
                     Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Ratings: ${place.reviewScore}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.0,
-                        ),
-                        maxLines: 1,
-                        textAlign: TextAlign.left,
+                      width: 100,
+                      child: Row(
+                        children: <Widget>[
+                          Transform.scale(
+                            scale: 0.8,
+                            child: IconButton(
+                              padding: new EdgeInsets.all(0.0),
+                              icon: Icon(Icons.arrow_upward),
+                              color: Colors.red,
+                              iconSize: 25,
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(height: 5.0),
+                          Transform.scale(
+                            scale: 0.8,
+                            child: IconButton(
+                              padding: new EdgeInsets.all(0.0),
+                              icon: Icon(Icons.arrow_downward),
+                              color: Colors.red,
+                              iconSize: 25,
+                              onPressed: () {},
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              Container(
-                child: IconButton(
-                  icon: Icon(Icons.delete),
-                  color: Colors.red,
-                  onPressed: () {},
-                ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                color: Colors.red,
+                iconSize: 20,
+                onPressed: () {},
               ),
             ],
           ),

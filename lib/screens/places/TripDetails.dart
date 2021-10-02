@@ -87,15 +87,11 @@ class _TripDetailsState extends State<TripDetails> {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: IconBadge(
-              icon: Icons.login,
-              color: Colors.amber,
-              size: 24.0,
-            ),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MainScreen()));
-            },
+            padding: new EdgeInsets.all(0.0),
+            icon: Icon(Icons.check_outlined),
+            color: Colors.green,
+            iconSize: 25,
+            onPressed: () {},
           ),
         ],
       ),
