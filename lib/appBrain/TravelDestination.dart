@@ -56,7 +56,7 @@ class TravelDestination {
     final String docID = uid + this.placeId.toString();
 
     final userReview = UserReview(
-        placeId: this.placeId, userId: uid, reviewScore: 0.0, comment: "");
+        placeId: this.placeId, userId: uid, reviewScore: '0.0', comment: "");
 
     FirebaseFirestore.instance
         .collection("visitedInformation")
@@ -73,111 +73,14 @@ class TravelDestination {
     final userReview = UserReview(
         placeId: this.placeId,
         userId: uid,
-        reviewScore: reviewScore,
+        reviewScore: reviewScore.toString(),
         comment: comment);
 
     FirebaseFirestore.instance.collection("visitedInformation").doc(docID).set({
-      "reviewScore": userReview.reviewScore,
+      "reviewScore": double.parse(userReview.reviewScore),
       "placeId": userReview.placeId,
       "comment": userReview.comment,
       "userId": userReview.userId
     });
-  }
-
-  //search a place using its id
-  static TravelDestination getPlaceById(int placeId) {
-    List<TravelDestination> travelDestinations = [];
-
-    FirebaseFirestore.instance
-        .collection("hotels")
-        .where("hotelId", isEqualTo: placeId)
-        .limit(1)
-        .get()
-        .then((querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        TravelDestination travelDestination = TravelDestination(
-            city: doc.data()["city"],
-            placeId: doc.data()["hotelId"],
-            placeName: doc.data()["hotelName"],
-            mainPhotoUrl: doc.data()["mainPhotoUrl"],
-            reviewScore: doc.data()["reviewScore"].toString(),
-            reviewScoreWord: doc.data()["reviewScoreWord"],
-            reviewText: doc.data()["reviewText"],
-            description: doc.data()["description"],
-            coordinates: doc.data()["coordinates"],
-            checkin: doc.data()["checkin"],
-            checkout: doc.data()["checkout"],
-            address: doc.data()["address"],
-            url: doc.data()["url"],
-            introduction: doc.data()["introduction"]);
-
-        print("placeName: ${travelDestination.placeName}");
-        travelDestinations.add(travelDestination);
-      });
-    });
-    return travelDestinations[0];
-  }
-
-  //data retrieve from firebase
-  static List<TravelDestination> getPlacesDetails() {
-    List<TravelDestination> places = [];
-    try {
-      FirebaseFirestore.instance
-          .collection("hotels")
-          .limit(10)
-          .get()
-          .then((QuerySnapshot querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          TravelDestination travelDestination = TravelDestination(
-              city: doc["city"],
-              placeId: doc["hotelId"],
-              placeName: doc["hotelName"],
-              mainPhotoUrl: doc["mainPhotoUrl"],
-              reviewScore: doc["reviewScore"].toString(),
-              reviewScoreWord: doc["reviewScoreWord"],
-              reviewText: doc["reviewText"],
-              description: doc["description"],
-              coordinates: doc["coordinates"],
-              checkin: doc["checkin"],
-              checkout: doc["checkout"],
-              address: doc["address"],
-              url: doc["url"],
-              introduction: doc["introduction"]);
-          places.add(travelDestination);
-        });
-      });
-    } catch (e) {
-      print("Data Fetch Error:$e");
-    }
-    return places;
-  }
-
-  //dummy data taking
-  static List<TravelDestination> getPlacesDetailsDummy() {
-    List<TravelDestination> places = [];
-    try {
-      hotelsdata.forEach((doc) {
-        TravelDestination travelDestination = TravelDestination(
-            city: doc["city"],
-            placeId: doc["hotelId"],
-            placeName: doc["hotelName"],
-            mainPhotoUrl: doc["mainPhotoUrl"],
-            reviewScore: doc["reviewScore"].toString(),
-            reviewScoreWord: doc["reviewScoreWord"],
-            reviewText: doc["reviewText"],
-            description: doc["description"],
-            coordinates: doc["coordinates"],
-            checkin: doc["checkin"],
-            checkout: doc["checkout"],
-            address: doc["address"],
-            url: doc["url"],
-            introduction: doc["introduction"]);
-
-        places.add(travelDestination);
-      });
-    } catch (e) {
-      print("Data Fetch Error:$e");
-    }
-    return places;
   }
 }

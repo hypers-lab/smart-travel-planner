@@ -94,15 +94,6 @@ class _MapViewScreenState extends State<MapViewScreen> {
 
         print('Current Location: $_currentPosition');
 
-        // For moving the camera to current location
-        // mapController.animateCamera(
-        //   CameraUpdate.newCameraPosition(
-        //     CameraPosition(
-        //       target: LatLng(position.latitude, position.longitude),
-        //       zoom: 15.0,
-        //     ),
-        //   ),
-        // );
         _setStartMarker();
       });
     }).catchError((e) {
@@ -311,9 +302,9 @@ class _MapViewScreenState extends State<MapViewScreen> {
                   children: <Widget>[
                     ClipOval(
                       child: Material(
-                        color: Colors.blue[100], // button color
+                        color: Colors.blue[100],
                         child: InkWell(
-                          splashColor: Colors.blue, // inkwell color
+                          splashColor: Colors.blue,
                           child: SizedBox(
                             width: 50,
                             height: 50,
@@ -330,9 +321,9 @@ class _MapViewScreenState extends State<MapViewScreen> {
                     SizedBox(height: 20),
                     ClipOval(
                       child: Material(
-                        color: Colors.blue[100], // button color
+                        color: Colors.blue[100],
                         child: InkWell(
-                          splashColor: Colors.blue, // inkwell color
+                          splashColor: Colors.blue,
                           child: SizedBox(
                             width: 50,
                             height: 50,
@@ -359,9 +350,9 @@ class _MapViewScreenState extends State<MapViewScreen> {
                     children: <Widget>[
                       ClipOval(
                         child: Material(
-                          color: Colors.orange[100], // button color
+                          color: Colors.orange[100],
                           child: InkWell(
-                            splashColor: Colors.orange, // inkwell color
+                            splashColor: Colors.orange,
                             child: SizedBox(
                               width: 56,
                               height: 56,
@@ -388,9 +379,9 @@ class _MapViewScreenState extends State<MapViewScreen> {
                       SizedBox(height: 10),
                       ClipOval(
                         child: Material(
-                          color: Colors.orange[100], // button color
+                          color: Colors.orange[100],
                           child: InkWell(
-                            splashColor: Colors.orange, // inkwell color
+                            splashColor: Colors.orange,
                             child: SizedBox(
                               width: 56,
                               height: 56,
@@ -418,7 +409,7 @@ class _MapViewScreenState extends State<MapViewScreen> {
                 ),
               ),
             ),
-
+            //display distance
             SafeArea(
               child: Align(
                 alignment: Alignment.bottomCenter,

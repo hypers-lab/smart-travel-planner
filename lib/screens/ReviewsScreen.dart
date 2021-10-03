@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smart_travel_planner/appBrain/PlaceReview.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/appBrain/UserReview.dart';
@@ -25,7 +24,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   //retrive data of particular user's reviews
-  getReviewData() async {
+  Future<void> getReviewData() async {
     setState(() {
       isFetching = true;
     });
@@ -42,7 +41,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         UserReview userReview = UserReview(
             placeId: doc["placeId"],
             userId: uid,
-            reviewScore: doc["reviewScore"],
+            reviewScore: doc["reviewScore"].toString(),
             comment: doc["comment"]);
 
         userReviewsData.add(userReview);
@@ -79,14 +78,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
               "placeName and City: ${reviewNplace.travelDestination.city},${reviewNplace.travelDestination.placeName} ");
 
           reviewData.add(reviewNplace);
+          setState(() {
+            isFetching = false;
+          });
         });
       });
     }
-
-    setState(() {
-      (reviewData.isNotEmpty) ? isFetching = false : isFetching = true;
-      //isFetching = true;
-    });
   }
 
   @override
@@ -114,10 +111,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
     );
   }
 
-  //vertical list reviews
+  //vertical list of reviews
   buildVerticalList(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(10.0),
       child: ListView.builder(
         primary: false,
         physics: NeverScrollableScrollPhysics(),

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smart_travel_planner/appBrain/PlaceReview.dart';
+import 'package:smart_travel_planner/screens/places/details.dart';
 
 class ReviewListTile extends StatelessWidget {
   const ReviewListTile(this.placeReview);
@@ -26,7 +27,21 @@ class ReviewListTile extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[500])),
             Row(
               children: [
-                Icon(Icons.location_city),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return Details(
+                            place: placeReview.travelDestination,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.location_city),
+                  splashColor: Colors.yellow,
+                ),
                 Text(placeReview.travelDestination.placeName), //place name
               ],
             ),
@@ -36,7 +51,8 @@ class ReviewListTile extends StatelessWidget {
                 children: [
                   RatingBar.builder(
                     itemSize: 25,
-                    initialRating: placeReview.userReview.reviewScore, //rating
+                    initialRating: double.parse(
+                        placeReview.userReview.reviewScore), //rating
                     minRating: 1,
                     direction: Axis.horizontal,
                     allowHalfRating: true,
@@ -54,7 +70,7 @@ class ReviewListTile extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        placeReview.userReview.reviewScore.toString(), //rating
+                        placeReview.userReview.reviewScore, //rating
                         style: TextStyle(
                             color: Colors.blue, fontWeight: FontWeight.bold),
                       ),

@@ -92,6 +92,7 @@ class _DetailsState extends State<Details> {
     getGroupsData();
   }
 
+  //retrive places similar to selected place from the model
   Future<void> getGroupsData() async {
     setState(() {
       isFetching = true;
@@ -102,14 +103,12 @@ class _DetailsState extends State<Details> {
             place.placeId.toString();
     var url = Uri.parse(urlName);
     var response = await http.get(url);
-    //print(response);
 
     if (response.statusCode == 200) {
       var jsonResponse =
           convert.jsonDecode(response.body) as Map<String, dynamic>;
       var suggestPlacesIds =
           jsonResponse['recommended_hotels'].toSet().toList();
-      //print(suggestPlacesIds);
 
       for (var i = 0; i < 10; i++) {
         FirebaseFirestore.instance
@@ -135,7 +134,6 @@ class _DetailsState extends State<Details> {
                 url: result.data()["url"],
                 introduction: result.data()["introduction"]);
 
-            //print(doc['hotelId']);
             suggestedPlaces.add(travelDestination);
             setState(() {
               isFetching = false;
@@ -172,7 +170,20 @@ class _DetailsState extends State<Details> {
       body: ListView(
         children: <Widget>[
           SizedBox(height: 10.0),
-          buildSlider(),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+              width: MediaQuery.of(context).size.width - 40.0,
+              height: 250.0,
+              decoration: new BoxDecoration(
+                borderRadius: new BorderRadius.circular(10.0),
+                image: new DecorationImage(
+                  image: new NetworkImage(place.mainPhotoUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
           SizedBox(height: 20),
           ListView(
             padding: EdgeInsets.symmetric(horizontal: 20),
@@ -347,35 +358,35 @@ class _DetailsState extends State<Details> {
     );
   }
 
-  buildSlider() {
-    List imageSliderUrls = [place.mainPhotoUrl];
-    return Container(
-      padding: EdgeInsets.only(left: 20),
-      height: 250.0,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        primary: false,
-        // ignore: unnecessary_null_comparison
-        itemCount: imageSliderUrls == null ? 0 : imageSliderUrls.length,
-        itemBuilder: (BuildContext context, int index) {
-          String imgUrl = imageSliderUrls[index];
+  // buildSlider() {
+  //   List imageSliderUrls = [place.mainPhotoUrl];
+  //   return Container(
+  //     padding: EdgeInsets.only(left: 20),
+  //     height: 250.0,
+  //     child: ListView.builder(
+  //       scrollDirection: Axis.horizontal,
+  //       primary: false,
+  //       // ignore: unnecessary_null_comparison
+  //       itemCount: imageSliderUrls == null ? 0 : imageSliderUrls.length,
+  //       itemBuilder: (BuildContext context, int index) {
+  //         String imgUrl = imageSliderUrls[index];
 
-          return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Container(
-              width: MediaQuery.of(context).size.width - 40.0,
-              height: 250.0,
-              decoration: new BoxDecoration(
-                borderRadius: new BorderRadius.circular(10.0),
-                image: new DecorationImage(
-                  image: new NetworkImage(place.mainPhotoUrl),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  //         return Padding(
+  //           padding: const EdgeInsets.all(10.0),
+  //           child: Container(
+  //             width: MediaQuery.of(context).size.width - 40.0,
+  //             height: 250.0,
+  //             decoration: new BoxDecoration(
+  //               borderRadius: new BorderRadius.circular(10.0),
+  //               image: new DecorationImage(
+  //                 image: new NetworkImage(place.mainPhotoUrl),
+  //                 fit: BoxFit.cover,
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 }

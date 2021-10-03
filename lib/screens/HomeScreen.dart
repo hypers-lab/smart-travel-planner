@@ -167,8 +167,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                       ),
-                //buildHorizontalList(context),
-                //buildVerticalList(),
               ],
             );
           }),
@@ -193,23 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   buildVerticalList() {
-    return Padding(
-      padding: EdgeInsets.all(20.0),
-      child: ListView.builder(
-        primary: false,
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: places.length,
-        itemBuilder: (BuildContext context, int index) {
-          TravelDestination place = places[index];
-          return VerticalPlaceItem(place);
-        },
-      ),
-    );
-  }
-
-  //search results
-  buildVerticalSearchResultList() {
     return Padding(
       padding: EdgeInsets.all(20.0),
       child: ListView.builder(
