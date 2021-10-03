@@ -29,6 +29,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     setState(() {
       isFetching = true;
     });
+    
     await FirebaseFirestore.instance
       .collection('user_personal_information')
       .doc(( FirebaseAuth.instance.currentUser!).uid)
