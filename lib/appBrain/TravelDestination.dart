@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smart_travel_planner/appBrain/UserReview.dart';
-import 'package:smart_travel_planner/util/hoteldata.dart';
 
 class TravelDestination {
   TravelDestination(
