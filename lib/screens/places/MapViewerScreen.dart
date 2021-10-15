@@ -26,8 +26,8 @@ class _MapViewScreenState extends State<MapViewScreen> {
   // Initial location of the Map view
   late PlaceLocation place_coo = widget.place;
   late String _placeName = place_coo.placeName;
-  late double _lat = place_coo.setLatnLong()[0];
-  late double _long = place_coo.setLatnLong()[1];
+  late double _lat = place_coo.latitude;
+  late double _long = place_coo.longitude;
   late LatLng _center = LatLng(_lat, _long);
   late CameraPosition _initialLocation =
       CameraPosition(target: _center, zoom: 15.0);

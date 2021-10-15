@@ -1,8 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_place/google_place.dart';
 import 'package:smart_travel_planner/appBrain/PlaceReview.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/appBrain/UserReview.dart';
+import 'package:smart_travel_planner/appBrain/placeInformation.dart';
+import 'package:smart_travel_planner/util/const.dart';
 import 'package:smart_travel_planner/widgets/reviewlist_tile.dart';
 
 class ReviewScreen extends StatefulWidget {
@@ -17,6 +23,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
   List<PlaceReview> reviewData = [];
   List<UserReview> userReviewsData = [];
 
+  var googlePlace = GooglePlace(GOOGLE_API_KEY);
+
   @override
   void initState() {
     super.initState();
@@ -29,61 +37,62 @@ class _ReviewScreenState extends State<ReviewScreen> {
       isFetching = true;
     });
 
-    final String uid = TravelDestination.getCurrentUserId();
-
     await FirebaseFirestore.instance
-        .collection("visitedInformation")
-        .where("userId", isEqualTo: uid)
+        .collection("visitedPlaces")
+        .where("reviewScore", isNotEqualTo: 0.0)
         .limit(10)
         .get()
         .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        UserReview userReview = UserReview(
+      querySnapshot.docs.forEach((doc) async {
+        print(doc["placeName"]);
+
+        TravelDestination travelDestination = TravelDestination(
+            businessStatus: doc["businessStatus"],
             placeId: doc["placeId"],
-            userId: uid,
+            placeName: doc["placeName"],
+            photoReference: doc["photoReference"],
+            rating: doc["rating"],
+            userRatingsTotal: doc["userRatingsTotal"],
+            latitude: doc["latitude"],
+            longitude: doc["longitude"],
+            description: doc["description"],
+            openStatus: doc["openStatus"],
+            address: doc["address"]);
+
+        UserReview userReview = UserReview(
+            userId: doc["userId"],
             reviewScore: doc["reviewScore"].toString(),
             comment: doc["comment"]);
 
-        userReviewsData.add(userReview);
-      });
-    });
+        //default image
+        Uint8List image =
+            (await rootBundle.load('assets/default_place_image.jpg'))
+                .buffer
+                .asUint8List();
 
-    for (var userReview in userReviewsData) {
-      await FirebaseFirestore.instance
-          .collection("hotels")
-          .where("hotelId", isEqualTo: userReview.placeId)
-          .limit(1)
-          .get()
-          .then((querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          TravelDestination travelDestination = TravelDestination(
-              city: doc.data()["city"],
-              placeId: doc.data()["hotelId"],
-              placeName: doc.data()["hotelName"],
-              mainPhotoUrl: doc.data()["mainPhotoUrl"],
-              reviewScore: doc.data()["reviewScore"].toString(),
-              reviewScoreWord: doc.data()["reviewScoreWord"],
-              reviewText: doc.data()["reviewText"],
-              description: doc.data()["description"],
-              coordinates: doc.data()["coordinates"],
-              checkin: doc.data()["checkin"],
-              checkout: doc.data()["checkout"],
-              address: doc.data()["address"],
-              url: doc.data()["url"],
-              introduction: doc.data()["introduction"]);
+        var imageResult = await this
+            .googlePlace
+            .photos
+            .get(travelDestination.photoReference, 0, 400);
+        if (imageResult != null) {
+          image = imageResult;
+        }
 
-          PlaceReview reviewNplace = PlaceReview(travelDestination, userReview);
+        PlaceInformation placeInformation =
+            PlaceInformation(travelDestination, image);
 
-          print(
-              "placeName and City: ${reviewNplace.travelDestination.city},${reviewNplace.travelDestination.placeName} ");
+        PlaceReview reviewNplace = PlaceReview(placeInformation, userReview);
 
-          reviewData.add(reviewNplace);
-          setState(() {
-            isFetching = false;
-          });
+        print(
+            "placeName and City: ${reviewNplace.place.travelDestination.placeName}");
+
+        reviewData.add(reviewNplace);
+
+        setState(() {
+          isFetching = false;
         });
       });
-    }
+    });
   }
 
   @override

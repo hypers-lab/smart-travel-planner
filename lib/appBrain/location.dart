@@ -1,12 +1,10 @@
 class PlaceLocation {
-  PlaceLocation({required this.coordinates, required this.placeName});
+  PlaceLocation(
+      {required this.latitude,
+      required this.longitude,
+      required this.placeName});
 
-  String coordinates;
+  double latitude;
+  double longitude;
   String placeName;
-
-  List setLatnLong() {
-    List<String> coo = this.coordinates.split(',');
-    List<double> latNlong = [double.parse(coo[0]), double.parse(coo[1])];
-    return latNlong;
-  }
 }
