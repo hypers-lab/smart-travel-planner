@@ -158,10 +158,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   List<DropdownMenuItem<String>> get dropdownItems {
     List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("restaurant"), value: "restaurant"),
-      DropdownMenuItem(child: Text("cafe"), value: "cafe"),
-      DropdownMenuItem(child: Text("spa"), value: "spa"),
-      DropdownMenuItem(child: Text("gym"), value: "gym"),
+      DropdownMenuItem(child: Text("Library"), value: "library"),
+      DropdownMenuItem(
+          child: Text("Government Office"), value: "local_government_office"),
+      DropdownMenuItem(child: Text("Banks"), value: "bank"),
+      DropdownMenuItem(child: Text("Lodging"), value: "lodging"),
+      DropdownMenuItem(child: Text("Beauty Salon"), value: "beauty_salon"),
+      DropdownMenuItem(child: Text("Movie Theater"), value: "movie_theater"),
+      DropdownMenuItem(child: Text("Cafe"), value: "cafe"),
+      DropdownMenuItem(child: Text("Museum"), value: "museum"),
+      DropdownMenuItem(child: Text("Night Club"), value: "night_club"),
+      DropdownMenuItem(child: Text("Park"), value: "park"),
+      DropdownMenuItem(child: Text("Clothing Store"), value: "clothing_store"),
+      DropdownMenuItem(child: Text("Restaurant"), value: "restaurant"),
+      DropdownMenuItem(child: Text("Spa"), value: "spa"),
+      DropdownMenuItem(child: Text("Supermarkets"), value: "supermarket"),
+      DropdownMenuItem(
+          child: Text("Tourist Attractions"), value: "tourist_attraction"),
+      DropdownMenuItem(child: Text("Laundry"), value: "laundry"),
+      DropdownMenuItem(child: Text("Hardware Stores"), value: "hardware_store"),
+      DropdownMenuItem(child: Text("Storage"), value: "storage"),
+      DropdownMenuItem(child: Text("Temples"), value: "hindu_temple"),
     ];
     return menuItems;
   }
@@ -194,6 +211,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedValue = newValue!;
+                    getNearbyPlacesDataBasedOnCategory(selectedValue);
                   });
                 },
                 items: dropdownItems),

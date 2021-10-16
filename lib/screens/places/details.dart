@@ -191,7 +191,7 @@ class _DetailsState extends State<Details> {
             child: Flexible(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.memory(place.image, fit: BoxFit.cover),
+                child: Image.memory(place.image, fit: BoxFit.fill),
               ),
             ),
           ),
