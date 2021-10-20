@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -6,7 +5,6 @@ import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
-import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
@@ -33,11 +31,10 @@ class _DetailsState extends State<Details> {
   void _showRatingAppDialog() {
     Navigator.pop(context);
     final _ratingDialog = RatingDialog(
-      ratingColor: Colors.amber,
-      title: 'Rate Travel Place',
-      message: 'Rating the place and tell others what you think.'
-          ' Add a comment if you want.',
-      submitButton: 'Submit',
+      title: Text('Rate Travel Place'),
+      message: Text('Rating the place and tell others what you think.'
+          ' Add a comment if you want.'),
+      submitButtonText: 'Submit',
       onCancelled: () => print('cancelled'),
       onSubmitted: (response) {
         print('rating: ${response.rating}, comment: ${response.comment}');

@@ -41,7 +41,7 @@ class TravelDestination {
     return "";
   }
 
-  //store places visited information
+  //store visited place information
   void markPlaceAsVisited() {
     final String uid = getCurrentUserId();
 

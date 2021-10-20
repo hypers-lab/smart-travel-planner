@@ -158,8 +158,11 @@ class _HomePageState extends State<HomePage> {
       isFetchingHistory = true;
     });
 
+    final String uid = TravelDestination.getCurrentUserId();
+
     await FirebaseFirestore.instance
         .collection("visitedPlaces")
+        .where("userId", isEqualTo: uid)
         .limit(10)
         .get()
         .then((QuerySnapshot querySnapshot) {

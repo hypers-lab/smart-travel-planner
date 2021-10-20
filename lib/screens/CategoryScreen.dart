@@ -1,6 +1,4 @@
 import 'dart:typed_data';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -8,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart';
 import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 import 'package:smart_travel_planner/util/const.dart';
-import 'package:smart_travel_planner/widgets/category_button_widget.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 

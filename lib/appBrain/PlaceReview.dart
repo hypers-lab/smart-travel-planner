@@ -1,4 +1,3 @@
-import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/appBrain/UserReview.dart';
 import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 
