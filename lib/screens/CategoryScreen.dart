@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 import 'package:smart_travel_planner/util/const.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:http/http.dart' as http;
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -78,6 +80,32 @@ class _CategoryScreenState extends State<CategoryScreen> {
               longitude = location.lng;
             }
           }
+
+          var weatherDetails = [];
+          if (geometry != null) {
+            location = geometry.location;
+            if (location != null) {
+              latitude = location.lat;
+              longitude = location.lng;
+
+              //weather details
+              String urlName =
+                  "https://api.openweathermap.org/data/2.5/weather?lat=" +
+                      latitude.toString() +
+                      "&lon=" +
+                      longitude.toString() +
+                      "&appid=a47323fec912e74eeecd6507fb739b9d";
+              var url = Uri.parse(urlName);
+              var response = await http.get(url);
+
+              if (response.statusCode == 200) {
+                var jsonResponse = jsonDecode(response.body);
+                weatherDetails = jsonResponse['weather'].toSet().toList();
+                print(weatherDetails);
+              }
+            }
+          }
+
           var placeName = placeInfo.name;
           var openingHours = placeInfo.openingHours;
           var openStatus;
@@ -110,7 +138,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               longitude: longitude,
               description: description.toString(),
               openStatus: openStatus.toString(),
-              address: address.toString());
+              address: address.toString(),
+              weather: weatherDetails);
 
           //default image
           Uint8List image =

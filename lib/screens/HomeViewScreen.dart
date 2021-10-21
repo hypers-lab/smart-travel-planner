@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,7 @@ import 'package:smart_travel_planner/util/const.dart';
 import '../widgets/horizontal_place_item.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -80,6 +82,32 @@ class _HomePageState extends State<HomePage> {
               longitude = location.lng;
             }
           }
+
+          var weatherDetails = [];
+          if (geometry != null) {
+            location = geometry.location;
+            if (location != null) {
+              latitude = location.lat;
+              longitude = location.lng;
+
+              //weather details
+              String urlName =
+                  "https://api.openweathermap.org/data/2.5/weather?lat=" +
+                      latitude.toString() +
+                      "&lon=" +
+                      longitude.toString() +
+                      "&appid=a47323fec912e74eeecd6507fb739b9d";
+              var url = Uri.parse(urlName);
+              var response = await http.get(url);
+
+              if (response.statusCode == 200) {
+                var jsonResponse = jsonDecode(response.body);
+                weatherDetails = jsonResponse['weather'].toSet().toList();
+                print(weatherDetails);
+              }
+            }
+          }
+
           var placeName = placeInfo.name;
           var openingHours = placeInfo.openingHours;
           var openStatus;
@@ -112,7 +140,8 @@ class _HomePageState extends State<HomePage> {
               longitude: longitude,
               description: description.toString(),
               openStatus: openStatus.toString(),
-              address: address.toString());
+              address: address.toString(),
+              weather: weatherDetails);
 
           //default image
           Uint8List image =
@@ -168,6 +197,24 @@ class _HomePageState extends State<HomePage> {
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
         print(doc["placeName"]);
+
+        //weather details
+        // String urlName =
+        //     "https://api.openweathermap.org/data/2.5/weather?lat=" +
+        //         doc["latitude"] +
+        //         "&lon=" +
+        //         doc["longitude"] +
+        //         "&appid=a47323fec912e74eeecd6507fb739b9d";
+        // var url = Uri.parse(urlName);
+        // var response = await http.get(url);
+
+        // var weatherDetails = [];
+        // if (response.statusCode == 200) {
+        //   var jsonResponse = jsonDecode(response.body);
+        //   weatherDetails = jsonResponse['weather'].toSet().toList();
+        //   print(weatherDetails);
+        // }
+
         TravelDestination travelDestination = TravelDestination(
             businessStatus: doc["businessStatus"],
             placeId: doc["placeId"],
@@ -179,7 +226,8 @@ class _HomePageState extends State<HomePage> {
             longitude: doc["longitude"],
             description: doc["description"],
             openStatus: doc["openStatus"],
-            address: doc["address"]);
+            address: doc["address"],
+            weather: []);
 
         //default image
         Uint8List image =

@@ -19,7 +19,8 @@ void main() {
           longitude: 79.86821929999999,
           description: "H. R. Jothipala Mw., Colombo",
           openStatus: "false",
-          address: "WVJ9+V7 Colombo, Sri Lanka");
+          address: "WVJ9+V7 Colombo, Sri Lanka",
+          weather: null);
 
       List<int> list = 'SampleImage'.codeUnits;
       Uint8List image = Uint8List.fromList(list);

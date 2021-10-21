@@ -57,7 +57,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
             longitude: doc["longitude"],
             description: doc["description"],
             openStatus: doc["openStatus"],
-            address: doc["address"]);
+            address: doc["address"],
+            weather: null);
 
         UserReview userReview = UserReview(
             userId: doc["userId"],

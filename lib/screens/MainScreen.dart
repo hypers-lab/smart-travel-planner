@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
         onPageChanged: onPageChanged,
         children: [
           HomePage(),
-          //IteneraryScreen(),
+          IteneraryScreen(),
           CategoryScreen(),
           ReviewScreen(),
           ProfilePage()

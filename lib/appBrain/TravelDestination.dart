@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_travel_planner/appBrain/UserReview.dart';
 
 class TravelDestination {
   TravelDestination(
@@ -14,7 +13,8 @@ class TravelDestination {
       required this.longitude,
       required this.description,
       required this.openStatus,
-      required this.address});
+      required this.address,
+      required this.weather});
 
   String businessStatus;
   double latitude;
@@ -27,6 +27,7 @@ class TravelDestination {
   String userRatingsTotal;
   String photoReference;
   String description;
+  var weather;
 
   //get Current user's id
   static String getCurrentUserId() {
