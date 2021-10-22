@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_place/google_place.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
@@ -8,6 +13,8 @@ import 'package:smart_travel_planner/appBrain/location.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
+import 'package:smart_travel_planner/util/const.dart';
+import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
@@ -87,67 +94,134 @@ class _DetailsState extends State<Details> {
   }
 
   bool isFetching = false;
-  List<TravelDestination> suggestedPlaces = [];
+  List<PlaceInformation> suggestedPlaces = [];
+
+  var googlePlace = GooglePlace(GOOGLE_API_KEY);
 
   @override
   void initState() {
     super.initState();
-    //getGroupsData();
+    getNearbyPlacesData();
   }
 
-  //retrive places similar to selected place from the model
-  // Future<void> getGroupsData() async {
-  //   setState(() {
-  //     isFetching = true;
-  //   });
+  //get nearby places
+  void getNearbyPlacesData() async {
+    setState(() {
+      isFetching = true;
+    });
 
-  //   String urlName =
-  //       'https://sep-recommender.herokuapp.com/recommend?hotel_id=' +
-  //           place.placeId.toString();
-  //   var url = Uri.parse(urlName);
-  //   var response = await http.get(url);
+    var result = await googlePlace.search.getNearBySearch(
+      Location(
+          lat: place.travelDestination.latitude,
+          lng: place.travelDestination.longitude),
+      3500,
+    );
 
-  //   if (response.statusCode == 200) {
-  //     var jsonResponse =
-  //         convert.jsonDecode(response.body) as Map<String, dynamic>;
-  //     var suggestPlacesIds =
-  //         jsonResponse['recommended_hotels'].toSet().toList();
+    var nearBySearrchResults = result!.results;
 
-  //     for (var i = 0; i < 10; i++) {
-  //       FirebaseFirestore.instance
-  //           .collection("hotels")
-  //           .where("hotelId", isEqualTo: suggestPlacesIds[i])
-  //           .limit(1)
-  //           .get()
-  //           .then((querySnapshot) {
-  //         querySnapshot.docs.forEach((result) {
-  //           TravelDestination travelDestination = TravelDestination(
-  //               city: result.data()["city"],
-  //               placeId: result.data()["hotelId"],
-  //               placeName: result.data()["hotelName"],
-  //               mainPhotoUrl: result.data()["mainPhotoUrl"],
-  //               reviewScore: result.data()["reviewScore"].toString(),
-  //               reviewScoreWord: result.data()["reviewScoreWord"],
-  //               reviewText: result.data()["reviewText"],
-  //               description: result.data()["description"],
-  //               coordinates: result.data()["coordinates"],
-  //               checkin: result.data()["checkin"],
-  //               checkout: result.data()["checkout"],
-  //               address: result.data()["address"],
-  //               url: result.data()["url"],
-  //               introduction: result.data()["introduction"]);
+    if (nearBySearrchResults != null) {
+      for (var placeInfo in nearBySearrchResults) {
+        if (placeInfo != null) {
+          var businessStatus = placeInfo.businessStatus;
+          var location;
+          var longitude;
+          var latitude;
+          var geometry = placeInfo.geometry;
+          if (geometry != null) {
+            location = geometry.location;
+            if (location != null) {
+              latitude = location.lat;
+              longitude = location.lng;
+            }
+          }
 
-  //           suggestedPlaces.add(travelDestination);
-  //           setState(() {
-  //             isFetching = false;
-  //           });
-  //         });
-  //       });
-  //     }
-  //   } else {
-  //     print('Request failed with status: ${response.statusCode}.');
-  //   }
-  // }
+          var weatherDetails = [];
+          if (geometry != null) {
+            location = geometry.location;
+            if (location != null) {
+              latitude = location.lat;
+              longitude = location.lng;
+
+              //weather details
+              String urlName =
+                  "https://api.openweathermap.org/data/2.5/weather?lat=" +
+                      latitude.toString() +
+                      "&lon=" +
+                      longitude.toString() +
+                      "&appid=a47323fec912e74eeecd6507fb739b9d";
+              var url = Uri.parse(urlName);
+              var response = await http.get(url);
+
+              if (response.statusCode == 200) {
+                var jsonResponse = jsonDecode(response.body);
+                weatherDetails = jsonResponse['weather'].toSet().toList();
+              }
+            }
+          }
+
+          var placeName = placeInfo.name;
+          var openingHours = placeInfo.openingHours;
+          var openStatus;
+          if (openingHours != null) {
+            openStatus = openingHours.openNow;
+          }
+          var placeId = placeInfo.id;
+          var plusCode = placeInfo.plusCode;
+          var address;
+          if (plusCode != null) {
+            address = plusCode.compoundCode;
+          }
+          var rating = placeInfo.rating;
+          var userRatingsTotal = placeInfo.userRatingsTotal;
+          var photos = placeInfo.photos;
+          var photoReference;
+          if (photos != null) {
+            photoReference = photos[0].photoReference;
+          }
+          var description = placeInfo.vicinity;
+
+          TravelDestination travelDestination = TravelDestination(
+              businessStatus: businessStatus.toString(),
+              placeId: placeId.toString(),
+              placeName: placeName.toString(),
+              photoReference: photoReference.toString(),
+              rating: rating.toString(),
+              userRatingsTotal: userRatingsTotal.toString(),
+              latitude: latitude,
+              longitude: longitude,
+              description: description.toString(),
+              openStatus: openStatus.toString(),
+              address: address.toString(),
+              weather: weatherDetails);
+
+          //default image
+          Uint8List image =
+              (await rootBundle.load('assets/default_place_image.jpg'))
+                  .buffer
+                  .asUint8List();
+
+          var imageResult = await this
+              .googlePlace
+              .photos
+              .get(travelDestination.photoReference, 0, 400);
+          if (imageResult != null) {
+            image = imageResult;
+          }
+
+          PlaceInformation placeInformation =
+              PlaceInformation(travelDestination, image);
+
+          suggestedPlaces.add(placeInformation);
+        }
+      }
+    }
+
+    if (this.mounted) {
+      setState(() {
+        isFetching = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,11 +259,9 @@ class _DetailsState extends State<Details> {
           SizedBox(height: 10.0),
           Padding(
             padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            child: Flexible(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.memory(place.image, fit: BoxFit.fill),
-              ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.memory(place.image, fit: BoxFit.fill),
             ),
           ),
           SizedBox(height: 20),
@@ -337,14 +409,14 @@ class _DetailsState extends State<Details> {
                 trimExpandedText: ' Less',
                 style: TextStyle(fontSize: 15.0, color: Colors.black),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 5.0),
             ],
           ),
-          SizedBox(height: 10.0),
+          SizedBox(height: 5.0),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: Text(
-              "Suggested Travel Places",
+              "You May Like...",
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w800,
@@ -355,32 +427,30 @@ class _DetailsState extends State<Details> {
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : SizedBox(
-                  height: 100.0,
-                ), //buildHorizontalList(context),
-          SizedBox(height: 10.0)
+              : buildHorizontalList(context),
+          SizedBox(height: 5.0)
         ],
       ),
     );
   }
 
-  // buildHorizontalList(BuildContext context) {
-  //   return Container(
-  //     padding: EdgeInsets.only(top: 10.0, left: 20.0),
-  //     height: 250.0,
-  //     width: MediaQuery.of(context).size.width,
-  //     child: ListView.builder(
-  //       scrollDirection: Axis.horizontal,
-  //       primary: false,
-  //       // ignore: unnecessary_null_comparison
-  //       itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
-  //       itemBuilder: (BuildContext context, int index) {
-  //         PlaceInformation place = suggestedPlaces[index];
-  //         return HorizontalPlaceItem(place);
-  //       },
-  //     ),
-  //   );
-  // }
+  buildHorizontalList(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 10.0, left: 20.0),
+      height: 200.0,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        primary: false,
+        // ignore: unnecessary_null_comparison
+        itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
+        itemBuilder: (BuildContext context, int index) {
+          PlaceInformation place = suggestedPlaces[index];
+          return HorizontalPlaceItem(place);
+        },
+      ),
+    );
+  }
 
   //dialog box for adding a trip
   var tripNameController = TextEditingController();

@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart';
 import 'package:smart_travel_planner/appBrain/placeInformation.dart';
+import 'package:smart_travel_planner/appBrain/preference.dart';
 import 'package:smart_travel_planner/util/const.dart';
 import '../widgets/horizontal_place_item.dart';
 import '../widgets/vertical_place_item.dart';
@@ -24,8 +25,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool isFetching = false;
   bool isFetchingHistory = false;
+  bool isFetchingPreferences = false;
+
   List<PlaceInformation> nearByPlaces = [];
   List<PlaceInformation> recentPlaces = [];
+  List<PlaceInformation> preferredPlaces = [];
 
   //initial location
   late LatLng _center = LatLng(0, 0);
@@ -50,6 +54,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getRecentPlacesData();
     getNearbyPlacesData();
+    getUserPreferedPlacesData();
   }
 
   //get nearby places
@@ -103,7 +108,6 @@ class _HomePageState extends State<HomePage> {
               if (response.statusCode == 200) {
                 var jsonResponse = jsonDecode(response.body);
                 weatherDetails = jsonResponse['weather'].toSet().toList();
-                print(weatherDetails);
               }
             }
           }
@@ -165,9 +169,11 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    setState(() {
-      isFetching = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        isFetching = false;
+      });
+    }
   }
 
   // Method for retrieving the current location
@@ -248,10 +254,155 @@ class _HomePageState extends State<HomePage> {
 
         recentPlaces.add(placeInformation);
 
-        setState(() {
-          isFetchingHistory = false;
-        });
+        if (this.mounted) {
+          setState(() {
+            isFetchingHistory = false;
+          });
+        }
       });
+    });
+  }
+
+  //get travelled places based on user preferences
+  Future<void> getUserPreferedPlacesData() async {
+    setState(() {
+      isFetchingPreferences = true;
+    });
+
+    final String uid = TravelDestination.getCurrentUserId();
+
+    List<String> placeTypes = [];
+    List<List> placeAreas = [];
+
+    await FirebaseFirestore.instance
+        .collection('userPreferences')
+        .doc(uid)
+        .get()
+        .then((value) async {
+      UserPreference userPreference = UserPreference(
+          preferredTypes: value.get('preferredTypes'),
+          preferrredAreas: value.get('preferredAreas'));
+
+      for (int placeTypeIndex in userPreference.preferredTypes) {
+        await FirebaseFirestore.instance
+            .collection("placeTypes")
+            .where("typeId", isEqualTo: placeTypeIndex)
+            .limit(1)
+            .get()
+            .then((value) {
+          value.docs.forEach((result) {
+            placeTypes.add(result.data()['typeName']);
+            print('placeType: ${result.data()['typeName']}');
+          });
+        });
+      }
+
+      for (int placeAreaIndex in userPreference.preferrredAreas) {
+        await FirebaseFirestore.instance
+            .collection("preferredAreas")
+            .where("area_id", isEqualTo: placeAreaIndex)
+            .limit(1)
+            .get()
+            .then((value) {
+          value.docs.forEach((result) {
+            placeAreas
+                .add([result.data()['latitude'], result.data()['longitude']]);
+          });
+        });
+      }
+
+      for (var area in placeAreas) {
+        double plat = area[0];
+        double plong = area[1];
+
+        for (var ptype in placeTypes) {
+          //fetch data from Places API
+          var result = await googlePlace.search.getNearBySearch(
+              Location(lat: plat, lng: plong), 1500,
+              type: ptype);
+
+          var nearBySearrchResults = result!.results;
+
+          if (nearBySearrchResults != null) {
+            for (var placeInfo in nearBySearrchResults) {
+              if (placeInfo != null) {
+                var businessStatus = placeInfo.businessStatus;
+                var location;
+                var longitude;
+                var latitude;
+                var geometry = placeInfo.geometry;
+                if (geometry != null) {
+                  location = geometry.location;
+                  if (location != null) {
+                    latitude = location.lat;
+                    longitude = location.lng;
+                  }
+                }
+
+                var placeName = placeInfo.name;
+                var openingHours = placeInfo.openingHours;
+                var openStatus;
+                if (openingHours != null) {
+                  openStatus = openingHours.openNow;
+                }
+                var placeId = placeInfo.id;
+                var plusCode = placeInfo.plusCode;
+                var address;
+                if (plusCode != null) {
+                  address = plusCode.compoundCode;
+                }
+                var rating = placeInfo.rating;
+                var userRatingsTotal = placeInfo.userRatingsTotal;
+                var photos = placeInfo.photos;
+                var photoReference;
+                if (photos != null) {
+                  photoReference = photos[0].photoReference;
+                }
+                var description = placeInfo.vicinity;
+
+                TravelDestination travelDestination = TravelDestination(
+                    businessStatus: businessStatus.toString(),
+                    placeId: placeId.toString(),
+                    placeName: placeName.toString(),
+                    photoReference: photoReference.toString(),
+                    rating: rating.toString(),
+                    userRatingsTotal: userRatingsTotal.toString(),
+                    latitude: latitude,
+                    longitude: longitude,
+                    description: description.toString(),
+                    openStatus: openStatus.toString(),
+                    address: address.toString(),
+                    weather: []);
+
+                //default image
+                Uint8List image =
+                    (await rootBundle.load('assets/default_place_image.jpg'))
+                        .buffer
+                        .asUint8List();
+
+                var imageResult = await this
+                    .googlePlace
+                    .photos
+                    .get(travelDestination.photoReference, 0, 400);
+                if (imageResult != null) {
+                  image = imageResult;
+                }
+
+                PlaceInformation placeInformation =
+                    PlaceInformation(travelDestination, image);
+
+                preferredPlaces.add(placeInformation);
+              }
+            }
+          }
+        }
+      }
+
+      if (this.mounted) {
+        setState(() {
+          isFetchingPreferences = false;
+        });
+      }
     });
   }
 
@@ -289,6 +440,21 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: Text(
+              "Your Prefernces May Be...",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          isFetchingPreferences
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : buildHorizontalPreferList(context),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Text(
               "Places NearBy",
               style: TextStyle(
                 fontSize: 20.0,
@@ -323,6 +489,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  buildHorizontalPreferList(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 10.0, left: 20.0),
+      height: 150.0,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        primary: false,
+        itemCount: preferredPlaces.length,
+        itemBuilder: (BuildContext context, int index) {
+          PlaceInformation place = preferredPlaces[index];
+          return HorizontalPlaceItem(place);
+        },
+      ),
+    );
+  }
+
   buildVerticalList(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(20.0),
@@ -339,3 +522,129 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
+// UserPreference userPreference = UserPreference(
+//           preferredTypes: value.get('preferredTypes'),
+//           preferrredAreas: value.get('preferredAreas'));
+
+//       for (int placeTypeIndex in userPreference.preferredTypes) {
+//         await FirebaseFirestore.instance
+//             .collection("placeTypes")
+//             .where("typeId", isEqualTo: placeTypeIndex)
+//             .limit(1)
+//             .get()
+//             .then((value) {
+//           value.docs.forEach((result) {
+//             placeTypes.add(result.data()['typeName']);
+//             print('placeType: ${result.data()['typeName']}');
+//           });
+//         });
+//       }
+
+//       for (int placeAreaIndex in userPreference.preferrredAreas) {
+//         await FirebaseFirestore.instance
+//             .collection("preferredAreas")
+//             .where("area_id", isEqualTo: placeAreaIndex)
+//             .limit(1)
+//             .get()
+//             .then((value) {
+//           value.docs.forEach((result) {
+//             placeAreas
+//                 .add([result.data()['latitude'], result.data()['longitude']]);
+//           });
+//         });
+//       }
+
+//       for (var area in placeAreas) {
+//         double plat = area[0];
+//         double plong = area[1];
+
+//         for (var ptype in placeTypes) {
+//           //fetch data from Places API
+//           var result = await googlePlace.search.getNearBySearch(
+//               Location(lat: plat, lng: plong), 1500,
+//               type: ptype);
+
+//           var nearBySearrchResults = result!.results;
+
+//           if (nearBySearrchResults != null) {
+//             for (var placeInfo in nearBySearrchResults) {
+//               if (placeInfo != null) {
+//                 var businessStatus = placeInfo.businessStatus;
+//                 var location;
+//                 var longitude;
+//                 var latitude;
+//                 var geometry = placeInfo.geometry;
+//                 if (geometry != null) {
+//                   location = geometry.location;
+//                   if (location != null) {
+//                     latitude = location.lat;
+//                     longitude = location.lng;
+//                   }
+//                 }
+
+//                 var placeName = placeInfo.name;
+//                 var openingHours = placeInfo.openingHours;
+//                 var openStatus;
+//                 if (openingHours != null) {
+//                   openStatus = openingHours.openNow;
+//                 }
+//                 var placeId = placeInfo.id;
+//                 var plusCode = placeInfo.plusCode;
+//                 var address;
+//                 if (plusCode != null) {
+//                   address = plusCode.compoundCode;
+//                 }
+//                 var rating = placeInfo.rating;
+//                 var userRatingsTotal = placeInfo.userRatingsTotal;
+//                 var photos = placeInfo.photos;
+//                 var photoReference;
+//                 if (photos != null) {
+//                   photoReference = photos[0].photoReference;
+//                 }
+//                 var description = placeInfo.vicinity;
+
+//                 TravelDestination travelDestination = TravelDestination(
+//                     businessStatus: businessStatus.toString(),
+//                     placeId: placeId.toString(),
+//                     placeName: placeName.toString(),
+//                     photoReference: photoReference.toString(),
+//                     rating: rating.toString(),
+//                     userRatingsTotal: userRatingsTotal.toString(),
+//                     latitude: latitude,
+//                     longitude: longitude,
+//                     description: description.toString(),
+//                     openStatus: openStatus.toString(),
+//                     address: address.toString(),
+//                     weather: []);
+
+//                 //default image
+//                 Uint8List image =
+//                     (await rootBundle.load('assets/default_place_image.jpg'))
+//                         .buffer
+//                         .asUint8List();
+
+//                 var imageResult = await this
+//                     .googlePlace
+//                     .photos
+//                     .get(travelDestination.photoReference, 0, 400);
+//                 if (imageResult != null) {
+//                   image = imageResult;
+//                 }
+
+//                 PlaceInformation placeInformation =
+//                     PlaceInformation(travelDestination, image);
+
+//                 preferredPlaces.add(placeInformation);
+//               }
+//             }
+//           }
+//         }
+//       }
+
+//       if (this.mounted) {
+//         setState(() {
+//           isFetchingPreferences = false;
+//         });
+//       }

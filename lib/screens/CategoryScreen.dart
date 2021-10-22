@@ -101,7 +101,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
               if (response.statusCode == 200) {
                 var jsonResponse = jsonDecode(response.body);
                 weatherDetails = jsonResponse['weather'].toSet().toList();
-                print(weatherDetails);
               }
             }
           }
@@ -163,9 +162,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     }
 
-    setState(() {
-      isFetching = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        isFetching = false;
+      });
+    }
   }
 
   // Method for retrieving the current location
