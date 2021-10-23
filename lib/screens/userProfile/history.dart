@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/visited_history.dart';
 import 'package:smart_travel_planner/screens/userProfile/profile.dart';
@@ -12,101 +11,60 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   bool isFetching = false;
-
-  //instance for firebase and current user
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  var firebaseUser = FirebaseAuth.instance.currentUser;
-
+  final String uid = VisitedHistory.getCurrentUserId();
   List placesId = [];
   List<VisitedHistory> places = [];
-
-  //for search bar
-  List hotels = [];
-  final TextEditingController _searchControl = new TextEditingController();
-  String _searchText = "";
-
-  // void initState() {
-  //   super.initState();
-  //   print("object");
-  //   _searchControl.addListener(() {
-  //     if (_searchControl.text.isEmpty) {
-  //       setState(() {
-  //         _searchText = "";
-  //         updateFilter(_searchText);
-  //       });
-  //     } else {
-  //       setState(() {
-  //         _searchText = _searchControl.text;
-  //         updateFilter(_searchText);
-  //       });
-  //     }
-  //   });
-  // }
-
-  //to assign values of instance objects under builder widget
+  //to assign values of instance objects under listview.builder widget
   String name = '';
-  String intro = '';
   String score = '';
   String city = '';
   String address = '';
-
+  
   void initState() {
     super.initState();
-    getVisitedHotelsId();
+    getVisitedPlaces();
   }
 
-  //get all the hotels id of current user visited
-  getVisitedHotelsId() {
+  //for search bar
+  final TextEditingController _searchControl = new TextEditingController();
+  List<VisitedHistory> _searchResult = [];
+  onSearchTextChanged(String text) async {
+    _searchResult.clear();
+    if (text.isEmpty) {
+      setState(() {});
+      return;
+    }
+    places.forEach((place) {
+      if (place.placeName.contains(text)) _searchResult.add(place);
+    });
+
+    setState(() {});
+  }
+
+  //get all the place details of current user visited
+  getVisitedPlaces() {
     setState(() {
       isFetching = true;
     });
     FirebaseFirestore.instance
-        .collection("visitedInformation")
-        .where('userId', isEqualTo: firebaseUser!.uid)
+        .collection("visitedPlaces")
+        .where('userId', isEqualTo: uid)
         .get()
         .then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
-        placesId.add(result.data()['placeId']);
+        VisitedHistory history = VisitedHistory(
+          placeName: result['placeName'],
+          reviewScore: result['reviewScore'].toString(),
+          city: result['address'],
+          address: result['description'],
+        );
+
+        places.add(history);
       });
-
-      getVisitedHotelsDetails();
-
       setState(() {
         isFetching = false;
       });
     });
-  }
-
-  //get visited hotels information
-  getVisitedHotelsDetails() {
-    if (placesId.isNotEmpty) {
-      setState(() {
-        isFetching = true;
-      });
-      FirebaseFirestore.instance
-          .collection("hotels")
-          .where('hotelId', whereIn: placesId)
-          .get()
-          .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
-          VisitedHistory history = VisitedHistory(
-              hotelName: result['hotelName'],
-              reviewScore: result['reviewScore'].toString(),
-              city: result['city'],
-              address: result['address'],
-              introduction: result['introduction']);
-
-          places.add(history);
-          hotels.add(history.hotelName);
-          print(hotels);
-        });
-        setState(() {
-          isFetching = false;
-        });
-      });
-      return places;
-    } else
-      return 'There is no history';
   }
 
   @override
@@ -126,7 +84,32 @@ class _HistoryState extends State<History> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              searchBar(),
+              Container(
+                color: Theme.of(context).primaryColor,
+                child: new Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: new Card(
+                    color: Colors.blueGrey[50],
+                    child: new ListTile(
+                      leading: new Icon(Icons.search),
+                      title: new TextField(
+                        controller: _searchControl,
+                        decoration: new InputDecoration(
+                            hintText: 'Search by a place..',
+                            border: InputBorder.none),
+                        onChanged: onSearchTextChanged,
+                      ),
+                      trailing: new IconButton(
+                        icon: new Icon(Icons.cancel),
+                        onPressed: () {
+                          _searchControl.clear();
+                          onSearchTextChanged('');
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               isFetching
                   ? Center(
                       child: CircularProgressIndicator(),
@@ -144,73 +127,41 @@ class _HistoryState extends State<History> {
                         )
                       : Container(
                           height: 500,
-                          child: ListView.builder(
-                              itemCount: places.length,
-                              itemBuilder: (BuildContext context, index) {
-                                name = places[index].hotelName;
-                                city = places[index].city;
-                                address = places[index].address;
-                                intro = places[index].introduction;
-                                score = places[index].reviewScore;
+                          child: _searchResult.length != 0 ||
+                                  _searchControl.text.isNotEmpty
+                              ? ListView.builder(
+                                  itemCount: _searchResult.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    name = _searchResult[index].placeName;
+                                    city = _searchResult[index].city;
+                                    address = _searchResult[index].address;
+                                    score = _searchResult[index].reviewScore;
 
-                                return infoHistoryContent(
-                                    hotelName: name,
-                                    city: city,
-                                    address: address,
-                                    introduction: intro,
-                                    reviewScore: score,
-                                    tap: () {});
-                              }),
+                                    return infoHistoryContent(
+                                        hotelName: name,
+                                        city: city,
+                                        address: address,
+                                        reviewScore: score,
+                                        tap: () {});
+                                  })
+                              : new ListView.builder(
+                                  itemCount: places.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    name = places[index].placeName;
+                                    city = places[index].city;
+                                    address = places[index].address;
+                                    score = places[index].reviewScore;
+
+                                    return infoHistoryContent(
+                                        hotelName: name,
+                                        city: city,
+                                        address: address,
+                                        reviewScore: score,
+                                        tap: () {});
+                                  }),
                         )
             ],
           ),
         ));
-  }
-
-  Widget searchBar() {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-      child: Container(
-          decoration: BoxDecoration(
-            color: Colors.blueGrey[50],
-            borderRadius: BorderRadius.all(
-              Radius.circular(5.0),
-            ),
-          ),
-          child: Stack(children: <Widget>[
-            TextField(
-              style: TextStyle(
-                fontSize: 15.0,
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(15.0),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  borderSide: BorderSide(
-                    color: Colors.white,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.grey,
-                  ),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                hintText: "Search by a place..",
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                ),
-                hintStyle: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.black,
-                ),
-              ),
-              maxLines: 1,
-              controller: _searchControl,
-            ),
-          ])),
-    );
   }
 }

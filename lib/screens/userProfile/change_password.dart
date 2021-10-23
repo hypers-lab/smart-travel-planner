@@ -10,9 +10,7 @@ class ChangePassword extends StatefulWidget {
   _ChangePasswordState createState() => _ChangePasswordState();
 }
 class _ChangePasswordState extends State<ChangePassword> {
-  // TextEditingController newpassword = TextEditingController();
-  // TextEditingController oldpassword = TextEditingController();
-  // TextEditingController confirmpassword = TextEditingController();
+  
   String newpassword='';
   String oldpassword='';
   String confirmpassword='';

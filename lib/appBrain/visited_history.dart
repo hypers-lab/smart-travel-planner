@@ -1,19 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class VisitedHistory {
-  VisitedHistory(
-      {required this.hotelName,
+  VisitedHistory( 
+      {required this.placeName,
       required this.reviewScore,
       required this.city,
       required this.address,
-      required this.introduction,
       });
 
-  String hotelName;
+  String placeName;
   String reviewScore;
   String city;
   String address;
-  String introduction;
 
 
   //get Current user's id
@@ -29,6 +28,24 @@ class VisitedHistory {
     return "";
   }
 
-  //get all places name
+  //get all the place details of current user visited
+  getVisitedPlaces() {
+    final String uid = getCurrentUserId();
+    FirebaseFirestore.instance
+        .collection("visitedPlaces")
+        .where('userId', isEqualTo: uid)
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        VisitedHistory history = VisitedHistory(
+          placeName: result['placeName'],
+          reviewScore: result['reviewScore'].toString(),
+          city: result['address'],
+          address: result['description'],
+        );
+      });
+     
+    });
+  }
   
 }

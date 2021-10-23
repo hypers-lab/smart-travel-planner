@@ -5,7 +5,6 @@ Widget infoHistoryContent({
   required String hotelName,
   required String city,
   required String address,
-  required String introduction,
   required String reviewScore,
   required VoidCallback tap,
 }) =>
@@ -33,13 +32,7 @@ Widget infoHistoryContent({
                       height: 30,
                       thickness: 3,
                     ),
-                    Center(
-                        child:
-                            content(title: 'LOCATION', body: '$introduction')),
-                    Divider(
-                      height: 30,
-                      thickness: 3,
-                    ),
+                    
                     Center(child: content(title: 'CITY', body: '$city')),
                     Divider(
                       height: 30,

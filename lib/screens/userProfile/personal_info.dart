@@ -7,54 +7,57 @@ import 'edit_personal_info.dart';
 import 'profile.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
-  
   @override
   _PersonalInfoScreenState createState() => _PersonalInfoScreenState();
 }
 
 class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
-
   bool isFetching = false;
   void initState() {
     super.initState();
     getUserDetails();
   }
 
+  final String uid = UserDetails.getCurrentUserId();
+
+  // to assign values get from firestore
   var username;
   var userage;
   var userphonenumber;
   var usergender;
 
-  Future getUserDetails() async{
+  //get user details as instance from server
+  Future getUserDetails() async {
     setState(() {
       isFetching = true;
     });
-    
+
     await FirebaseFirestore.instance
-      .collection('user_personal_information')
-      .doc(( FirebaseAuth.instance.currentUser!).uid)
-      .get()
-      .then((value)  {
-        UserDetails user = UserDetails(
-          name: value.get('name'), 
-          age: value.get('age'), 
-          gender: value.get('gender'), 
+        .collection('user_personal_information')
+        .doc(uid)
+        .get()
+        .then((value) {
+      UserDetails user = UserDetails(
+          name: value.get('name'),
+          age: value.get('age'),
+          gender: value.get('gender'),
           phonenumber: value.get('phone number'));
-              
-          username = user.name;
-          userage = user.age;
-          userphonenumber = user.phonenumber;
-          usergender = user.gender;
-          }); 
-    
-        setState(() {
+
+      username = user.name;
+      userage = user.age;
+      userphonenumber = user.phonenumber;
+      usergender = user.gender;
+    });
+
+    setState(() {
       isFetching = false;
-    }); 
+    });
   }
+
   //instance for firebase and current user
   final FirebaseAuth auth = FirebaseAuth.instance;
-  var firebaseUser =  FirebaseAuth.instance.currentUser;
-  
+  var firebaseUser = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,43 +65,43 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         leading: BackButton(
           color: Colors.black,
           onPressed: () {
-            Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => ProfilePage()));},
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ProfilePage()));
+          },
         ),
         title: Text('Account Personal Info'),
         centerTitle: true,
       ),
       body: isFetching
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              :
-              SingleChildScrollView(
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
                       image: AssetImage('assets/travel.jpg'),
-                        fit: BoxFit.fill)),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 18,
-                      ),
-                      
-                      infoContent(information: '${firebaseUser!.email}', title: 'Email'),
-                      infoContent(information: '$username', title: 'Name'),
-                      infoContent(information: '$userage', title: 'Age'),
-                      infoContent(information: '$userphonenumber', title: 'Phone Number'),
-                      infoContent(information: '$usergender', title: 'Gender'),
-
-                      Padding(
+                      fit: BoxFit.fill)),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 18,
+                  ),
+                  infoContent(
+                      information: '${firebaseUser!.email}', title: 'Email'),
+                  infoContent(information: '$username', title: 'Name'),
+                  infoContent(information: '$userage', title: 'Age'),
+                  infoContent(
+                      information: '$userphonenumber', title: 'Phone Number'),
+                  infoContent(information: '$usergender', title: 'Gender'),
+                  Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
-                            context, 
-                            MaterialPageRoute(builder: (context) => EditProfilePage()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfilePage()));
                         },
                         child: Text(
                           'Edit Personal Info',
@@ -114,17 +117,14 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           shadowColor: Colors.blueGrey,
                           elevation: 10,
                         ),
-                      )
-                        ),
-                      
-                      
-                    ],
-                  ),
-                )
-          ),
+                      )),
+                ],
+              ),
+            )),
     );
   }
 
+  //the repeating widget content of body
   Widget infoContent({
     required String information,
     required String title,
@@ -138,20 +138,14 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             child: Text(
               title,
               style: GoogleFonts.dmSerifDisplay(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 17,
-                  letterSpacing: 1
-              ), 
+                  fontWeight: FontWeight.w800, fontSize: 17, letterSpacing: 1),
             ),
           ),
           subtitle: Center(
             child: Text(
               information,
               style: GoogleFonts.shadowsIntoLight(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                  letterSpacing: 3
-              ),
+                  fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 3),
             ),
           ),
         ),
