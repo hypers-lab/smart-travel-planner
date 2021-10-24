@@ -17,8 +17,7 @@ void main() {
           longitude: 79.86821929999999,
           description: "H. R. Jothipala Mw., Colombo",
           openStatus: "false",
-          address: "WVJ9+V7 Colombo, Sri Lanka",
-          weather: null);
+          address: "WVJ9+V7 Colombo, Sri Lanka");
 
       expect(travelDestination.businessStatus, "OPERATIONAL");
       expect(travelDestination.placeId, "ChIJUbf3iDiuEmsROJxXbhYO7cM");

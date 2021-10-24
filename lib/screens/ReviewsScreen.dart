@@ -47,18 +47,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
         print(doc["placeName"]);
 
         TravelDestination travelDestination = TravelDestination(
-            businessStatus: doc["businessStatus"],
-            placeId: doc["placeId"],
-            placeName: doc["placeName"],
-            photoReference: doc["photoReference"],
-            rating: doc["rating"],
-            userRatingsTotal: doc["userRatingsTotal"],
-            latitude: doc["latitude"],
-            longitude: doc["longitude"],
-            description: doc["description"],
-            openStatus: doc["openStatus"],
-            address: doc["address"],
-            weather: null);
+          businessStatus: doc["businessStatus"],
+          placeId: doc["placeId"],
+          placeName: doc["placeName"],
+          photoReference: doc["photoReference"],
+          rating: doc["rating"],
+          userRatingsTotal: doc["userRatingsTotal"],
+          latitude: doc["latitude"],
+          longitude: doc["longitude"],
+          description: doc["description"],
+          openStatus: doc["openStatus"],
+          address: doc["address"],
+        );
 
         UserReview userReview = UserReview(
             userId: doc["userId"],

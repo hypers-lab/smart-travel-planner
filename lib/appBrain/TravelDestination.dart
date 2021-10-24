@@ -2,19 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class TravelDestination {
-  TravelDestination(
-      {required this.businessStatus,
-      required this.placeId,
-      required this.placeName,
-      required this.photoReference,
-      required this.rating,
-      required this.userRatingsTotal,
-      required this.latitude,
-      required this.longitude,
-      required this.description,
-      required this.openStatus,
-      required this.address,
-      required this.weather});
+  TravelDestination({
+    required this.businessStatus,
+    required this.placeId,
+    required this.placeName,
+    required this.photoReference,
+    required this.rating,
+    required this.userRatingsTotal,
+    required this.latitude,
+    required this.longitude,
+    required this.description,
+    required this.openStatus,
+    required this.address,
+  });
 
   String businessStatus;
   double latitude;
@@ -27,7 +27,6 @@ class TravelDestination {
   String userRatingsTotal;
   String photoReference;
   String description;
-  var weather;
 
   //get Current user's id
   static String getCurrentUserId() {

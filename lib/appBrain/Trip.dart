@@ -10,14 +10,13 @@ class Trip {
       required this.status});
 
   String tripName;
-  List<int> places;
+  List<dynamic> places;
   String image;
-  String date;
-  int userId;
+  DateTime date;
+  String userId;
   int status;
 
   static List<Trip> getTripDetailsDummy() {
-    print("Das");
     List<Trip> trips = [];
     try {
       tripsdata.forEach((doc) {

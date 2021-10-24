@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
-import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:smart_travel_planner/widgets/trip_select_popup.dart';
 
@@ -83,6 +83,35 @@ class _DetailsState extends State<Details> {
           ]),
         )
       ],
+    ).show();
+  }
+
+  //Dialog box for marking the place as visited
+  _showWeatherDialog(
+      context, String title, double latitude, double longitude) async {
+    String urlName = "https://api.openweathermap.org/data/2.5/weather?lat=" +
+        latitude.toString() +
+        "&lon=" +
+        longitude.toString() +
+        "&appid=a47323fec912e74eeecd6507fb739b9d";
+    var url = Uri.parse(urlName);
+    var response = await http.get(url);
+
+    var weatherDetails = [];
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      weatherDetails = jsonResponse['weather'].toSet().toList();
+      //print(weatherDetails);
+    }
+
+    Alert(
+      context: context,
+      title: title,
+      image: Image.asset("assets/place_visted_confirm.png",
+          height: 250.0, width: 300.0),
+      desc: weatherDetails[0]['main'].toString() +
+          '\n' +
+          weatherDetails[0]['description'].toString(),
     ).show();
   }
 
@@ -202,54 +231,81 @@ class _DetailsState extends State<Details> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        place.travelDestination.placeName,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 22,
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          place.travelDestination.placeName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 22,
+                          ),
+                          maxLines: 2,
+                          textAlign: TextAlign.left,
                         ),
-                        maxLines: 2,
-                        textAlign: TextAlign.left,
                       ),
-                    ),
+                    ],
                   ),
-                  FloatingActionButton(
-                    heroTag: "btn1",
-                    child: Icon(
-                      Icons.beenhere,
-                      size: 25,
-                      color: Colors.red,
-                    ),
-                    backgroundColor: Colors.orangeAccent,
-                    onPressed: () =>
-                        {_showVistedMarkingDialog(context, "Mark As Visited")},
-                  ),
-                  SizedBox(width: 10.0),
-                  FloatingActionButton(
-                    heroTag: "btn2",
-                    child: Icon(
-                      Icons.map_sharp,
-                      size: 30,
-                      color: Colors.lime,
-                    ),
-                    backgroundColor: Colors.blueGrey,
-                    onPressed: () {
-                      PlaceLocation visitPlace = PlaceLocation(
-                          latitude: place.travelDestination.latitude,
-                          longitude: place.travelDestination.longitude,
-                          placeName: place.travelDestination.placeName);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MapViewScreen(visitPlace)),
-                      );
-                    },
-                  )
                 ],
+              ),
+              SizedBox(height: 5),
+              Center(
+                child: Row(
+                  children: [
+                    FloatingActionButton(
+                      heroTag: "btn1",
+                      child: Icon(
+                        Icons.beenhere,
+                        size: 25,
+                        color: Colors.red,
+                      ),
+                      backgroundColor: Colors.orangeAccent,
+                      onPressed: () => {
+                        _showVistedMarkingDialog(context, "Mark As Visited")
+                      },
+                    ),
+                    SizedBox(width: 10.0),
+                    FloatingActionButton(
+                      heroTag: "btn2",
+                      child: Icon(
+                        Icons.map_sharp,
+                        size: 30,
+                        color: Colors.lime,
+                      ),
+                      backgroundColor: Colors.blueGrey,
+                      onPressed: () {
+                        PlaceLocation visitPlace = PlaceLocation(
+                            latitude: place.travelDestination.latitude,
+                            longitude: place.travelDestination.longitude,
+                            placeName: place.travelDestination.placeName);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MapViewScreen(visitPlace)),
+                        );
+                      },
+                    ),
+                    SizedBox(width: 10.0),
+                    FloatingActionButton(
+                      heroTag: "btn3",
+                      child: Icon(
+                        Icons.wb_sunny,
+                        size: 30,
+                        color: Colors.yellowAccent,
+                      ),
+                      backgroundColor: Colors.greenAccent,
+                      onPressed: () {
+                        _showWeatherDialog(
+                            context,
+                            place.travelDestination.placeName,
+                            place.travelDestination.latitude,
+                            place.travelDestination.longitude);
+                      },
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 5),
               Row(

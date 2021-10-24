@@ -75,7 +75,7 @@ class VerticalTripItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Status: ${trip.status.toString()}",
+                        "Status: ${trip.status == 0 ? 'Planned' : 'Finished'}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
@@ -91,15 +91,15 @@ class VerticalTripItem extends StatelessWidget {
           ),
         ),
         onTap: () {
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (BuildContext context) {
-          //       return TripDetails(
-          //         trip: trip,
-          //       );
-          //     },
-          //   ),
-          // );
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return TripDetails(
+                  trip: trip,
+                );
+              },
+            ),
+          );
         },
       ),
     );
