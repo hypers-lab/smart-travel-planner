@@ -83,7 +83,10 @@ class SearchScreenState extends State<SearchScreen> {
               ),
               Container(
                 margin: EdgeInsets.only(top: 10, bottom: 10),
-                child: Image.asset("assets/powered_by_google.png"),
+                child: Image.asset(
+                  "assets/powered_by_google.png",
+                  width: 200,
+                ),
               ),
             ],
           ),

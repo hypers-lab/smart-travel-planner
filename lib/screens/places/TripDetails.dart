@@ -1,10 +1,12 @@
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_place/google_place.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/appBrain/Trip.dart';
 import 'package:smart_travel_planner/appBrain/placeInformation.dart';
+import 'package:smart_travel_planner/screens/itenerary/IteneraryScreen.dart';
 import 'package:smart_travel_planner/util/const.dart';
 import 'package:smart_travel_planner/widgets/vertical_place_item.dart';
 import '../../widgets/vertical_place_item.dart';
@@ -24,13 +26,35 @@ class _TripDetailsState extends State<TripDetails> {
   late Trip trip = widget.trip;
   bool isFetching = false;
   List<PlaceInformation> places = [];
-
+  bool isFinished = false;
+  CollectionReference tripsRef = FirebaseFirestore.instance.collection('trips');
   var googlePlace = GooglePlace(GOOGLE_API_KEY);
 
   @override
   void initState() {
     super.initState();
     getPlacesData(trip);
+  }
+
+  getTrip() {
+    FirebaseFirestore.instance
+        .collection("trips")
+        .doc(trip.documentID)
+        .get()
+        .then((snapshot) {
+      Trip tripNew = Trip(
+          documentID: snapshot.reference.id, // <-- Document ID
+          tripName: snapshot["tripName"],
+          places: snapshot["places"],
+          date: snapshot["date"].toDate(),
+          image: snapshot["image"],
+          status: snapshot["status"],
+          userId: snapshot["userId"]);
+
+      setState(() {
+        trip = tripNew;
+      });
+    });
   }
 
   getPlacesData(trip) {
@@ -117,25 +141,108 @@ class _TripDetailsState extends State<TripDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-            child: Text(
-              "Places",
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w600,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => IteneraryScreen(),
               ),
             ),
           ),
-          isFetching
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : buildVerticalList(),
-        ],
+          actions: <Widget>[
+            trip.status == 1
+                ? IconButton(
+                    icon: Icon(
+                      Icons.check_circle,
+                      color: Colors.blue,
+                      size: 24.0,
+                    ),
+                    onPressed: () {
+                      tripsRef
+                          .doc(trip.documentID)
+                          .update({'status': 0})
+                          .then((value) => print("Trip Updated"))
+                          .catchError((error) =>
+                              print("Failed to update trip: $error"));
+
+                      getTrip();
+                    },
+                  )
+                : IconButton(
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.blue,
+                      size: 24.0,
+                    ),
+                    onPressed: () {
+                      tripsRef
+                          .doc(trip.documentID)
+                          .update({'status': 1})
+                          .then((value) => print("Trip Updated"))
+                          .catchError((error) =>
+                              print("Failed to update trip: $error"));
+
+                      getTrip();
+                    },
+                  ),
+            Container(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                    size: 24.0,
+                  ),
+                  onPressed: () {
+                    _deleteTripPlan(trip.documentID);
+                  },
+                )),
+          ],
+        ),
+        body: ListView(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              child: Text(
+                trip.tripName,
+                style: TextStyle(
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              child: Text(
+                "Places",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            isFetching
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : places.length > 0
+                    ? buildVerticalList()
+                    : Center(
+                        child: Text(
+                          "No visited places",
+                          style: TextStyle(
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+          ],
+        ),
       ),
     );
   }
@@ -153,6 +260,55 @@ class _TripDetailsState extends State<TripDetails> {
           return VerticalPlaceItem(place);
         },
       ),
+    );
+  }
+
+  Future<void> _deleteTripPlan(documentId) async {
+    return await showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Trip Plan'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  "Do you want to delete " + trip.tripName + "?",
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                tripsRef
+                    .doc(documentId)
+                    .delete()
+                    .then(
+                      (value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IteneraryScreen(),
+                        ),
+                      ),
+                    )
+                    .catchError(
+                        (error) => print("Failed to delete trip: $error"));
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

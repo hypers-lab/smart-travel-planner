@@ -15,9 +15,9 @@ class IteneraryScreen extends StatefulWidget {
 
 class _IteneraryScreenState extends State<IteneraryScreen> {
   bool isFetching = true;
-  bool isDataExist = true;
   //final List<Trip> _trips = Trip.getTripDetailsDummy();
   List<Trip> trips = [];
+  List<Trip> recomendedTrips = [];
   late ScrollController _tripScrollController;
   int loadMoreMsgs = 25; // at first it will load only 25
   int a = 50;
@@ -38,9 +38,6 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
   }
 
   getGroupsData() async {
-    setState(() {
-      isDataExist = true;
-    });
     await FirebaseFirestore.instance
         .collection("trips")
         .orderBy('date')
@@ -48,7 +45,9 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
         .then((QuerySnapshot snapshot) {
       if (snapshot.docs.length > 0) {
         snapshot.docs.forEach((doc) {
+          //print(doc.reference.id);
           Trip trip = Trip(
+              documentID: doc.reference.id, // <-- Document ID
               tripName: doc["tripName"],
               places: doc["places"],
               date: doc["date"].toDate(),
@@ -62,7 +61,7 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
         });
       } else {
         setState(() {
-          isDataExist = false;
+          isFetching = false;
         });
       }
     });
@@ -109,7 +108,19 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : buildHorizontalList(context),
+              : recomendedTrips.length > 0
+                  ? buildHorizontalList(context)
+                  : Container(
+                      padding: EdgeInsets.all(10),
+                      child: Center(
+                        child: Text(
+                          "Oops! No Recomended Trip Plans!",
+                          style: TextStyle(
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      ),
+                    ),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: Text(
@@ -124,7 +135,7 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : isDataExist
+              : trips.length > 0
                   ? buildVerticalList()
                   : Container(
                       padding: EdgeInsets.all(10),
@@ -143,6 +154,8 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
   }
 
   buildHorizontalList(BuildContext context) {
+    final ids = Set();
+    trips.retainWhere((x) => ids.add(x.tripName));
     return Container(
       padding: EdgeInsets.only(top: 10.0, left: 20.0),
       height: 250.0,
