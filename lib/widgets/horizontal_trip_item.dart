@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
-import 'package:smart_travel_planner/appBrain/Trip.dart';
+import 'package:smart_travel_planner/appBrain/TripInformation.dart';
 import 'package:smart_travel_planner/screens/itenerary/IteneraryScreen.dart';
 import 'package:smart_travel_planner/screens/places/TripDetails.dart';
 import 'package:intl/intl.dart';
 
 class HorizontalTripItem extends StatelessWidget {
-  final Trip trip;
+  final TripInformation trip;
 
   HorizontalTripItem(this.trip);
 
@@ -29,7 +29,7 @@ class HorizontalTripItem extends StatelessWidget {
               Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
+                  child: Image.memory(
                     trip.image,
                     height: 150.0,
                     width: 120.0,
@@ -41,7 +41,7 @@ class HorizontalTripItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  trip.tripName,
+                  trip.trip.tripName,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0,
@@ -59,7 +59,7 @@ class HorizontalTripItem extends StatelessWidget {
                       width: 80,
                       child: Text(
                         getCustomFormattedDateTime(
-                            trip.date.toString(), 'yyyy-MM-dd'),
+                            trip.trip.date.toString(), 'yyyy-MM-dd'),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 13.0,
@@ -77,7 +77,7 @@ class HorizontalTripItem extends StatelessWidget {
                         iconSize: 20,
                         onPressed: () {
                           // Send them to your email maybe?
-                          var tripName = trip.tripName;
+                          var tripName = trip.trip.tripName;
                           DateTime now = DateTime.now();
                           String userdId = TravelDestination.getCurrentUserId();
 
@@ -89,8 +89,9 @@ class HorizontalTripItem extends StatelessWidget {
                             'date': now,
                             'status': 0,
                             'userId': userdId,
-                            'image': trip.image,
-                            'places': trip.places
+                            'image': trip.trip.places[5].travelDestination
+                                .photoReference,
+                            'places': trip.trip.places
                           });
                           Navigator.push(
                             context,
@@ -113,7 +114,7 @@ class HorizontalTripItem extends StatelessWidget {
             MaterialPageRoute(
               builder: (BuildContext context) {
                 return TripDetails(
-                  trip: trip,
+                  trip: trip.trip,
                 );
               },
             ),

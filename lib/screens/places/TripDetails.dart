@@ -57,12 +57,13 @@ class _TripDetailsState extends State<TripDetails> {
     });
   }
 
-  getPlacesData(trip) {
+  getPlacesData(trip) async {
     setState(() {
       isFetching = true;
     });
+    //print(trip.places);
 
-    trip.places.forEach((placeId) async {
+    for (String placeId in trip.places) {
       var result = await this.googlePlace.details.get(placeId);
       if (result != null && result.result != null && mounted) {
         var placeInfo = result.result;
@@ -133,7 +134,7 @@ class _TripDetailsState extends State<TripDetails> {
 
         places.add(placeInformation);
       }
-    });
+    }
     setState(() {
       isFetching = false;
     });

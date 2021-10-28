@@ -192,6 +192,7 @@ class DetailsPageScreenState extends State<DetailsPageScreen> {
                 openStatus = openingHours.openNow;
               }
               var placeId = placeInfo.id;
+
               var plusCode = placeInfo.plusCode;
               var address;
               if (plusCode != null) {

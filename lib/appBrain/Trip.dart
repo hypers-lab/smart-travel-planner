@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:smart_travel_planner/util/tripsdata.dart';
 
 class Trip {

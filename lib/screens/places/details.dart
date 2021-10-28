@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -52,7 +53,7 @@ class _DetailsState extends State<Details> {
   }
 
   //Dialog box for marking the place as visited
-  _showVistedMarkingDialog(context, String showText) {
+  _showVistedMarkingDialog(context, PlaceInformation placeId, String showText) {
     Alert(
       context: context,
       title: showText,
@@ -66,7 +67,7 @@ class _DetailsState extends State<Details> {
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           onPressed: () => {
-            place.travelDestination.markPlaceAsVisited(),
+            place.travelDestination.markPlaceAsVisited(place),
             Navigator.pop(context)
           },
           color: Color.fromRGBO(0, 179, 134, 1.0),
@@ -196,7 +197,7 @@ class _DetailsState extends State<Details> {
               size: 24.0,
             ),
             onPressed: () {
-              _addTripPlan();
+              _addTripPlan(place.travelDestination.placeId);
             },
           ),
           IconButton(
@@ -262,7 +263,8 @@ class _DetailsState extends State<Details> {
                       ),
                       backgroundColor: Colors.orangeAccent,
                       onPressed: () => {
-                        _showVistedMarkingDialog(context, "Mark As Visited")
+                        _showVistedMarkingDialog(
+                            context, place, "Mark As Visited")
                       },
                     ),
                     SizedBox(width: 10.0),
@@ -440,13 +442,38 @@ class _DetailsState extends State<Details> {
 
   //dialog box for adding a trip
   var tripNameController = TextEditingController();
-  Future<void> _addTripPlan() async {
+  Future<void> _addTripPlan(String placeId) async {
+    //print(place.travelDestination.placeId);
+    List<DropdownMenuItem<String>> menuItems = await dropdownTripItems();
     return await showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return TripSelectPopUp(tripNameController: tripNameController);
+        return TripSelectPopUp(
+          tripNameController: tripNameController,
+          menuItems: menuItems,
+          placeId: placeId,
+        );
       },
     );
+  }
+
+  Future<List<DropdownMenuItem<String>>> dropdownTripItems() async {
+    List<DropdownMenuItem<String>> menuItems = [];
+    menuItems.add(DropdownMenuItem(child: Text("Choose"), value: "null"));
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.length != 0) {
+        querySnapshot.docs.forEach((doc) async {
+          menuItems.add(DropdownMenuItem(
+              child: Text(doc["tripName"]), value: doc.reference.id));
+        });
+      } else {
+        menuItems.add(DropdownMenuItem(child: Text("No Trips"), value: "null"));
+      }
+    });
+    return menuItems;
   }
 }

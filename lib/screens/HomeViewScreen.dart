@@ -86,13 +86,14 @@ class _HomePageState extends State<HomePage> {
           }
 
           var placeName = placeInfo.name;
-          print(placeName);
+          //print(placeName);
           var openingHours = placeInfo.openingHours;
           var openStatus;
           if (openingHours != null) {
             openStatus = openingHours.openNow;
           }
-          var placeId = placeInfo.id;
+          var placeId = placeInfo.placeId;
+          //print(placeId);
           var plusCode = placeInfo.plusCode;
           var address;
           if (plusCode != null) {
@@ -176,7 +177,7 @@ class _HomePageState extends State<HomePage> {
         .then((QuerySnapshot querySnapshot) {
       if (querySnapshot.docs.length != 0) {
         querySnapshot.docs.forEach((doc) async {
-          print(doc["placeName"]);
+          print(doc["placeId"]);
 
           TravelDestination travelDestination = TravelDestination(
             businessStatus: doc["businessStatus"],
