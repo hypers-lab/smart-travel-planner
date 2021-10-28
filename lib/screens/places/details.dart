@@ -1,46 +1,46 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 import 'package:smart_travel_planner/screens/places/MapViewerScreen.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
-import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:smart_travel_planner/widgets/trip_select_popup.dart';
 
 class Details extends StatefulWidget {
   static const String id = 'details';
 
   Details({required this.place});
 
-  final TravelDestination place;
+  final PlaceInformation place;
 
   @override
   _DetailsState createState() => _DetailsState();
 }
 
 class _DetailsState extends State<Details> {
-  late TravelDestination place = widget.place;
+  late PlaceInformation place = widget.place;
 
   //Dialog box for Review the place
   void _showRatingAppDialog() {
     Navigator.pop(context);
     final _ratingDialog = RatingDialog(
-      ratingColor: Colors.amber,
-      title: 'Rate Travel Place',
-      message: 'Rating the place and tell others what you think.'
-          ' Add a comment if you want.',
-      submitButton: 'Submit',
+      title: Text('Rate Travel Place'),
+      message: Text('Rating the place and tell others what you think.'
+          ' Add a comment if you want.'),
+      submitButtonText: 'Submit',
       onCancelled: () => print('cancelled'),
       onSubmitted: (response) {
         print('rating: ${response.rating}, comment: ${response.comment}');
         //add rating to system
-        place.addReviewComments(response.rating.toDouble(), response.comment);
+        place.travelDestination
+            .addReviewComments(response.rating.toDouble(), response.comment);
       },
     );
 
@@ -65,7 +65,10 @@ class _DetailsState extends State<Details> {
             "Confirm",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: () => {place.markPlaceAsVisited(), Navigator.pop(context)},
+          onPressed: () => {
+            place.travelDestination.markPlaceAsVisited(),
+            Navigator.pop(context)
+          },
           color: Color.fromRGBO(0, 179, 134, 1.0),
         ),
         DialogButton(
@@ -89,62 +92,62 @@ class _DetailsState extends State<Details> {
   @override
   void initState() {
     super.initState();
-    getGroupsData();
+    //getGroupsData();
   }
 
   //retrive places similar to selected place from the model
-  Future<void> getGroupsData() async {
-    setState(() {
-      isFetching = true;
-    });
+  // Future<void> getGroupsData() async {
+  //   setState(() {
+  //     isFetching = true;
+  //   });
 
-    String urlName =
-        'https://sep-recommender.herokuapp.com/recommend?hotel_id=' +
-            place.placeId.toString();
-    var url = Uri.parse(urlName);
-    var response = await http.get(url);
+  //   String urlName =
+  //       'https://sep-recommender.herokuapp.com/recommend?hotel_id=' +
+  //           place.placeId.toString();
+  //   var url = Uri.parse(urlName);
+  //   var response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      var jsonResponse =
-          convert.jsonDecode(response.body) as Map<String, dynamic>;
-      var suggestPlacesIds =
-          jsonResponse['recommended_hotels'].toSet().toList();
+  //   if (response.statusCode == 200) {
+  //     var jsonResponse =
+  //         convert.jsonDecode(response.body) as Map<String, dynamic>;
+  //     var suggestPlacesIds =
+  //         jsonResponse['recommended_hotels'].toSet().toList();
 
-      for (var i = 0; i < 10; i++) {
-        FirebaseFirestore.instance
-            .collection("hotels")
-            .where("hotelId", isEqualTo: suggestPlacesIds[i])
-            .limit(1)
-            .get()
-            .then((querySnapshot) {
-          querySnapshot.docs.forEach((result) {
-            TravelDestination travelDestination = TravelDestination(
-                city: result.data()["city"],
-                placeId: result.data()["hotelId"],
-                placeName: result.data()["hotelName"],
-                mainPhotoUrl: result.data()["mainPhotoUrl"],
-                reviewScore: result.data()["reviewScore"].toString(),
-                reviewScoreWord: result.data()["reviewScoreWord"],
-                reviewText: result.data()["reviewText"],
-                description: result.data()["description"],
-                coordinates: result.data()["coordinates"],
-                checkin: result.data()["checkin"],
-                checkout: result.data()["checkout"],
-                address: result.data()["address"],
-                url: result.data()["url"],
-                introduction: result.data()["introduction"]);
+  //     for (var i = 0; i < 10; i++) {
+  //       FirebaseFirestore.instance
+  //           .collection("hotels")
+  //           .where("hotelId", isEqualTo: suggestPlacesIds[i])
+  //           .limit(1)
+  //           .get()
+  //           .then((querySnapshot) {
+  //         querySnapshot.docs.forEach((result) {
+  //           TravelDestination travelDestination = TravelDestination(
+  //               city: result.data()["city"],
+  //               placeId: result.data()["hotelId"],
+  //               placeName: result.data()["hotelName"],
+  //               mainPhotoUrl: result.data()["mainPhotoUrl"],
+  //               reviewScore: result.data()["reviewScore"].toString(),
+  //               reviewScoreWord: result.data()["reviewScoreWord"],
+  //               reviewText: result.data()["reviewText"],
+  //               description: result.data()["description"],
+  //               coordinates: result.data()["coordinates"],
+  //               checkin: result.data()["checkin"],
+  //               checkout: result.data()["checkout"],
+  //               address: result.data()["address"],
+  //               url: result.data()["url"],
+  //               introduction: result.data()["introduction"]);
 
-            suggestedPlaces.add(travelDestination);
-            setState(() {
-              isFetching = false;
-            });
-          });
-        });
-      }
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-  }
+  //           suggestedPlaces.add(travelDestination);
+  //           setState(() {
+  //             isFetching = false;
+  //           });
+  //         });
+  //       });
+  //     }
+  //   } else {
+  //     print('Request failed with status: ${response.statusCode}.');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +160,16 @@ class _DetailsState extends State<Details> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.add_box,
+              color: Colors.blue,
+              size: 24.0,
+            ),
+            onPressed: () {
+              _addTripPlan();
+            },
+          ),
           IconButton(
             icon: IconBadge(
               icon: Icons.notifications_none,
@@ -171,16 +184,11 @@ class _DetailsState extends State<Details> {
         children: <Widget>[
           SizedBox(height: 10.0),
           Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Container(
-              width: MediaQuery.of(context).size.width - 40.0,
-              height: 250.0,
-              decoration: new BoxDecoration(
-                borderRadius: new BorderRadius.circular(10.0),
-                image: new DecorationImage(
-                  image: new NetworkImage(place.mainPhotoUrl),
-                  fit: BoxFit.cover,
-                ),
+            padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Flexible(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.memory(place.image, fit: BoxFit.fill),
               ),
             ),
           ),
@@ -198,7 +206,7 @@ class _DetailsState extends State<Details> {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        place.placeName,
+                        place.travelDestination.placeName,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 22,
@@ -230,8 +238,9 @@ class _DetailsState extends State<Details> {
                     backgroundColor: Colors.blueGrey,
                     onPressed: () {
                       PlaceLocation visitPlace = PlaceLocation(
-                          coordinates: place.coordinates,
-                          placeName: place.placeName);
+                          latitude: place.travelDestination.latitude,
+                          longitude: place.travelDestination.longitude,
+                          placeName: place.travelDestination.placeName);
 
                       Navigator.push(
                         context,
@@ -254,7 +263,7 @@ class _DetailsState extends State<Details> {
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${place.address},\n${place.city}",
+                      "${place.travelDestination.address}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -270,7 +279,7 @@ class _DetailsState extends State<Details> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "\u{2B50} ${place.reviewScore.toString()} \u{1F4AD} ${place.reviewText}",
+                  "\u{2B50} ${place.travelDestination.rating.toString()} \u{1F4AD} ${place.travelDestination.userRatingsTotal} Reviews",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -283,7 +292,20 @@ class _DetailsState extends State<Details> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "\u{27A1}${place.checkin}\n\u{2B05}${place.checkout}",
+                  "\u{1F4C9} ${place.travelDestination.businessStatus}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  maxLines: 2,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "\u{231B} ${(place.travelDestination.openStatus == "null") ? "No Open Details" : "Open Now"}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -307,7 +329,7 @@ class _DetailsState extends State<Details> {
               ),
               SizedBox(height: 10.0),
               ReadMoreText(
-                '${place.description}',
+                '${place.travelDestination.description}',
                 trimLines: 2,
                 colorClickableText: Colors.deepOrange,
                 trimMode: TrimMode.Line,
@@ -333,60 +355,42 @@ class _DetailsState extends State<Details> {
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : buildHorizontalList(context),
+              : SizedBox(
+                  height: 100.0,
+                ), //buildHorizontalList(context),
           SizedBox(height: 10.0)
         ],
       ),
     );
   }
 
-  buildHorizontalList(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 10.0, left: 20.0),
-      height: 250.0,
-      width: MediaQuery.of(context).size.width,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        primary: false,
-        // ignore: unnecessary_null_comparison
-        itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
-        itemBuilder: (BuildContext context, int index) {
-          TravelDestination place = suggestedPlaces.toList()[index];
-          return HorizontalPlaceItem(place);
-        },
-      ),
-    );
-  }
-
-  // buildSlider() {
-  //   List imageSliderUrls = [place.mainPhotoUrl];
+  // buildHorizontalList(BuildContext context) {
   //   return Container(
-  //     padding: EdgeInsets.only(left: 20),
+  //     padding: EdgeInsets.only(top: 10.0, left: 20.0),
   //     height: 250.0,
+  //     width: MediaQuery.of(context).size.width,
   //     child: ListView.builder(
   //       scrollDirection: Axis.horizontal,
   //       primary: false,
   //       // ignore: unnecessary_null_comparison
-  //       itemCount: imageSliderUrls == null ? 0 : imageSliderUrls.length,
+  //       itemCount: suggestedPlaces == null ? 0 : suggestedPlaces.length,
   //       itemBuilder: (BuildContext context, int index) {
-  //         String imgUrl = imageSliderUrls[index];
-
-  //         return Padding(
-  //           padding: const EdgeInsets.all(10.0),
-  //           child: Container(
-  //             width: MediaQuery.of(context).size.width - 40.0,
-  //             height: 250.0,
-  //             decoration: new BoxDecoration(
-  //               borderRadius: new BorderRadius.circular(10.0),
-  //               image: new DecorationImage(
-  //                 image: new NetworkImage(place.mainPhotoUrl),
-  //                 fit: BoxFit.cover,
-  //               ),
-  //             ),
-  //           ),
-  //         );
+  //         PlaceInformation place = suggestedPlaces[index];
+  //         return HorizontalPlaceItem(place);
   //       },
   //     ),
   //   );
   // }
+
+  //dialog box for adding a trip
+  var tripNameController = TextEditingController();
+  Future<void> _addTripPlan() async {
+    return await showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return TripSelectPopUp(tripNameController: tripNameController);
+      },
+    );
+  }
 }

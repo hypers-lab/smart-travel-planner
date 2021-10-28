@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/screens/CategoryScreen.dart';
+import 'package:smart_travel_planner/screens/HomeViewScreen.dart';
 import 'package:smart_travel_planner/screens/ReviewsScreen.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
@@ -40,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
         controller: _pageController,
         onPageChanged: onPageChanged,
         children: [
-          HomeScreen(),
+          HomePage(),
           IteneraryScreen(),
           CategoryScreen(),
           ReviewScreen(),

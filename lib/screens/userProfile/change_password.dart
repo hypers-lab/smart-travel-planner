@@ -24,10 +24,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.green[800],
           title: Text('Change Your Password'),
           centerTitle: true,
           leading: BackButton(
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () {
               Navigator.push(
                 context, 

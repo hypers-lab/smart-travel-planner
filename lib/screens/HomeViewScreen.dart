@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,21 +9,23 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart';
 import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 import 'package:smart_travel_planner/util/const.dart';
+import '../widgets/horizontal_place_item.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:http/http.dart' as http;
 
-class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  _CategoryScreenState createState() => _CategoryScreenState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
+class _HomePageState extends State<HomePage> {
   bool isFetching = false;
-  List<PlaceInformation> places = [];
-  String categoryName = "restaurant";
+  bool isFetchingHistory = false;
+  List<PlaceInformation> nearByPlaces = [];
+  List<PlaceInformation> recentPlaces = [];
 
   //initial location
   late LatLng _center = LatLng(0, 0);
@@ -44,24 +48,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
-    getNearbyPlacesDataBasedOnCategory(categoryName);
+    getRecentPlacesData();
+    getNearbyPlacesData();
   }
 
-  //get nearby places based on category
-  void getNearbyPlacesDataBasedOnCategory(String category) async {
+  //get nearby places
+  void getNearbyPlacesData() async {
     setState(() {
       isFetching = true;
-      categoryName = category;
-      places = [];
     });
 
     await _getCurrentLocation();
 
     var result = await googlePlace.search.getNearBySearch(
-        Location(
-            lat: _currentPosition.latitude, lng: _currentPosition.longitude),
-        3500,
-        type: category);
+      Location(lat: _currentPosition.latitude, lng: _currentPosition.longitude),
+      3500,
+    );
 
     var nearBySearrchResults = result!.results;
 
@@ -158,7 +160,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           PlaceInformation placeInformation =
               PlaceInformation(travelDestination, image);
 
-          places.add(placeInformation);
+          nearByPlaces.add(placeInformation);
         }
       }
     }
@@ -179,90 +181,148 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  //drop down selection data
-  String selectedValue = "restaurant";
+  //get user recently travelled places
+  Future<void> getRecentPlacesData() async {
+    setState(() {
+      isFetchingHistory = true;
+    });
 
-  List<DropdownMenuItem<String>> get dropdownItems {
-    List<DropdownMenuItem<String>> menuItems = [
-      DropdownMenuItem(child: Text("Library"), value: "library"),
-      DropdownMenuItem(
-          child: Text("Government Office"), value: "local_government_office"),
-      DropdownMenuItem(child: Text("Banks"), value: "bank"),
-      DropdownMenuItem(child: Text("Lodging"), value: "lodging"),
-      DropdownMenuItem(child: Text("Beauty Salon"), value: "beauty_salon"),
-      DropdownMenuItem(child: Text("Movie Theater"), value: "movie_theater"),
-      DropdownMenuItem(child: Text("Cafe"), value: "cafe"),
-      DropdownMenuItem(child: Text("Museum"), value: "museum"),
-      DropdownMenuItem(child: Text("Night Club"), value: "night_club"),
-      DropdownMenuItem(child: Text("Park"), value: "park"),
-      DropdownMenuItem(child: Text("Clothing Store"), value: "clothing_store"),
-      DropdownMenuItem(child: Text("Restaurant"), value: "restaurant"),
-      DropdownMenuItem(child: Text("Spa"), value: "spa"),
-      DropdownMenuItem(child: Text("Supermarkets"), value: "supermarket"),
-      DropdownMenuItem(
-          child: Text("Tourist Attractions"), value: "tourist_attraction"),
-      DropdownMenuItem(child: Text("Laundry"), value: "laundry"),
-      DropdownMenuItem(child: Text("Hardware Stores"), value: "hardware_store"),
-      DropdownMenuItem(child: Text("Storage"), value: "storage"),
-      DropdownMenuItem(child: Text("Temples"), value: "hindu_temple"),
-    ];
-    return menuItems;
+    final String uid = TravelDestination.getCurrentUserId();
+
+    await FirebaseFirestore.instance
+        .collection("visitedPlaces")
+        .where("userId", isEqualTo: uid)
+        .limit(10)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) async {
+        print(doc["placeName"]);
+
+        //weather details
+        // String urlName =
+        //     "https://api.openweathermap.org/data/2.5/weather?lat=" +
+        //         doc["latitude"] +
+        //         "&lon=" +
+        //         doc["longitude"] +
+        //         "&appid=a47323fec912e74eeecd6507fb739b9d";
+        // var url = Uri.parse(urlName);
+        // var response = await http.get(url);
+
+        // var weatherDetails = [];
+        // if (response.statusCode == 200) {
+        //   var jsonResponse = jsonDecode(response.body);
+        //   weatherDetails = jsonResponse['weather'].toSet().toList();
+        //   print(weatherDetails);
+        // }
+
+        TravelDestination travelDestination = TravelDestination(
+            businessStatus: doc["businessStatus"],
+            placeId: doc["placeId"],
+            placeName: doc["placeName"],
+            photoReference: doc["photoReference"],
+            rating: doc["rating"],
+            userRatingsTotal: doc["userRatingsTotal"],
+            latitude: doc["latitude"],
+            longitude: doc["longitude"],
+            description: doc["description"],
+            openStatus: doc["openStatus"],
+            address: doc["address"],
+            weather: []);
+
+        //default image
+        Uint8List image =
+            (await rootBundle.load('assets/default_place_image.jpg'))
+                .buffer
+                .asUint8List();
+
+        var imageResult = await this
+            .googlePlace
+            .photos
+            .get(travelDestination.photoReference, 0, 400);
+        if (imageResult != null) {
+          image = imageResult;
+        }
+
+        PlaceInformation placeInformation =
+            PlaceInformation(travelDestination, image);
+
+        recentPlaces.add(placeInformation);
+
+        setState(() {
+          isFetchingHistory = false;
+        });
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
-      children: <Widget>[
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 5.0),
-            child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade700, width: 2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade700, width: 2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.shade300,
-                ),
-                dropdownColor: Colors.grey.shade200,
-                value: selectedValue,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedValue = newValue!;
-                    getNearbyPlacesDataBasedOnCategory(selectedValue);
-                  });
-                },
-                items: dropdownItems),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-          child: Text(
-            categoryName.toUpperCase(),
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.w600,
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+                top: 10.0, left: 20.0, right: 20.0, bottom: 20.0),
+            child: Text(
+              "Where are you \ngoing?",
+              style: TextStyle(
+                fontSize: 30.0,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-        ),
-        isFetching
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : buildVerticalList(context),
-      ],
-    ));
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Text(
+              "Recently Visited Places",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          isFetchingHistory
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : buildHorizontalList(context),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Text(
+              "Places NearBy",
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          isFetching
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : buildVerticalList(context),
+        ],
+      ),
+    );
   }
 
-  //vertical list view based on the selected category
+  buildHorizontalList(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 10.0, left: 20.0),
+      height: 150.0,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        primary: false,
+        itemCount: recentPlaces.length,
+        itemBuilder: (BuildContext context, int index) {
+          PlaceInformation place = recentPlaces[index];
+          return HorizontalPlaceItem(place);
+        },
+      ),
+    );
+  }
+
   buildVerticalList(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(20.0),
@@ -270,9 +330,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
         primary: false,
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: places.length,
+        itemCount: nearByPlaces.length,
         itemBuilder: (BuildContext context, int index) {
-          PlaceInformation place = places[index];
+          PlaceInformation place = nearByPlaces[index];
           return VerticalPlaceItem(place);
         },
       ),

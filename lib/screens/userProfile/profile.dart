@@ -1,36 +1,44 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/screens/userProfile/preferences.dart';
 import 'package:smart_travel_planner/widgets/profile_menu_item.dart';
 import 'change_password.dart';
 import 'history.dart';
 import 'personal_info.dart';
-import 'preferences.dart';
+import 'edit_preferences.dart';
 import '../user/LoginScreen.dart';
 import '../../widgets/profile_pic.dart';
 
 class ProfilePage extends StatefulWidget {
-
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   final FirebaseAuth auth = FirebaseAuth.instance;
-  var firebaseUser =  FirebaseAuth.instance.currentUser;
-  
+  var firebaseUser = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body:
+          // WillPopScope(
+          //   onWillPop: () {
+          //     Navigator.push(
+          //           context,
+          //           MaterialPageRoute(builder: (context) => ProfilePage()));
+          //           return false ;
+          //    },
+          //   child:
+          SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/bg1.jpg'),
-              fit: BoxFit.cover,)),
+              image: DecorationImage(
+            image: AssetImage('assets/bg1.jpg'),
+            fit: BoxFit.cover,
+          )),
           padding: EdgeInsets.all(10),
           child: Column(
-            
             children: [
               SizedBox(
                 height: 70,
@@ -43,33 +51,35 @@ class _ProfilePageState extends State<ProfilePage> {
                   text: 'Peronal Information',
                   icon: Icon(Icons.person_outline_outlined),
                   press: () {
-                   Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context) => PersonalInfoScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PersonalInfoScreen()));
                   }),
               ProfileMenu(
                   text: 'Preferences',
                   icon: Icon(Icons.favorite_outline_rounded),
                   press: () {
                     Navigator.push(
-                      context, 
-                      MaterialPageRoute(builder: (context) => Preference()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PreferenceOfUser()));
                   }),
               ProfileMenu(
                   text: 'History',
                   icon: Icon(Icons.history),
                   press: () {
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(builder: (context) => History()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => History()));
                   }),
               ProfileMenu(
                   text: 'Change password',
                   icon: Icon(Icons.security_outlined),
                   press: () {
                     Navigator.push(
-                      context, 
-                      MaterialPageRoute(builder: (context) => ChangePassword()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangePassword()));
                   }),
               ProfileMenu(
                   text: 'Signout',
@@ -80,12 +90,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                       (Route<dynamic> route) => false,
                     );
-                  }
-              ),
+                  }),
             ],
           ),
         ),
       ),
+      //),
     );
   }
 }

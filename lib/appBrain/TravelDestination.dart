@@ -1,39 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:smart_travel_planner/appBrain/UserReview.dart';
-import 'package:smart_travel_planner/util/hoteldata.dart';
 
 class TravelDestination {
   TravelDestination(
-      {required this.city,
+      {required this.businessStatus,
       required this.placeId,
       required this.placeName,
-      required this.mainPhotoUrl,
-      required this.reviewScore,
-      required this.reviewScoreWord,
-      required this.reviewText,
+      required this.photoReference,
+      required this.rating,
+      required this.userRatingsTotal,
+      required this.latitude,
+      required this.longitude,
       required this.description,
-      required this.coordinates,
-      required this.checkout,
-      required this.checkin,
+      required this.openStatus,
       required this.address,
-      required this.url,
-      required this.introduction});
+      required this.weather});
 
-  String city;
-  int placeId;
+  String businessStatus;
+  double latitude;
+  double longitude;
   String placeName;
-  String mainPhotoUrl;
-  String reviewScore;
-  String reviewScoreWord;
-  String reviewText;
-  String description;
-  String coordinates;
-  String checkout;
-  String checkin;
+  String openStatus;
+  String placeId;
   String address;
-  String url;
-  String introduction;
+  String rating;
+  String userRatingsTotal;
+  String photoReference;
+  String description;
+  var weather;
 
   //get Current user's id
   static String getCurrentUserId() {
@@ -48,39 +42,47 @@ class TravelDestination {
     return "";
   }
 
-  //store places visited information
+  //store visited place information
   void markPlaceAsVisited() {
     final String uid = getCurrentUserId();
 
-    //create a unique document ID
-    final String docID = uid + this.placeId.toString();
-
-    final userReview = UserReview(
-        placeId: this.placeId, userId: uid, reviewScore: '0.0', comment: "");
-
-    FirebaseFirestore.instance
-        .collection("visitedInformation")
-        .doc(docID)
-        .set({"placeId": userReview.placeId, "userId": userReview.userId});
+    FirebaseFirestore.instance.collection("visitedPlaces").add({
+      "address": address,
+      "businessStatus": businessStatus,
+      "comment": "",
+      "description": description,
+      "latitude": latitude,
+      "longitude": longitude,
+      "openStatus": openStatus,
+      "photoReference": photoReference,
+      "placeId": placeId,
+      "placeName": placeName,
+      "rating": rating,
+      "reviewScore": 0.0,
+      "userId": uid,
+      "userRatingsTotal": userRatingsTotal
+    });
   }
 
   //store user reviews and comments
   void addReviewComments(double reviewScore, String comment) {
     final String uid = getCurrentUserId();
 
-    final String docID = uid + this.placeId.toString();
-
-    final userReview = UserReview(
-        placeId: this.placeId,
-        userId: uid,
-        reviewScore: reviewScore.toString(),
-        comment: comment);
-
-    FirebaseFirestore.instance.collection("visitedInformation").doc(docID).set({
-      "reviewScore": double.parse(userReview.reviewScore),
-      "placeId": userReview.placeId,
-      "comment": userReview.comment,
-      "userId": userReview.userId
+    FirebaseFirestore.instance.collection("visitedPlaces").add({
+      "address": address,
+      "businessStatus": businessStatus,
+      "comment": comment,
+      "description": description,
+      "latitude": latitude,
+      "longitude": longitude,
+      "openStatus": openStatus,
+      "photoReference": photoReference,
+      "placeId": placeId,
+      "placeName": placeName,
+      "rating": rating,
+      "reviewScore": reviewScore,
+      "userId": uid,
+      "userRatingsTotal": userRatingsTotal
     });
   }
 }

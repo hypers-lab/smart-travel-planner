@@ -23,7 +23,7 @@ class ReviewListTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(placeReview.travelDestination.city, //place city
+            Text(placeReview.place.travelDestination.address, //place city
                 style: TextStyle(color: Colors.grey[500])),
             Row(
               children: [
@@ -33,7 +33,7 @@ class ReviewListTile extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (BuildContext context) {
                           return Details(
-                            place: placeReview.travelDestination,
+                            place: placeReview.place,
                           );
                         },
                       ),
@@ -42,7 +42,8 @@ class ReviewListTile extends StatelessWidget {
                   icon: Icon(Icons.location_city),
                   splashColor: Colors.yellow,
                 ),
-                Text(placeReview.travelDestination.placeName), //place name
+                Text(
+                    placeReview.place.travelDestination.placeName), //place name
               ],
             ),
             Padding(

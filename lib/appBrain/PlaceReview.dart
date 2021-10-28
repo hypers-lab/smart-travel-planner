@@ -1,9 +1,9 @@
-import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/appBrain/UserReview.dart';
+import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 
 class PlaceReview {
-  PlaceReview(this.travelDestination, this.userReview);
+  PlaceReview(this.place, this.userReview);
 
-  final TravelDestination travelDestination;
+  final PlaceInformation place;
   final UserReview userReview;
 }

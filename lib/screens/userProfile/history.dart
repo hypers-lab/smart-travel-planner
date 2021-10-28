@@ -71,10 +71,11 @@ class _HistoryState extends State<History> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.green[800],
           title: Text('Your Travelling History'),
           centerTitle: true,
           leading: BackButton(
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ProfilePage()));

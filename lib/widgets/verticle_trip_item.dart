@@ -91,16 +91,15 @@ class VerticalTripItem extends StatelessWidget {
           ),
         ),
         onTap: () {
-          //final List<TravelDestination> suggestions =TravelDestination.getSuggestedPlacesFromModel(place.placeId) as List<TravelDestination>;
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) {
-                return TripDetails(
-                  trip: trip,
-                );
-              },
-            ),
-          );
+          // Navigator.of(context).push(
+          //   MaterialPageRoute(
+          //     builder: (BuildContext context) {
+          //       return TripDetails(
+          //         trip: trip,
+          //       );
+          //     },
+          //   ),
+          // );
         },
       ),
     );

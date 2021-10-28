@@ -1,13 +1,17 @@
-import 'package:test/test.dart';
 import 'package:smart_travel_planner/appBrain/location.dart';
+import 'package:test/test.dart';
 
 void main() {
-  test('Location coordinates should be set as Lat and Long', () {
-    final placeLocation = PlaceLocation(
-        coordinates: "9.75584262,80.02847794", placeName: "Test_Place");
+  group('Location:', () {
+    test('Location object should be created.', () {
+      PlaceLocation placeLocation = PlaceLocation(
+          latitude: 6.9321595,
+          longitude: 79.86821929999999,
+          placeName: "Electricity Board Maligawatta Office");
 
-    List latNlng = placeLocation.setLatnLong();
-
-    expect(latNlng, [9.75584262, 80.02847794]);
+      expect(placeLocation.latitude, 6.9321595);
+      expect(placeLocation.longitude, 79.86821929999999);
+      expect(placeLocation.placeName, "Electricity Board Maligawatta Office");
+    });
   });
 }

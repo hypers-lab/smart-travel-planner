@@ -1,62 +1,89 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:getwidget/components/dropdown/gf_multiselect.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_travel_planner/appBrain/Preferences.dart';
-import 'package:smart_travel_planner/widgets/button.dart';
-import 'profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smart_travel_planner/screens/userProfile/edit_preferences.dart';
+import 'package:smart_travel_planner/screens/userProfile/profile.dart';
 
-class Preference extends StatefulWidget {
+class PreferenceOfUser extends StatefulWidget {
+  const PreferenceOfUser({Key? key}) : super(key: key);
+
   @override
-  _PreferenceState createState() => _PreferenceState();
+  _PreferenceOfUserState createState() => _PreferenceOfUserState();
 }
 
-class _PreferenceState extends State<Preference> {
+class _PreferenceOfUserState extends State<PreferenceOfUser> {
   bool isFetching = false;
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
   void initState() {
     super.initState();
-    //getData();
+    getPreferencesOfUser();
   }
 
-  //to send the selected prefered items to firestore
-  List? _myActivitiesTypes;
-  List? _myActivitiesAreas;
+  final String uid = UserPreferences.getCurrentUserId();
 
-  //The drop down list
-  List preferredAreas = ['Jaffna', 'Kandy'];
-  List preferredTypes = ['Lodging'];
+  List preferredAreas = [
+    'Ampara',
+    'Anuradhapura',
+    'Badulla',
+    'Batticaloa',
+    'Colombo',
+    'Galle',
+    'Gampaha',
+    'Hambantota',
+    'Jaffna',
+    'Kalutara',
+    'Kandy',
+    'Kegalle',
+    'Kilinochchi',
+    'Kurunegala',
+    'Mannar',
+    'Matale',
+    'Matara',
+    'Moneragala',
+    'Mullaitivu',
+    'Nuwara Eliya',
+    'Polonnaruwa',
+    'Puttalam',
+    'Ratnapura',
+    'Trincomalee',
+    'Vavuniya'
+  ];
+  List preferredTypes = [
+    'Cafe',
+    'Church',
+    'Clothing store',
+    'Gym',
+    'Hindu temple',
+    'Home goods store',
+    'Library',
+    'Mosque',
+    'Movie theater',
+    'Museum',
+    'Night club',
+    'Park',
+    'Shopping mall',
+    'Super market',
+    'Zoo',
+    'Spa',
+    'Restaurant',
+    'Pet store',
+    'Meal delivery',
+    'Meal takeaway',
+    'Lodge'
+  ];
 
-  // CollectionReference _collectionTypes =
-  //     FirebaseFirestore.instance.collection('preferredTypes');
-  // CollectionReference _collectionAreas =
-  //     FirebaseFirestore.instance.collection('preferredAreas');
+  //recieve user preferences from database
+  List userPreferedArea = [];
+  List userPreferedType = [];
 
-  //get the dropdown menus from firestore
-  // Future<void> getData() async {
-  //   setState(() {
-  //     isFetching = true;
-  //   });
-  //   QuerySnapshot querySnapshotAreas = await _collectionAreas.get();
-  //   final areas = querySnapshotAreas.docs.map((doc) => doc.get('area_name'));
-  //   preferredAreas = areas.toList();
-  //   preferredAreas.sort();
-  //   print(preferredAreas);
+  List area = [];
+  List place = [];
 
-  //   QuerySnapshot querySnapshotTypes = await _collectionTypes.get();
-  //   final types = querySnapshotTypes.docs.map((doc) => doc.get('PlaceName'));
-  //   preferredTypes = types.toList();
-  //   preferredTypes.sort();
+  String parea = '';
+  String pplace = '';
 
-  //   getPreferencesOfUser();
-
-  //   setState(() {
-  //     isFetching = false;
-  //   });
-  // }
-
-  //get current user's preferences
+  //get user details as instance from server
   Future getPreferencesOfUser() async {
     setState(() {
       isFetching = true;
@@ -71,7 +98,20 @@ class _PreferenceState extends State<Preference> {
         areas: value.get('preferredAreas'),
       );
 
-      print(userPreference.types);
+      userPreferedArea = userPreference.areas;
+      userPreferedType = userPreference.types;
+
+      for (int val in userPreferedArea) {
+        area.add(preferredAreas[val]);
+        parea += preferredAreas[val] + ', ';
+      }
+      print(parea);
+      area.toString();
+
+      for (int val in userPreferedType) {
+        place.add(preferredTypes[val]);
+        pplace += preferredTypes[val] + ', ';
+      }
     });
 
     setState(() {
@@ -79,19 +119,23 @@ class _PreferenceState extends State<Preference> {
     });
   }
 
+  //instance for firebase and current user
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var firebaseUser = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add You Preferences....'),
-        centerTitle: true,
+        backgroundColor: Colors.green[800],
         leading: BackButton(
-          color: Colors.black,
+          color: Colors.white,
           onPressed: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => ProfilePage()));
           },
         ),
+        title: Text('Your preferences'),
+        centerTitle: true,
       ),
       body: isFetching
           ? Center(
@@ -99,133 +143,76 @@ class _PreferenceState extends State<Preference> {
             )
           : SingleChildScrollView(
               child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/edit2.jpg'),
-                        fit: BoxFit.fill)),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Form(
-                    key: _formkey,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: preferenceOption(
-                              items: preferredTypes,
-                              onSelectedItems: _myActivitiesTypes),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: preferenceOption(
-                              items: preferredAreas,
-                              onSelectedItems: _myActivitiesAreas),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          width: (MediaQuery.of(context).size.width) / 2 + 30,
-                          child: Row(
-                            children: [
-                              button(
-                                  text: 'Cancel',
-                                  color: Colors.red.shade900,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfilePage()));
-                                  }),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              button(
-                                  text: 'Save',
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content:
-                                          Text('Your preferences are saved'),
-                                    ));
-                                    _sendToServer();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfilePage()));
-                                  },
-                                  color: Colors.teal.shade900),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/travel.jpg'),
+                      fit: BoxFit.fill)),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 80,
                   ),
-                ),
+                  infoContent(
+                      information: parea, title: 'Your preferred areas'),
+                  SizedBox(height: 30),
+                  infoContent(
+                      information: pplace, title: 'Your preferred place types'),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Preference()));
+                        },
+                        child: Text(
+                          'Edit your preferences',
+                          style: TextStyle(),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(left: 50, right: 50),
+                          primary: Colors.teal[900],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(18.0),
+                          ),
+                          onPrimary: Colors.white,
+                          shadowColor: Colors.blueGrey,
+                          elevation: 10,
+                        ),
+                      )),
+                ],
               ),
-            ),
+            )),
     );
   }
-
-  Widget preferenceOption({
-    required List items,
-    List? onSelectedItems,
-  }) =>
-      GFMultiSelect(
-        items: items,
-        onSelect: (value) {
-          setState(() {
-            onSelectedItems = value;
-          });
-        },
-        dropdownTitleTileText: 'Select your prefered areas',
-        dropdownTitleTileColor: Colors.green[100],
-        dropdownTitleTileMargin: EdgeInsets.all(0),
-        dropdownTitleTilePadding: EdgeInsets.all(10),
-        dropdownUnderlineBorder:
-            const BorderSide(color: Colors.transparent, width: 2),
-        dropdownTitleTileBorder:
-            Border.all(color: Colors.grey.shade700, width: 1),
-        dropdownTitleTileBorderRadius: BorderRadius.circular(10),
-        expandedIcon: const Icon(
-          Icons.keyboard_arrow_down,
-          color: Colors.black54,
-        ),
-        collapsedIcon: const Icon(
-          Icons.keyboard_arrow_up,
-          color: Colors.black54,
-        ),
-        submitButton: Text(
-          'OK',
-        ),
-        dropdownTitleTileTextStyle:
-            const TextStyle(fontSize: 14, color: Colors.black54),
-        padding: const EdgeInsets.fromLTRB(18, 2, 20, 2),
-        margin: const EdgeInsets.all(6),
-        activeBgColor: Colors.green.shade100,
-        inactiveBorderColor: Colors.green.shade100,
-      );
-
-  // Send the preference values to userPreferences collection
-  _sendToServer() async {
-    _saveForm();
-    var firebaseUser = FirebaseAuth.instance.currentUser;
-    await FirebaseFirestore.instance
-        .collection('userPreferences')
-        .doc('xjtZPHcYBVWbKGcTkpALlfGkWoM2')
-        .update({
-      'preferredTypes': _myActivitiesTypes,
-      'preferredAreas': _myActivitiesAreas,
-    });
-  }
-
-  //save the values
-  _saveForm() {
-    _formkey.currentState!.save();
-  }
 }
+
+Widget infoContent({
+  required String information,
+  required String title,
+}) =>
+    Card(
+      elevation: 15,
+      color: Colors.green[100],
+      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+      child: ListTile(
+        title: Center(
+          child: Text(
+            title,
+            style: GoogleFonts.dmSerifDisplay(
+                fontWeight: FontWeight.w800, fontSize: 17, letterSpacing: 1),
+          ),
+        ),
+        subtitle: Center(
+          child: Text(
+            information,
+            style: GoogleFonts.shadowsIntoLight(
+                fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 3),
+          ),
+        ),
+      ),
+    );

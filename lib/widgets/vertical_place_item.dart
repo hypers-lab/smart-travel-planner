@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
-import '../screens/places/details.dart';
-import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
+import 'package:flutter/material.dart';
+import 'package:smart_travel_planner/appBrain/placeInformation.dart';
+import 'package:smart_travel_planner/screens/places/details.dart';
 
 class VerticalPlaceItem extends StatelessWidget {
-  final TravelDestination place;
+  final PlaceInformation place;
 
   VerticalPlaceItem(this.place);
 
@@ -20,8 +21,7 @@ class VerticalPlaceItem extends StatelessWidget {
               Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: Image.network("${place.mainPhotoUrl}",
-                      height: 80.0, width: 80.0, fit: BoxFit.cover),
+                  child: Image.memory(place.image, fit: BoxFit.fill),
                 ),
               ),
               SizedBox(width: 15.0),
@@ -36,7 +36,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${place.placeName}",
+                        "${place.travelDestination.placeName}",
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -59,7 +59,7 @@ class VerticalPlaceItem extends StatelessWidget {
                           width: MediaQuery.of(context).size.width - 180,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "${place.address}",
+                            "${place.travelDestination.address}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -76,7 +76,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Ratings: ${place.reviewScore}",
+                        "Ratings: ${place.travelDestination.rating}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
