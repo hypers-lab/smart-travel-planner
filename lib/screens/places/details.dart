@@ -262,26 +262,7 @@ class _DetailsState extends State<Details> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.add_box,
-              color: Colors.blue,
-              size: 24.0,
-            ),
-            onPressed: () {
-              _addTripPlan(place.travelDestination.placeId);
-            },
-          ),
-          IconButton(
-            icon: IconBadge(
-              icon: Icons.notifications_none,
-              color: Colors.amber,
-              size: 24.0,
-            ),
-            onPressed: () {},
-          ),
-        ],
+        actions: <Widget>[],
       ),
       body: ListView(
         children: <Widget>[

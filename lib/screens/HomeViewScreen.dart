@@ -220,6 +220,7 @@ class _HomePageState extends State<HomePage> {
 
           PlaceInformation placeInformation =
               PlaceInformation(travelDestination, image);
+          recentPlaces.add(placeInformation);
 
           if (this.mounted) {
             setState(() {
