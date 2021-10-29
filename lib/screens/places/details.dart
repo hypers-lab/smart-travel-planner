@@ -114,7 +114,7 @@ class _DetailsState extends State<Details> {
     Alert(
       context: context,
       title: title,
-      image: Image.asset("assets/place_visted_confirm.png",
+      image: Image.asset("assets/weather.png",
           height: 250.0, width: 300.0),
       desc: weatherDetails[0]['main'].toString() +
           '\n' +
@@ -358,10 +358,10 @@ class _DetailsState extends State<Details> {
                       heroTag: "btn3",
                       child: Icon(
                         Icons.wb_sunny,
-                        size: 30,
-                        color: Colors.yellowAccent,
+                        size: 35,
+                        color: Colors.orangeAccent,
                       ),
-                      backgroundColor: Colors.greenAccent,
+                      backgroundColor: Colors.lightBlue.shade300,
                       onPressed: () {
                         _showWeatherDialog(
                             context,
