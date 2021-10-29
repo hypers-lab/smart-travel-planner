@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 
 class TravelDestination {
-  TravelDestination(
-      {required this.businessStatus,
-      required this.placeId,
-      required this.placeName,
-      required this.photoReference,
-      required this.rating,
-      required this.userRatingsTotal,
-      required this.latitude,
-      required this.longitude,
-      required this.description,
-      required this.openStatus,
-      required this.address,
-      required this.weather});
+  TravelDestination({
+    required this.businessStatus,
+    required this.placeId,
+    required this.placeName,
+    required this.photoReference,
+    required this.rating,
+    required this.userRatingsTotal,
+    required this.latitude,
+    required this.longitude,
+    required this.description,
+    required this.openStatus,
+    required this.address,
+  });
 
   String businessStatus;
   double latitude;
@@ -27,7 +28,6 @@ class TravelDestination {
   String userRatingsTotal;
   String photoReference;
   String description;
-  var weather;
 
   //get Current user's id
   static String getCurrentUserId() {
@@ -43,22 +43,21 @@ class TravelDestination {
   }
 
   //store visited place information
-  void markPlaceAsVisited() {
+  void markPlaceAsVisited(PlaceInformation place) {
     final String uid = getCurrentUserId();
 
     FirebaseFirestore.instance.collection("visitedPlaces").add({
-      "address": address,
-      "businessStatus": businessStatus,
+      "address": place.travelDestination.address,
+      "businessStatus": place.travelDestination.businessStatus,
       "comment": "",
-      "description": description,
-      "latitude": latitude,
-      "longitude": longitude,
-      "openStatus": openStatus,
-      "photoReference": photoReference,
-      "placeId": placeId,
-      "placeName": placeName,
-      "rating": rating,
-      "reviewScore": 0.0,
+      "description": place.travelDestination.description,
+      "latitude": place.travelDestination.latitude,
+      "longitude": place.travelDestination.longitude,
+      "openStatus": place.travelDestination.openStatus,
+      "photoReference": place.travelDestination.photoReference,
+      "placeId": place.travelDestination.placeId,
+      "placeName": place.travelDestination.placeName,
+      "rating": place.travelDestination.rating,
       "userId": uid,
       "userRatingsTotal": userRatingsTotal
     });

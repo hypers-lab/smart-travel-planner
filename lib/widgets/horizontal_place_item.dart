@@ -20,7 +20,12 @@ class HorizontalPlaceItem extends StatelessWidget {
               Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.memory(place.image, fit: BoxFit.cover),
+                  child: Image.memory(
+                    place.image,
+                    height: 150.0,
+                    width: 120.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               SizedBox(height: 7.0),

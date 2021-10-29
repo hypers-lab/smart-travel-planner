@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/appBrain/Trip.dart';
+import 'package:smart_travel_planner/appBrain/TripInformation.dart';
 import 'package:smart_travel_planner/screens/places/TripDetails.dart';
 
 class VerticalTripItem extends StatelessWidget {
-  final Trip trip;
+  final TripInformation trip;
 
   VerticalTripItem(this.trip);
 
@@ -19,7 +19,7 @@ class VerticalTripItem extends StatelessWidget {
               Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: Image.network("${trip.image}",
+                  child: Image.memory(trip.image,
                       height: 80.0, width: 80.0, fit: BoxFit.cover),
                 ),
               ),
@@ -35,7 +35,7 @@ class VerticalTripItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "${trip.tripName}",
+                        "${trip.trip.tripName}",
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -58,7 +58,7 @@ class VerticalTripItem extends StatelessWidget {
                           width: MediaQuery.of(context).size.width - 180,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "${trip.date}",
+                            "${trip.trip.date}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -75,7 +75,7 @@ class VerticalTripItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Status: ${trip.status.toString()}",
+                        "Status: ${trip.trip.status == 0 ? 'Planned' : 'Finished'}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
@@ -91,15 +91,15 @@ class VerticalTripItem extends StatelessWidget {
           ),
         ),
         onTap: () {
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (BuildContext context) {
-          //       return TripDetails(
-          //         trip: trip,
-          //       );
-          //     },
-          //   ),
-          // );
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) {
+                return TripDetails(
+                  trip: trip.trip,
+                );
+              },
+            ),
+          );
         },
       ),
     );

@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +11,6 @@ import 'package:smart_travel_planner/util/const.dart';
 import '../widgets/horizontal_place_item.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -57,6 +54,11 @@ class _HomePageState extends State<HomePage> {
     getUserPreferedPlacesData();
   }
 
+  // Future<void> executePipeline() async {
+  //   await getRecentPlacesData();
+  //   await getNearbyPlacesData();
+  // }
+
   //get nearby places
   void getNearbyPlacesData() async {
     setState(() {
@@ -70,11 +72,11 @@ class _HomePageState extends State<HomePage> {
       3500,
     );
 
-    var nearBySearrchResults = result!.results;
+    if (result != null) {
+      var nearBySearchResults = result.results;
 
-    if (nearBySearrchResults != null) {
-      for (var placeInfo in nearBySearrchResults) {
-        if (placeInfo != null) {
+      if (nearBySearchResults != null) {
+        for (var placeInfo in nearBySearchResults) {
           var businessStatus = placeInfo.businessStatus;
           var location;
           var longitude;
@@ -88,37 +90,15 @@ class _HomePageState extends State<HomePage> {
             }
           }
 
-          var weatherDetails = [];
-          if (geometry != null) {
-            location = geometry.location;
-            if (location != null) {
-              latitude = location.lat;
-              longitude = location.lng;
-
-              //weather details
-              String urlName =
-                  "https://api.openweathermap.org/data/2.5/weather?lat=" +
-                      latitude.toString() +
-                      "&lon=" +
-                      longitude.toString() +
-                      "&appid=a47323fec912e74eeecd6507fb739b9d";
-              var url = Uri.parse(urlName);
-              var response = await http.get(url);
-
-              if (response.statusCode == 200) {
-                var jsonResponse = jsonDecode(response.body);
-                weatherDetails = jsonResponse['weather'].toSet().toList();
-              }
-            }
-          }
-
           var placeName = placeInfo.name;
+          //print(placeName);
           var openingHours = placeInfo.openingHours;
           var openStatus;
           if (openingHours != null) {
             openStatus = openingHours.openNow;
           }
-          var placeId = placeInfo.id;
+          var placeId = placeInfo.placeId;
+          //print(placeId);
           var plusCode = placeInfo.plusCode;
           var address;
           if (plusCode != null) {
@@ -134,18 +114,95 @@ class _HomePageState extends State<HomePage> {
           var description = placeInfo.vicinity;
 
           TravelDestination travelDestination = TravelDestination(
-              businessStatus: businessStatus.toString(),
-              placeId: placeId.toString(),
-              placeName: placeName.toString(),
-              photoReference: photoReference.toString(),
-              rating: rating.toString(),
-              userRatingsTotal: userRatingsTotal.toString(),
-              latitude: latitude,
-              longitude: longitude,
-              description: description.toString(),
-              openStatus: openStatus.toString(),
-              address: address.toString(),
-              weather: weatherDetails);
+            businessStatus: businessStatus.toString(),
+            placeId: placeId.toString(),
+            placeName: placeName.toString(),
+            photoReference: photoReference.toString(),
+            rating: rating.toString(),
+            userRatingsTotal: userRatingsTotal.toString(),
+            latitude: latitude,
+            longitude: longitude,
+            description: description.toString(),
+            openStatus: openStatus.toString(),
+            address: address.toString(),
+          );
+
+          //default image
+          // Uint8List image =
+          //     (await rootBundle.load('assets/default_place_image.jpg'))
+          //         .buffer
+          //         .asUint8List();
+
+          var image = await this
+              .googlePlace
+              .photos
+              .get(travelDestination.photoReference, 0, 400);
+          if (image == null) {
+            image = (await rootBundle.load('assets/default_place_image.jpg'))
+                .buffer
+                .asUint8List();
+          }
+
+          PlaceInformation placeInformation =
+              PlaceInformation(travelDestination, image);
+
+          nearByPlaces.add(placeInformation);
+          setState(() {
+            isFetching = false;
+          });
+        }
+      }
+    }
+
+    if (this.mounted) {
+      setState(() {
+        isFetching = false;
+      });
+    }
+  }
+
+  // Method for retrieving the current location
+  _getCurrentLocation() async {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      _currentPosition = position;
+      //print('Current Location: $_currentPosition');
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  //get user recently travelled places
+  void getRecentPlacesData() async {
+    setState(() {
+      isFetchingHistory = true;
+    });
+
+    final String uid = TravelDestination.getCurrentUserId();
+
+    await FirebaseFirestore.instance
+        .collection("visitedPlaces")
+        .where("userId", isEqualTo: uid)
+        .limit(10)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.length != 0) {
+        querySnapshot.docs.forEach((doc) async {
+          print(doc["placeId"]);
+
+          TravelDestination travelDestination = TravelDestination(
+            businessStatus: doc["businessStatus"],
+            placeId: doc["placeId"],
+            placeName: doc["placeName"],
+            photoReference: doc["photoReference"],
+            rating: doc["rating"],
+            userRatingsTotal: doc["userRatingsTotal"],
+            latitude: doc["latitude"],
+            longitude: doc["longitude"],
+            description: doc["description"],
+            openStatus: doc["openStatus"],
+            address: doc["address"],
+          );
 
           //default image
           Uint8List image =
@@ -164,102 +221,13 @@ class _HomePageState extends State<HomePage> {
           PlaceInformation placeInformation =
               PlaceInformation(travelDestination, image);
 
-          nearByPlaces.add(placeInformation);
-        }
+          if (this.mounted) {
+            setState(() {
+              isFetchingHistory = false;
+            });
+          }
+        });
       }
-    }
-
-    if (this.mounted) {
-      setState(() {
-        isFetching = false;
-      });
-    }
-  }
-
-  // Method for retrieving the current location
-  _getCurrentLocation() async {
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) async {
-      _currentPosition = position;
-      print('Current Location: $_currentPosition');
-    }).catchError((e) {
-      print(e);
-    });
-  }
-
-  //get user recently travelled places
-  Future<void> getRecentPlacesData() async {
-    setState(() {
-      isFetchingHistory = true;
-    });
-
-    final String uid = TravelDestination.getCurrentUserId();
-
-    await FirebaseFirestore.instance
-        .collection("visitedPlaces")
-        .where("userId", isEqualTo: uid)
-        .limit(10)
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) async {
-        print(doc["placeName"]);
-
-        //weather details
-        // String urlName =
-        //     "https://api.openweathermap.org/data/2.5/weather?lat=" +
-        //         doc["latitude"] +
-        //         "&lon=" +
-        //         doc["longitude"] +
-        //         "&appid=a47323fec912e74eeecd6507fb739b9d";
-        // var url = Uri.parse(urlName);
-        // var response = await http.get(url);
-
-        // var weatherDetails = [];
-        // if (response.statusCode == 200) {
-        //   var jsonResponse = jsonDecode(response.body);
-        //   weatherDetails = jsonResponse['weather'].toSet().toList();
-        //   print(weatherDetails);
-        // }
-
-        TravelDestination travelDestination = TravelDestination(
-            businessStatus: doc["businessStatus"],
-            placeId: doc["placeId"],
-            placeName: doc["placeName"],
-            photoReference: doc["photoReference"],
-            rating: doc["rating"],
-            userRatingsTotal: doc["userRatingsTotal"],
-            latitude: doc["latitude"],
-            longitude: doc["longitude"],
-            description: doc["description"],
-            openStatus: doc["openStatus"],
-            address: doc["address"],
-            weather: []);
-
-        //default image
-        Uint8List image =
-            (await rootBundle.load('assets/default_place_image.jpg'))
-                .buffer
-                .asUint8List();
-
-        var imageResult = await this
-            .googlePlace
-            .photos
-            .get(travelDestination.photoReference, 0, 400);
-        if (imageResult != null) {
-          image = imageResult;
-        }
-
-        PlaceInformation placeInformation =
-            PlaceInformation(travelDestination, image);
-
-        recentPlaces.add(placeInformation);
-
-        if (this.mounted) {
-          setState(() {
-            isFetchingHistory = false;
-          });
-        }
-      });
     });
   }
 
@@ -371,8 +339,7 @@ class _HomePageState extends State<HomePage> {
                     longitude: longitude,
                     description: description.toString(),
                     openStatus: openStatus.toString(),
-                    address: address.toString(),
-                    weather: []);
+                    address: address.toString());
 
                 //default image
                 Uint8List image =
@@ -436,7 +403,17 @@ class _HomePageState extends State<HomePage> {
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : buildHorizontalList(context),
+              : recentPlaces.length > 0
+                  ? buildHorizontalList(context)
+                  : Center(
+                      child: Text(
+                        "No visited places",
+                        style: TextStyle(
+                          fontSize: 10.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
           Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: Text(

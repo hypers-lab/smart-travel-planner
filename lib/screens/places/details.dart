@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_place/google_place.dart';
@@ -16,7 +17,6 @@ import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/util/const.dart';
 import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
 import 'package:smart_travel_planner/widgets/icon_badge.dart';
-import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:smart_travel_planner/widgets/trip_select_popup.dart';
 
@@ -59,7 +59,7 @@ class _DetailsState extends State<Details> {
   }
 
   //Dialog box for marking the place as visited
-  _showVistedMarkingDialog(context, String showText) {
+  _showVistedMarkingDialog(context, PlaceInformation placeId, String showText) {
     Alert(
       context: context,
       title: showText,
@@ -73,7 +73,7 @@ class _DetailsState extends State<Details> {
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           onPressed: () => {
-            place.travelDestination.markPlaceAsVisited(),
+            place.travelDestination.markPlaceAsVisited(place),
             Navigator.pop(context)
           },
           color: Color.fromRGBO(0, 179, 134, 1.0),
@@ -90,6 +90,35 @@ class _DetailsState extends State<Details> {
           ]),
         )
       ],
+    ).show();
+  }
+
+  //Dialog box for marking the place as visited
+  _showWeatherDialog(
+      context, String title, double latitude, double longitude) async {
+    String urlName = "https://api.openweathermap.org/data/2.5/weather?lat=" +
+        latitude.toString() +
+        "&lon=" +
+        longitude.toString() +
+        "&appid=a47323fec912e74eeecd6507fb739b9d";
+    var url = Uri.parse(urlName);
+    var response = await http.get(url);
+
+    var weatherDetails = [];
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(response.body);
+      weatherDetails = jsonResponse['weather'].toSet().toList();
+      //print(weatherDetails);
+    }
+
+    Alert(
+      context: context,
+      title: title,
+      image: Image.asset("assets/place_visted_confirm.png",
+          height: 250.0, width: 300.0),
+      desc: weatherDetails[0]['main'].toString() +
+          '\n' +
+          weatherDetails[0]['description'].toString(),
     ).show();
   }
 
@@ -181,18 +210,18 @@ class _DetailsState extends State<Details> {
           var description = placeInfo.vicinity;
 
           TravelDestination travelDestination = TravelDestination(
-              businessStatus: businessStatus.toString(),
-              placeId: placeId.toString(),
-              placeName: placeName.toString(),
-              photoReference: photoReference.toString(),
-              rating: rating.toString(),
-              userRatingsTotal: userRatingsTotal.toString(),
-              latitude: latitude,
-              longitude: longitude,
-              description: description.toString(),
-              openStatus: openStatus.toString(),
-              address: address.toString(),
-              weather: weatherDetails);
+            businessStatus: businessStatus.toString(),
+            placeId: placeId.toString(),
+            placeName: placeName.toString(),
+            photoReference: photoReference.toString(),
+            rating: rating.toString(),
+            userRatingsTotal: userRatingsTotal.toString(),
+            latitude: latitude,
+            longitude: longitude,
+            description: description.toString(),
+            openStatus: openStatus.toString(),
+            address: address.toString(),
+          );
 
           //default image
           Uint8List image =
@@ -241,7 +270,7 @@ class _DetailsState extends State<Details> {
               size: 24.0,
             ),
             onPressed: () {
-              _addTripPlan();
+              _addTripPlan(place.travelDestination.placeId);
             },
           ),
           IconButton(
@@ -274,54 +303,82 @@ class _DetailsState extends State<Details> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        place.travelDestination.placeName,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 22,
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          place.travelDestination.placeName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 22,
+                          ),
+                          maxLines: 2,
+                          textAlign: TextAlign.left,
                         ),
-                        maxLines: 2,
-                        textAlign: TextAlign.left,
                       ),
-                    ),
+                    ],
                   ),
-                  FloatingActionButton(
-                    heroTag: "btn1",
-                    child: Icon(
-                      Icons.beenhere,
-                      size: 25,
-                      color: Colors.red,
-                    ),
-                    backgroundColor: Colors.orangeAccent,
-                    onPressed: () =>
-                        {_showVistedMarkingDialog(context, "Mark As Visited")},
-                  ),
-                  SizedBox(width: 10.0),
-                  FloatingActionButton(
-                    heroTag: "btn2",
-                    child: Icon(
-                      Icons.map_sharp,
-                      size: 30,
-                      color: Colors.lime,
-                    ),
-                    backgroundColor: Colors.blueGrey,
-                    onPressed: () {
-                      PlaceLocation visitPlace = PlaceLocation(
-                          latitude: place.travelDestination.latitude,
-                          longitude: place.travelDestination.longitude,
-                          placeName: place.travelDestination.placeName);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MapViewScreen(visitPlace)),
-                      );
-                    },
-                  )
                 ],
+              ),
+              SizedBox(height: 5),
+              Center(
+                child: Row(
+                  children: [
+                    FloatingActionButton(
+                      heroTag: "btn1",
+                      child: Icon(
+                        Icons.beenhere,
+                        size: 25,
+                        color: Colors.red,
+                      ),
+                      backgroundColor: Colors.orangeAccent,
+                      onPressed: () => {
+                        _showVistedMarkingDialog(
+                            context, place, "Mark As Visited")
+                      },
+                    ),
+                    SizedBox(width: 10.0),
+                    FloatingActionButton(
+                      heroTag: "btn2",
+                      child: Icon(
+                        Icons.map_sharp,
+                        size: 30,
+                        color: Colors.lime,
+                      ),
+                      backgroundColor: Colors.blueGrey,
+                      onPressed: () {
+                        PlaceLocation visitPlace = PlaceLocation(
+                            latitude: place.travelDestination.latitude,
+                            longitude: place.travelDestination.longitude,
+                            placeName: place.travelDestination.placeName);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MapViewScreen(visitPlace)),
+                        );
+                      },
+                    ),
+                    SizedBox(width: 10.0),
+                    FloatingActionButton(
+                      heroTag: "btn3",
+                      child: Icon(
+                        Icons.wb_sunny,
+                        size: 30,
+                        color: Colors.yellowAccent,
+                      ),
+                      backgroundColor: Colors.greenAccent,
+                      onPressed: () {
+                        _showWeatherDialog(
+                            context,
+                            place.travelDestination.placeName,
+                            place.travelDestination.latitude,
+                            place.travelDestination.longitude);
+                      },
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 5),
               Row(
@@ -454,13 +511,38 @@ class _DetailsState extends State<Details> {
 
   //dialog box for adding a trip
   var tripNameController = TextEditingController();
-  Future<void> _addTripPlan() async {
+  Future<void> _addTripPlan(String placeId) async {
+    //print(place.travelDestination.placeId);
+    List<DropdownMenuItem<String>> menuItems = await dropdownTripItems();
     return await showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return TripSelectPopUp(tripNameController: tripNameController);
+        return TripSelectPopUp(
+          tripNameController: tripNameController,
+          menuItems: menuItems,
+          placeId: placeId,
+        );
       },
     );
+  }
+
+  Future<List<DropdownMenuItem<String>>> dropdownTripItems() async {
+    List<DropdownMenuItem<String>> menuItems = [];
+    menuItems.add(DropdownMenuItem(child: Text("Choose"), value: "null"));
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.length != 0) {
+        querySnapshot.docs.forEach((doc) async {
+          menuItems.add(DropdownMenuItem(
+              child: Text(doc["tripName"]), value: doc.reference.id));
+        });
+      } else {
+        menuItems.add(DropdownMenuItem(child: Text("No Trips"), value: "null"));
+      }
+    });
+    return menuItems;
   }
 }
