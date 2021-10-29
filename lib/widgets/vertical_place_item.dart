@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 import 'package:smart_travel_planner/screens/places/details.dart';
@@ -21,7 +19,8 @@ class VerticalPlaceItem extends StatelessWidget {
               Flexible(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5),
-                  child: Image.memory(place.image, fit: BoxFit.fill),
+                  child: Image.memory(place.image,
+                      height: 80.0, width: 80.0, fit: BoxFit.cover),
                 ),
               ),
               SizedBox(width: 15.0),
@@ -92,6 +91,7 @@ class VerticalPlaceItem extends StatelessWidget {
           ),
         ),
         onTap: () {
+          //print(place.travelDestination.placeId);
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (BuildContext context) {
