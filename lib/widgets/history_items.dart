@@ -21,7 +21,7 @@ Widget infoHistoryContent({
                   gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [Colors.green.shade900, Colors.green.shade700])),
+                      colors: [Colors.green.shade300, Colors.green.shade100])),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 14, 14, 14),
                 child: Column(
@@ -32,7 +32,6 @@ Widget infoHistoryContent({
                       height: 30,
                       thickness: 3,
                     ),
-                    
                     Center(child: content(title: 'CITY', body: '$city')),
                     Divider(
                       height: 30,
@@ -63,12 +62,12 @@ Widget content({
             style: GoogleFonts.dmSerifDisplay(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
-                color: Colors.lightGreen[100])),
+                color: Colors.green[900])),
         SizedBox(height: 8),
         Text(body,
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: Colors.lightGreen[200],
+              color: Colors.green[800],
               fontSize: 15,
             )),
       ],
