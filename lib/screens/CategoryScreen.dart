@@ -81,31 +81,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             }
           }
 
-          var weatherDetails = [];
-          if (geometry != null) {
-            location = geometry.location;
-            if (location != null) {
-              latitude = location.lat;
-              longitude = location.lng;
-
-              //weather details
-              String urlName =
-                  "https://api.openweathermap.org/data/2.5/weather?lat=" +
-                      latitude.toString() +
-                      "&lon=" +
-                      longitude.toString() +
-                      "&appid=a47323fec912e74eeecd6507fb739b9d";
-              var url = Uri.parse(urlName);
-              var response = await http.get(url);
-
-              if (response.statusCode == 200) {
-                var jsonResponse = jsonDecode(response.body);
-                weatherDetails = jsonResponse['weather'].toSet().toList();
-                print(weatherDetails);
-              }
-            }
-          }
-
           var placeName = placeInfo.name;
           var openingHours = placeInfo.openingHours;
           var openStatus;
@@ -128,18 +103,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
           var description = placeInfo.vicinity;
 
           TravelDestination travelDestination = TravelDestination(
-              businessStatus: businessStatus.toString(),
-              placeId: placeId.toString(),
-              placeName: placeName.toString(),
-              photoReference: photoReference.toString(),
-              rating: rating.toString(),
-              userRatingsTotal: userRatingsTotal.toString(),
-              latitude: latitude,
-              longitude: longitude,
-              description: description.toString(),
-              openStatus: openStatus.toString(),
-              address: address.toString(),
-              weather: weatherDetails);
+            businessStatus: businessStatus.toString(),
+            placeId: placeId.toString(),
+            placeName: placeName.toString(),
+            photoReference: photoReference.toString(),
+            rating: rating.toString(),
+            userRatingsTotal: userRatingsTotal.toString(),
+            latitude: latitude,
+            longitude: longitude,
+            description: description.toString(),
+            openStatus: openStatus.toString(),
+            address: address.toString(),
+          );
 
           //default image
           Uint8List image =
