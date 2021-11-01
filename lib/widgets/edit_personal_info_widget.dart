@@ -18,7 +18,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     getUserDetails();
   }
 
-// for send to the details to the server
+// for send the details to the server
   late String name;
   late int phonenumber;
   late int age;
@@ -162,9 +162,10 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
 
   // TextForm builder for name
   TextFormField buildNameFormField() {
+    print('Username:$username');
     return TextFormField(
       keyboardType: TextInputType.text,
-      //initialValue: username,
+      initialValue: username,
       onSaved: (value) {
         name = value!;
       },
@@ -233,7 +234,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     );
   }
 
-  // to update the values to database
+  // to update the informations of current user to firestore
   _sendToServer() {
     if (_formkey.currentState!.validate()) {
       //No error in validator
@@ -251,7 +252,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     }
   }
 
-  //get user info from database
+  //get current user's information from firestore
   Future getUserDetails() async {
     await FirebaseFirestore.instance
         .collection('user_personal_information')
@@ -270,6 +271,6 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
       usergender = user.gender;
     });
     print('Mine is $username,$userage,$userphonenumber,$usergender');
-    return 'Fetching error';
+    //return 'Fetching error';
   }
 }

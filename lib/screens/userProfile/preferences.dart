@@ -1,85 +1,117 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:getwidget/components/dropdown/gf_multiselect.dart';
-import 'package:smart_travel_planner/widgets/button.dart';
-import 'profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_travel_planner/appBrain/Preferences.dart';
+import 'package:smart_travel_planner/screens/userProfile/edit_preferences.dart';
+import 'package:smart_travel_planner/screens/userProfile/profile.dart';
 
-class Preference extends StatefulWidget {
+class PreferenceOfUser extends StatefulWidget {
+  const PreferenceOfUser({Key? key}) : super(key: key);
+
   @override
-  _PreferenceState createState() => _PreferenceState();
+  _PreferenceOfUserState createState() => _PreferenceOfUserState();
 }
 
-class _PreferenceState extends State<Preference> {
+class _PreferenceOfUserState extends State<PreferenceOfUser> {
+  bool isFetching = false;
   void initState() {
     super.initState();
-    getData();
-  }
-
-  List? _myActivities1;
-  List? _myActivities2;
-  List? _myActivities3;
-  List? _myActivities4;
-
-  List _preferedPlaces = [];
-  List _preferedAreas = [];
-  List _preferedTimes = [];
-  List _preferedDays = [];
-
-  bool isFetching = false;
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-
-  CollectionReference _collectionplaces =
-      FirebaseFirestore.instance.collection('places');
-  CollectionReference _collectionTimes =
-      FirebaseFirestore.instance.collection('prefered_times');
-  CollectionReference _collectionDays =
-      FirebaseFirestore.instance.collection('prefered_days');
-  CollectionReference _collectionAraes =
-      FirebaseFirestore.instance.collection('prefered_areas');
-
-  Future<void> getData() async {
-    setState(() {
-      isFetching = true;
-    });
-    QuerySnapshot querySnapshotPlaces = await _collectionplaces.get();
-    final places = querySnapshotPlaces.docs.map((doc) => doc.get('place_name'));
-    _preferedPlaces = places.toList();
-
-    QuerySnapshot querySnapshotDays = await _collectionDays.get();
-    final days = querySnapshotDays.docs.map((doc) => doc.get('day'));
-    _preferedDays = days.toList();
-
-    QuerySnapshot querySnapshotAreas = await _collectionAraes.get();
-    final areas = querySnapshotAreas.docs.map((doc) => doc.get('area'));
-    _preferedAreas = areas.toList();
-
-    final QuerySnapshot result = await _collectionTimes.get();
-    final times = result.docs.map((doc) => doc.id);
-    _preferedTimes = times.toList();
-
     getPreferencesOfUser();
-
-    setState(() {
-      isFetching = false;
-    });
   }
 
+  final String uid = UserPreferences.getCurrentUserId();
+
+  List preferredAreas = [
+    'Ampara',
+    'Anuradhapura',
+    'Badulla',
+    'Batticaloa',
+    'Colombo',
+    'Galle',
+    'Gampaha',
+    'Hambantota',
+    'Jaffna',
+    'Kalutara',
+    'Kandy',
+    'Kegalle',
+    'Kilinochchi',
+    'Kurunegala',
+    'Mannar',
+    'Matale',
+    'Matara',
+    'Moneragala',
+    'Mullaitivu',
+    'Nuwara Eliya',
+    'Polonnaruwa',
+    'Puttalam',
+    'Ratnapura',
+    'Trincomalee',
+    'Vavuniya'
+  ];
+  List preferredTypes = [
+    'Cafe',
+    'Church',
+    'Clothing store',
+    'Gym',
+    'Hindu temple',
+    'Home goods store',
+    'Library',
+    'Mosque',
+    'Movie theater',
+    'Museum',
+    'Night club',
+    'Park',
+    'Shopping mall',
+    'Super market',
+    'Zoo',
+    'Spa',
+    'Restaurant',
+    'Pet store',
+    'Meal delivery',
+    'Meal takeaway',
+    'Lodge'
+  ];
+
+  //recieve user preferences from database
+  List userPreferedArea = [];
+  List userPreferedType = [];
+
+  List area = [];
+  List place = [];
+
+  String parea = '';
+  String pplace = '';
+
+  //get user details as instance from server
   Future getPreferencesOfUser() async {
     setState(() {
       isFetching = true;
     });
-
     await FirebaseFirestore.instance
-        .collection('user_preferences')
+        .collection('userPreferences')
         .doc((FirebaseAuth.instance.currentUser!).uid)
         .get()
         .then((value) {
-      _preferedTimes = value.get('prefered_times');
-      _preferedAreas = value.get('prefered_areas');
-      _preferedDays = value.get('prefered_days');
+      UserPreferences userPreference = UserPreferences(
+        types: value.get('preferredTypes'),
+        areas: value.get('preferredAreas'),
+      );
 
+      userPreferedArea = userPreference.areas;
+      userPreferedType = userPreference.types;
+
+      for (int val in userPreferedArea) {
+        area.add(preferredAreas[val]);
+        parea += preferredAreas[val] + ', ';
+      }
+      print(parea);
+      area.toString();
+
+      for (int val in userPreferedType) {
+        place.add(preferredTypes[val]);
+        pplace += preferredTypes[val] + ', ';
+      }
     });
 
     setState(() {
@@ -87,19 +119,23 @@ class _PreferenceState extends State<Preference> {
     });
   }
 
+  //instance for firebase and current user
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  var firebaseUser = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add You Preferences....'),
-        centerTitle: true,
+        backgroundColor: Colors.green[800],
         leading: BackButton(
-          color: Colors.black,
+          color: Colors.white,
           onPressed: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => ProfilePage()));
           },
         ),
+        title: Text('Your preferences'),
+        centerTitle: true,
       ),
       body: isFetching
           ? Center(
@@ -107,225 +143,76 @@ class _PreferenceState extends State<Preference> {
             )
           : SingleChildScrollView(
               child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/edit2.jpg'),
-                        fit: BoxFit.fill)),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Form(
-                    key: _formkey,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: preferenceItemAreas(),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: preferenceItemTimes(),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: preferenceItemDays(),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: preferenceItemPlaces(),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          width: (MediaQuery.of(context).size.width) / 2 + 30,
-                          child: Row(
-                            children: [
-                              button(
-                                  text: 'Cancel',
-                                  color: Colors.red.shade900,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfilePage()));
-                                  }),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              button(
-                                  text: 'Save',
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content:
-                                          Text('Your preferences are saved'),
-                                    ));
-                                    _sendToServer();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfilePage()));
-                                  },
-                                  color: Colors.teal.shade900),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/travel.jpg'),
+                      fit: BoxFit.fill)),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 80,
                   ),
-                ),
+                  infoContent(
+                      information: parea, title: 'Your preferred areas'),
+                  SizedBox(height: 30),
+                  infoContent(
+                      information: pplace, title: 'Your preferred place types'),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Preference()));
+                        },
+                        child: Text(
+                          'Edit your preferences',
+                          style: TextStyle(),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(left: 50, right: 50),
+                          primary: Colors.teal[900],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(18.0),
+                          ),
+                          onPrimary: Colors.white,
+                          shadowColor: Colors.blueGrey,
+                          elevation: 10,
+                        ),
+                      )),
+                ],
               ),
-            ),
+            )),
     );
-  }
-
-//=======>For Prefered Areas<==========================
-  FormBuilderCheckboxGroup preferenceItemAreas() {
-    return FormBuilderCheckboxGroup(
-      name: 'Areas',
-      orientation: OptionsOrientation.vertical,
-      options:
-          _preferedAreas.map((e) => FormBuilderFieldOption(value: e)).toList(),
-      initialValue: _preferedAreas,
-      onSaved: (value) {
-        setState(() {
-          _myActivities3 = value;
-        });
-      },
-      onChanged: (value) {},
-      decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderSide: BorderSide(),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          labelText: "Prefered Areas",
-          filled: true,
-          fillColor: Colors.green[100]),
-    );
-  }
-
-  //=======>For Prefered Times<======================
-  FormBuilderCheckboxGroup preferenceItemTimes() {
-    return FormBuilderCheckboxGroup(
-      orientation: OptionsOrientation.vertical,
-      name: 'Time',
-      options:
-          _preferedTimes.map((e) => FormBuilderFieldOption(value: e)).toList(),
-      initialValue: _preferedTimes,
-      onSaved: (value) {
-        //optionPlaces.clear();
-        setState(() {
-          _myActivities4 = value;
-        });
-      },
-      onChanged: (value) {},
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: BorderSide(),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        labelText: "Prefered Time",
-        filled: true,
-        fillColor: Colors.green[100],
-      ),
-    );
-  }
-
-//===========>Field for selecting prefered days<===================
-  FormBuilderCheckboxGroup preferenceItemDays() {
-    return FormBuilderCheckboxGroup(
-      orientation: OptionsOrientation.vertical,
-      name: 'Time',
-      options:
-          _preferedDays.map((e) => FormBuilderFieldOption(value: e)).toList(),
-      initialValue: _preferedDays,
-      onSaved: (value) {
-        //optionPlaces.clear();
-        setState(() {
-          _myActivities1 = value;
-        });
-      },
-      onChanged: (value) {},
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: BorderSide(),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        labelText: "Prefered Days",
-        filled: true,
-        fillColor: Colors.green[100],
-      ),
-    );
-  }
-
-  //=======>For Prefered Places<===========
-  GFMultiSelect preferenceItemPlaces() {
-    return GFMultiSelect(
-      //selected:true ,
-      items: _preferedPlaces,
-      onSelect: (value) {
-        print('Selected $value');
-        setState(() {
-          _myActivities2 = value;
-        });
-      },
-      dropdownTitleTileText: 'Select your prefered places',
-      dropdownTitleTileColor: Colors.green[100],
-      dropdownTitleTileMargin: EdgeInsets.all(0),
-      dropdownTitleTilePadding: EdgeInsets.all(10),
-      dropdownUnderlineBorder:
-          const BorderSide(color: Colors.transparent, width: 2),
-      dropdownTitleTileBorder:
-          Border.all(color: Colors.grey.shade700, width: 1),
-      dropdownTitleTileBorderRadius: BorderRadius.circular(10),
-      expandedIcon: const Icon(
-        Icons.keyboard_arrow_down,
-        color: Colors.black54,
-      ),
-      collapsedIcon: const Icon(
-        Icons.keyboard_arrow_up,
-        color: Colors.black54,
-      ),
-      submitButton: Text(
-        'OK',
-      ),
-      dropdownTitleTileTextStyle:
-          const TextStyle(fontSize: 14, color: Colors.black54),
-      padding: const EdgeInsets.fromLTRB(18, 2, 20, 2),
-      margin: const EdgeInsets.all(6),
-      activeBgColor: Colors.green.shade100,
-      inactiveBorderColor: Colors.green.shade100,
-    );
-  }
-
-  // To send the preference values to user_preferences collection
-  _sendToServer() async {
-    _saveForm();
-    var firebaseUser = FirebaseAuth.instance.currentUser;
-    await FirebaseFirestore.instance
-        .collection('user_preferences')
-        .doc(firebaseUser!.uid)
-        .update({
-      'prefered_areas': _myActivities3,
-      'prefered_times': _myActivities4,
-      'prefered_days': _myActivities1,
-      'places': _myActivities2
-    });
-  }
-
-  //save the values
-  _saveForm() {
-    _formkey.currentState!.save();
   }
 }
+
+Widget infoContent({
+  required String information,
+  required String title,
+}) =>
+    Card(
+      elevation: 15,
+      color: Colors.green[100],
+      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+      child: ListTile(
+        title: Center(
+          child: Text(
+            title,
+            style: GoogleFonts.dmSerifDisplay(
+                fontWeight: FontWeight.w800, fontSize: 17, letterSpacing: 1),
+          ),
+        ),
+        subtitle: Center(
+          child: Text(
+            information,
+            style: GoogleFonts.shadowsIntoLight(
+                fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 3),
+          ),
+        ),
+      ),
+    );
