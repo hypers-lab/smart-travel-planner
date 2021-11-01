@@ -89,9 +89,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
         reviewData.add(reviewNplace);
 
-        setState(() {
-          isFetching = false;
-        });
+        if (this.mounted) {
+          setState(() {
+            isFetching = false;
+          });
+        }
       });
     });
   }
