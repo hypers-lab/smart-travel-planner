@@ -138,9 +138,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     }
 
-    setState(() {
-      isFetching = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        isFetching = false;
+      });
+    }
   }
 
   // Method for retrieving the current location

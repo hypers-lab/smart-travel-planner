@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import '../MainScreen.dart';
 import '../../Constants.dart';
 
@@ -71,6 +73,29 @@ class _OtpPageState extends State<OtpPage> {
       if (res) {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: widget.email, password: widget.password);
+
+        String uid = TravelDestination.getCurrentUserId();
+        print(uid);
+        //adding to firebase
+        CollectionReference userPreferencesRef =
+            FirebaseFirestore.instance.collection('userPreferences');
+        await userPreferencesRef
+            .doc(uid)
+            .set({"preferredAreas": [], "preferredTypes": []}).then((value) {
+          print("updated 1");
+        });
+
+        CollectionReference userPersonalInformationRef =
+            FirebaseFirestore.instance.collection('user_personal_information');
+        await userPersonalInformationRef.doc(uid).set({
+          "age": 0,
+          "gender": "",
+          "img_url": "",
+          "name": "",
+          "phone_number": ""
+        }).then((value) {
+          print("updated 2");
+        });
 
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => MainScreen()),
