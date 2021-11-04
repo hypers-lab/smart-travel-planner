@@ -19,7 +19,7 @@ class _HistoryState extends State<History> {
   String score = '';
   String city = '';
   String address = '';
-  
+
   void initState() {
     super.initState();
     getVisitedPlaces();
@@ -50,20 +50,26 @@ class _HistoryState extends State<History> {
         .collection("visitedPlaces")
         .where('userId', isEqualTo: uid)
         .get()
-        .then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        VisitedHistory history = VisitedHistory(
-          placeName: result['placeName'],
-          reviewScore: result['reviewScore'].toString(),
-          city: result['address'],
-          address: result['description'],
-        );
+        .then((QuerySnapshot querySnapshot) {
+      if (querySnapshot.docs.length != 0) {
+        querySnapshot.docs.forEach((result) async {
+          VisitedHistory history = VisitedHistory(
+            placeName: result['placeName'],
+            reviewScore: result['reviewScore'].toString(),
+            city: result['address'],
+            address: result['description'],
+          );
 
-        places.add(history);
-      });
-      setState(() {
-        isFetching = false;
-      });
+          places.add(history);
+        });
+        setState(() {
+          isFetching = false;
+        });
+      } else {
+        setState(() {
+          isFetching = false;
+        });
+      }
     });
   }
 

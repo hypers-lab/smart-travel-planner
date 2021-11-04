@@ -10,8 +10,8 @@ class UserDetails {
   });
 
   String name;
-  int age;
-  int phonenumber;
+  String age;
+  String phonenumber;
   String gender;
 
  

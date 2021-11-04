@@ -88,6 +88,7 @@ class _PreferenceOfUserState extends State<PreferenceOfUser> {
     setState(() {
       isFetching = true;
     });
+
     await FirebaseFirestore.instance
         .collection('userPreferences')
         .doc((FirebaseAuth.instance.currentUser!).uid)

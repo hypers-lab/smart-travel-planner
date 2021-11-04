@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/dropdown/gf_multiselect.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_travel_planner/appBrain/Preferences.dart';
 import 'package:smart_travel_planner/screens/userProfile/preferences.dart';
 import 'package:smart_travel_planner/widgets/button.dart';
 import 'profile.dart';
@@ -18,8 +17,8 @@ class _PreferenceState extends State<Preference> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   //to send the selected prefered items to firestore
-  List? _myActivitiesTypes;
-  List? _myActivitiesAreas;
+  List _myActivitiesTypes = [];
+  List _myActivitiesAreas = [];
 
   //The drop down list
   List preferredAreas = [

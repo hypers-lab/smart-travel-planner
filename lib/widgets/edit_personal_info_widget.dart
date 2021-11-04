@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:smart_travel_planner/appBrain/user.dart';
 import 'package:smart_travel_planner/widgets/button.dart';
 import '../screens/userProfile/personal_info.dart';
 
@@ -13,27 +12,17 @@ class EditPersonalInfoItem extends StatefulWidget {
 }
 
 class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
-  void initState() {
-    super.initState();
-    getUserDetails();
-  }
-
 // for send the details to the server
   late String name;
-  late int phonenumber;
+  late String phonenumber;
   late int age;
   late String gender;
-
-//Recieve the details from server
-  late String username = '';
-  late String userphonenumber = '';
-  late String userage = '';
-  late String usergender;
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    double widthm = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Form(
         key: _formkey,
@@ -48,7 +37,8 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
             buildGenderFormField(),
             SizedBox(height: 40),
             Padding(
-              padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
+              padding: EdgeInsets.fromLTRB(
+                  (widthm - 274) / 2, 20, (widthm - 274) / 2, 0),
               child: Row(
                 children: [
                   button(
@@ -92,7 +82,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   FormBuilderDropdown buildGenderFormField() {
     return FormBuilderDropdown(
       name: "gender",
-      //initialValue: usergender,
+      key: Key("genderField"),
       onSaved: (value) {
         gender = value!;
       },
@@ -123,7 +113,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for phone number
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
-      //initialValue: userphonenumber,
+      key: Key("phoneNumberField"),
       validator: (value) {
         if (value!.length < 10 && value.length > 0) {
           return "Phone number should have 10 numbers";
@@ -134,7 +124,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         }
       },
       onSaved: (value) {
-        phonenumber = int.tryParse(value!)!;
+        phonenumber = value!;
       },
       keyboardType: TextInputType.phone,
       maxLength: 10,
@@ -142,7 +132,6 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
         new LengthLimitingTextInputFormatter(10)
       ],
-
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderSide: BorderSide(),
@@ -162,10 +151,9 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
 
   // TextForm builder for name
   TextFormField buildNameFormField() {
-    print('Username:$username');
     return TextFormField(
+      key: Key("nameField"),
       keyboardType: TextInputType.text,
-      initialValue: username,
       onSaved: (value) {
         name = value!;
       },
@@ -198,7 +186,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   //TextForm builder for age
   TextFormField buildAgeFormField() {
     return TextFormField(
-      //initialValue: userage,
+      key: Key("ageField"),
       validator: (value) {
         var numValue = int.tryParse(value!);
         if (value.isNotEmpty && numValue! < 6) {
@@ -237,7 +225,6 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   // to update the informations of current user to firestore
   _sendToServer() {
     if (_formkey.currentState!.validate()) {
-      //No error in validator
       _formkey.currentState!.save();
       var firebaseUser = FirebaseAuth.instance.currentUser;
       FirebaseFirestore.instance
@@ -246,31 +233,9 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
           .update({
         'name': name,
         'age': age,
-        'phone number': phonenumber,
+        'phone_number': phonenumber,
         'gender': gender
       });
     }
-  }
-
-  //get current user's information from firestore
-  Future getUserDetails() async {
-    await FirebaseFirestore.instance
-        .collection('user_personal_information')
-        .doc((FirebaseAuth.instance.currentUser!).uid)
-        .get()
-        .then((value) {
-      UserDetails user = UserDetails(
-          name: value.get('name'),
-          age: value.get('age'),
-          gender: value.get('gender'),
-          phonenumber: value.get('phone number'));
-
-      username = user.name;
-      userage = user.age.toString();
-      userphonenumber = user.phonenumber.toString();
-      usergender = user.gender;
-    });
-    print('Mine is $username,$userage,$userphonenumber,$usergender');
-    //return 'Fetching error';
   }
 }

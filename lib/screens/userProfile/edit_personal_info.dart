@@ -35,7 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 physics: BouncingScrollPhysics(),
-                children: [const SizedBox(height: 30), EditPersonalInfoItem()],
+                children: [const SizedBox(height: 70), EditPersonalInfoItem()],
               ),
             )
           ],

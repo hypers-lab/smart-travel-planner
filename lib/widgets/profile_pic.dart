@@ -70,17 +70,19 @@ class _ProfilePicState extends State<ProfilePic> {
     });
 
     var firebaseUser = FirebaseAuth.instance.currentUser;
-    try{await FirebaseFirestore.instance
-        .collection('user_personal_information')
-        .doc(firebaseUser!.uid)
-        .get()
-        .then((value) {
-      imgURL = value.get('img_url');
-      print(imgURL);
-      if (imgURL.isNotEmpty) {
-        return finalImage = Image.network(imgURL);
-      }
-    });}catch (e) {
+    try {
+      await FirebaseFirestore.instance
+          .collection('user_personal_information')
+          .doc(firebaseUser!.uid)
+          .get()
+          .then((value) {
+        imgURL = value.get('img_url');
+        //print(imgURL);
+        if (imgURL.isNotEmpty) {
+          return finalImage = Image.network(imgURL);
+        }
+      });
+    } catch (e) {
       print('Firebase getting img url is failed!');
     }
     setState(() {
@@ -127,7 +129,7 @@ class _ProfilePicState extends State<ProfilePic> {
                           context: context,
                           builder: (context) {
                             return Padding(
-                              padding: EdgeInsets.fromLTRB(20, 170, 20, 320),
+                              padding: EdgeInsets.fromLTRB(20, 170, 20, 360),
                               child: Dialog(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),

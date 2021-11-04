@@ -26,6 +26,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   var userphonenumber;
   var usergender;
 
+  var ageCheck;
   //get user details as instance from server
   Future getUserDetails() async {
     setState(() {
@@ -37,16 +38,31 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         .doc(uid)
         .get()
         .then((value) {
-      UserDetails user = UserDetails(
-          name: value.get('name'),
-          age: value.get('age'),
-          gender: value.get('gender'),
-          phonenumber: value.get('phone number'));
+      ageCheck = value.get('age');
 
-      username = user.name;
-      userage = user.age;
-      userphonenumber = user.phonenumber;
-      usergender = user.gender;
+      if (ageCheck == 0) {
+        UserDetails user = UserDetails(
+            name: value.get('name'),
+            age: '',
+            gender: value.get('gender'),
+            phonenumber: value.get('phone_number'));
+
+        username = user.name;
+        userage = user.age;
+        userphonenumber = user.phonenumber;
+        usergender = user.gender;
+      } else {
+        UserDetails user = UserDetails(
+            name: value.get('name'),
+            age: value.get('age').toString(),
+            gender: value.get('gender'),
+            phonenumber: value.get('phone_number'));
+
+        username = user.name;
+        userage = user.age;
+        userphonenumber = user.phonenumber;
+        usergender = user.gender;
+      }
     });
 
     setState(() {
@@ -64,6 +80,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       appBar: AppBar(
         backgroundColor: Colors.green[800],
         leading: BackButton(
+          key: Key("backButton"),
           color: Colors.white,
           onPressed: () {
             Navigator.push(context,
@@ -86,7 +103,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 18,
+                    height: 40,
                   ),
                   infoContent(
                       information: '${firebaseUser!.email}', title: 'Email'),
