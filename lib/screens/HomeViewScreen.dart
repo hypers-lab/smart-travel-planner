@@ -314,7 +314,7 @@ class _HomePageState extends State<HomePage> {
                 if (openingHours != null) {
                   openStatus = openingHours.openNow;
                 }
-                var placeId = placeInfo.id;
+                var placeId = placeInfo.placeId;
                 var plusCode = placeInfo.plusCode;
                 var address;
                 if (plusCode != null) {
