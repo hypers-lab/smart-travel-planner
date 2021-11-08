@@ -113,8 +113,7 @@ class _DetailsState extends State<Details> {
     Alert(
       context: context,
       title: title,
-      image: Image.asset("assets/weather.png",
-          height: 250.0, width: 300.0),
+      image: Image.asset("assets/weather.png", height: 250.0, width: 300.0),
       desc: weatherDetails[0]['main'].toString() +
           '\n' +
           weatherDetails[0]['description'].toString(),
@@ -193,7 +192,8 @@ class _DetailsState extends State<Details> {
           if (openingHours != null) {
             openStatus = openingHours.openNow;
           }
-          var placeId = placeInfo.id;
+          var placeId = placeInfo.placeId;
+          //print(placeId);
           var plusCode = placeInfo.plusCode;
           var address;
           if (plusCode != null) {
@@ -272,7 +272,6 @@ class _DetailsState extends State<Details> {
               _addTripPlan(place.travelDestination.placeId);
             },
           ),
-
         ],
       ),
       body: ListView(

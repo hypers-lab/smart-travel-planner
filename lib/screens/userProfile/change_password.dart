@@ -10,9 +10,7 @@ class ChangePassword extends StatefulWidget {
   _ChangePasswordState createState() => _ChangePasswordState();
 }
 class _ChangePasswordState extends State<ChangePassword> {
-  // TextEditingController newpassword = TextEditingController();
-  // TextEditingController oldpassword = TextEditingController();
-  // TextEditingController confirmpassword = TextEditingController();
+  
   String newpassword='';
   String oldpassword='';
   String confirmpassword='';
@@ -26,10 +24,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.green[800],
           title: Text('Change Your Password'),
           centerTitle: true,
           leading: BackButton(
-            color: Colors.black,
+            color: Colors.white,
             onPressed: () {
               Navigator.push(
                 context, 

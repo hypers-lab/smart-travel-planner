@@ -60,7 +60,7 @@ class DetailsPageScreenState extends State<DetailsPageScreen> {
 
       var result = await googlePlace.search.getNearBySearch(
         gp.Location(lat: latitude, lng: longitude),
-        1500,
+        3500,
         type:
             "library|beauty_salon|clothing_store|hair_care|home_goods_store|movie_theater|museum|park|shopping_mall|spa|supermarket|tourist_attraction",
       );
@@ -91,7 +91,7 @@ class DetailsPageScreenState extends State<DetailsPageScreen> {
               if (openingHours != null) {
                 openStatus = openingHours.openNow;
               }
-              var placeId = placeInfo.id;
+              var placeId = placeInfo.placeId;
               var plusCode = placeInfo.plusCode;
               var address;
               if (plusCode != null) {
@@ -161,7 +161,7 @@ class DetailsPageScreenState extends State<DetailsPageScreen> {
 
       var result = await googlePlace.search.getNearBySearch(
         gp.Location(lat: latitude, lng: longitude),
-        1500,
+        3500,
         type: "bar|cafe|liquor_store|meal_delivery|meal_takeaway|restaurant",
       );
 
@@ -191,7 +191,7 @@ class DetailsPageScreenState extends State<DetailsPageScreen> {
               if (openingHours != null) {
                 openStatus = openingHours.openNow;
               }
-              var placeId = placeInfo.id;
+              var placeId = placeInfo.placeId;
 
               var plusCode = placeInfo.plusCode;
               var address;
@@ -262,7 +262,7 @@ class DetailsPageScreenState extends State<DetailsPageScreen> {
 
       var result = await googlePlace.search.getNearBySearch(
         gp.Location(lat: latitude, lng: longitude),
-        1500,
+        3500,
         type: "lodging",
       );
 
@@ -292,7 +292,7 @@ class DetailsPageScreenState extends State<DetailsPageScreen> {
               if (openingHours != null) {
                 openStatus = openingHours.openNow;
               }
-              var placeId = placeInfo.id;
+              var placeId = placeInfo.placeId;
               var plusCode = placeInfo.plusCode;
               var address;
               if (plusCode != null) {

@@ -306,7 +306,7 @@ class _HomePageState extends State<HomePage> {
                 if (openingHours != null) {
                   openStatus = openingHours.openNow;
                 }
-                var placeId = placeInfo.id;
+                var placeId = placeInfo.placeId;
                 var plusCode = placeInfo.plusCode;
                 var address;
                 if (plusCode != null) {
@@ -370,6 +370,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
+        shrinkWrap: true,
         key: const Key('HomeListView'),
         children: <Widget>[
           Padding(

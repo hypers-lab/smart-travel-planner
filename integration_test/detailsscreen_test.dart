@@ -55,8 +55,6 @@ Future<void> main() async {
         expect(find.byKey(Key('details-screen-scrollview')), findsOneWidget);
       });
 
-
-
     });
   });
 }

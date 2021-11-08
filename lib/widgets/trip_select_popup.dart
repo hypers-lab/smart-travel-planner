@@ -59,6 +59,7 @@ class _TripSelectPopUpState extends State<TripSelectPopUp> {
                     ),
                   );
                 } else {
+                  //print(placeId);
                   ids.add(placeId);
                   //print(ids);
                   await FirebaseFirestore.instance

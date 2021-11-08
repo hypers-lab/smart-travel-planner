@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:smart_travel_planner/screens/itenerary/IteneraryScreen.dart';
 import 'package:smart_travel_planner/util/const.dart';
 import 'package:smart_travel_planner/widgets/vertical_place_item.dart';
 import '../../widgets/vertical_place_item.dart';
+import 'package:http/http.dart' as http;
 
 class TripDetails extends StatefulWidget {
   static const String id = 'tripDetails';
@@ -27,13 +29,44 @@ class _TripDetailsState extends State<TripDetails> {
   bool isFetching = false;
   List<PlaceInformation> places = [];
   bool isFinished = false;
+  bool isWeather = false;
   CollectionReference tripsRef = FirebaseFirestore.instance.collection('trips');
   var googlePlace = GooglePlace(GOOGLE_API_KEY);
+  String news = "";
 
   @override
   void initState() {
     super.initState();
     getPlacesData(trip);
+  }
+
+  getWeatherDetails() async {
+    for (int i = 0; i < places.length; i++) {
+      PlaceInformation place = places[i];
+      String urlName = "https://api.openweathermap.org/data/2.5/weather?lat=" +
+          place.travelDestination.latitude.toString() +
+          "&lon=" +
+          place.travelDestination.longitude.toString() +
+          "&appid=a47323fec912e74eeecd6507fb739b9d";
+      var url = Uri.parse(urlName);
+      var response = await http.get(url);
+
+      var weatherDetails = [];
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        weatherDetails = jsonResponse['weather'].toSet().toList();
+        //print(weatherDetails);
+      }
+      if (weatherDetails[0]['main'].toString() == "Rain") {
+        news += place.travelDestination.placeName +
+            " - " +
+            "Raining there. Its difficult to visit. Better to change this place" +
+            "\n";
+      }
+      setState(() {
+        isWeather = true;
+      });
+    }
   }
 
   getTrip() {
@@ -137,6 +170,7 @@ class _TripDetailsState extends State<TripDetails> {
     }
     setState(() {
       isFetching = false;
+      getWeatherDetails();
     });
   }
 
@@ -217,6 +251,31 @@ class _TripDetailsState extends State<TripDetails> {
                 ),
               ),
             ),
+            isWeather
+                ? news.length > 0
+                    ? Padding(
+                        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                        child: Text(
+                          news,
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                        child: Text(
+                          "No latest news!",
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      )
+                : Center(
+                    child: CircularProgressIndicator(),
+                  ),
             Padding(
               padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
               child: Text(

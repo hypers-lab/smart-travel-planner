@@ -2,10 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
-
 import 'package:smart_travel_planner/screens/MainScreen.dart';
-
 import '../../Constants.dart';
 import '../MainScreen.dart';
 import 'sign_in_with_social_network.dart';
@@ -130,6 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
                                 key: const Key('EmailTextFormField'),
+                                style: TextStyle(color: Colors.black),
                                 validator: (email) {
                                   if (email!.isEmpty) {
                                     return "Email Address is Empty";
@@ -159,6 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
                                 key: const Key('PasswordTextFormField'),
+                                style: TextStyle(color: Colors.black),
                                 validator: (password) {
                                   if (password!.isEmpty) {
                                     return "password is  empty";

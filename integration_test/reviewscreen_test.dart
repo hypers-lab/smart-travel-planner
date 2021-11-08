@@ -32,4 +32,4 @@ Future<void> main() async {
   });
 }
 
-//flutter drive --driver=test_driver/integration_driver.dart --target=integration_test/categoryscreen_test.dart --no-sound-null-safety
+//flutter drive --driver=test_driver/integration_driver.dart --target=integration_test/reviewscreen_test.dart --no-sound-null-safety

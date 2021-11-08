@@ -131,6 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 border: Border(
                                     bottom: BorderSide(color: Colors.grey))),
                             child: TextFormField(
+                              style: TextStyle(color: Colors.black),
                               controller: _emailController,
                               //validator
                               validator: (email) {
@@ -158,6 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Container(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
+                              style: TextStyle(color: Colors.black),
                               controller: _passwordController,
                               //validation
                               validator: (password) {

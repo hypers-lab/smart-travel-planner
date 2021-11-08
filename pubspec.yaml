@@ -28,9 +28,10 @@ dependencies:
   wc_form_validators: ^1.0.0
   cloud_firestore: ^2.5.2
   firebase_database: ^8.0.0
-  http: ^0.13.3  
+  http: ^0.13.3
   firebase_storage: ^10.0.4
   flutter_dotenv: ^5.0.2
+  multi_select_flutter:
 
   #google_maps
   google_maps_flutter: ^2.0.8
@@ -55,6 +56,7 @@ dependencies:
   flutter_form_builder: ^6.1.0+1
   getwidget: ^2.0.4
   image_picker: ^0.8.4
+  network_to_file_image: ^3.0.3
 
   #styles
   readmore: ^2.1.0
@@ -65,10 +67,6 @@ dependencies:
   #testing
   mockito: ^5.0.15
   cloud_firestore_mocks: ^0.9.0+1
-
-
-
-  
 
 dev_dependencies:
    flutter_test:
