@@ -7,7 +7,6 @@ import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/screens/MainScreen.dart';
 
 import '../../Constants.dart';
-import '../HomeScreen.dart';
 import '../MainScreen.dart';
 import 'sign_in_with_social_network.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -130,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
+                                key: const Key('EmailTextFormField'),
                                 validator: (email) {
                                   if (email!.isEmpty) {
                                     return "Email Address is Empty";
@@ -158,6 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Container(
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
+                                key: const Key('PasswordTextFormField'),
                                 validator: (password) {
                                   if (password!.isEmpty) {
                                     return "password is  empty";
@@ -244,6 +245,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           child: ElevatedButton(
+                            key: const Key('LoginButton'),
                             onPressed: () {
                               signIn();
                             },

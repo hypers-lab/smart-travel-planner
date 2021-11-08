@@ -21,7 +21,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^0.1.2
   firebase_auth: ^3.1.1
-  firebase_core: ^1.6.0
+  firebase_core:
   overlay_support: ^1.2.1
   google_fonts: ^2.1.0
   font_awesome_flutter: ^9.1.0
@@ -67,16 +67,16 @@ dependencies:
   cloud_firestore_mocks: ^0.9.0+1
 
 
+
   
 
 dev_dependencies:
-  # flutter_test:
-  #   sdk: flutter
+   flutter_test:
+     sdk: flutter
+   integration_test:
+     sdk: flutter
+   test: ^1.17.10
 
-  #testing
-  build_runner: ^2.1.2
-  test:
-  integration_test:
 
 
 # For information on the generic Dart part of this file, see the

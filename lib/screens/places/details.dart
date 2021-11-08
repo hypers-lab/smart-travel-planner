@@ -16,7 +16,6 @@ import 'package:flutter/widgets.dart';
 import 'package:readmore/readmore.dart';
 import 'package:smart_travel_planner/util/const.dart';
 import 'package:smart_travel_planner/widgets/horizontal_place_item.dart';
-import 'package:smart_travel_planner/widgets/icon_badge.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_travel_planner/widgets/trip_select_popup.dart';
 
@@ -277,6 +276,7 @@ class _DetailsState extends State<Details> {
         ],
       ),
       body: ListView(
+        key: const Key('details-screen-scrollview'),
         children: <Widget>[
           SizedBox(height: 10.0),
           Padding(

@@ -195,6 +195,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 5.0),
             child: DropdownButtonFormField(
+              key: const Key('category-select-dropdown'),
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                     borderSide:

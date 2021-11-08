@@ -5,11 +5,11 @@ import 'package:smart_travel_planner/screens/ReviewsScreen.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'package:smart_travel_planner/screens/user/SignUpScreen.dart';
 import 'package:smart_travel_planner/screens/userProfile/profile.dart';
-import 'HomeScreen.dart';
 import '../widgets/icon_badge.dart';
 import 'itenerary/IteneraryScreen.dart';
 
 class MainScreen extends StatefulWidget {
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -55,14 +55,15 @@ class _MainScreenState extends State<MainScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             SizedBox(width: 7.0),
-            barIcon(icon: Icons.home, page: 0),
-            barIcon(icon: Icons.add_location, page: 1),
-            barIcon(icon: Icons.favorite, page: 2),
+            barIcon(icon: Icons.home, page: 0,iconKey: const Key('home-button')),
+            barIcon(icon: Icons.add_location, page: 1, iconKey: const Key('itinerary-button')),
+            barIcon(icon: Icons.favorite, page: 2,iconKey: const Key('category-button')),
             barIcon(
               icon: Icons.mode_comment,
               page: 3,
+              iconKey: const Key('comment-button')
             ),
-            barIcon(icon: Icons.person, page: 4),
+            barIcon(icon: Icons.person, page: 4,iconKey: const Key('profile-button')),
             SizedBox(width: 7.0),
           ],
         ),
@@ -94,8 +95,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget barIcon(
-      {IconData icon = Icons.home, int page = 0, bool badge = false}) {
+      {IconData icon = Icons.home, int page = 0, bool badge = false, required Key iconKey}) {
     return IconButton(
+      key:iconKey,
       icon: badge
           ? IconBadge(
               icon: icon,

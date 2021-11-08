@@ -54,11 +54,6 @@ class _HomePageState extends State<HomePage> {
     getUserPreferedPlacesData();
   }
 
-  // Future<void> executePipeline() async {
-  //   await getRecentPlacesData();
-  //   await getNearbyPlacesData();
-  // }
-
   //get nearby places
   void getNearbyPlacesData() async {
     setState(() {
@@ -91,14 +86,12 @@ class _HomePageState extends State<HomePage> {
           }
 
           var placeName = placeInfo.name;
-          //print(placeName);
           var openingHours = placeInfo.openingHours;
           var openStatus;
           if (openingHours != null) {
             openStatus = openingHours.openNow;
           }
           var placeId = placeInfo.placeId;
-          //print(placeId);
           var plusCode = placeInfo.plusCode;
           var address;
           if (plusCode != null) {
@@ -166,7 +159,6 @@ class _HomePageState extends State<HomePage> {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) async {
       _currentPosition = position;
-      //print('Current Location: $_currentPosition');
     }).catchError((e) {
       print(e);
     });
@@ -378,6 +370,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
+        key: const Key('HomeListView'),
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(
@@ -391,6 +384,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Padding(
+            key: const Key('RecentVistedPlaces'),
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: Text(
               "Recently Visited Places",
@@ -416,6 +410,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
           Padding(
+            key: const Key('PreferncesPlaces'),
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: Text(
               "Your Prefernces May Be...",
@@ -431,6 +426,7 @@ class _HomePageState extends State<HomePage> {
                 )
               : buildHorizontalPreferList(context),
           Padding(
+            key: const Key('NearByPlaces'),
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
             child: Text(
               "Places NearBy",
@@ -500,129 +496,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
-// UserPreference userPreference = UserPreference(
-//           preferredTypes: value.get('preferredTypes'),
-//           preferrredAreas: value.get('preferredAreas'));
-
-//       for (int placeTypeIndex in userPreference.preferredTypes) {
-//         await FirebaseFirestore.instance
-//             .collection("placeTypes")
-//             .where("typeId", isEqualTo: placeTypeIndex)
-//             .limit(1)
-//             .get()
-//             .then((value) {
-//           value.docs.forEach((result) {
-//             placeTypes.add(result.data()['typeName']);
-//             print('placeType: ${result.data()['typeName']}');
-//           });
-//         });
-//       }
-
-//       for (int placeAreaIndex in userPreference.preferrredAreas) {
-//         await FirebaseFirestore.instance
-//             .collection("preferredAreas")
-//             .where("area_id", isEqualTo: placeAreaIndex)
-//             .limit(1)
-//             .get()
-//             .then((value) {
-//           value.docs.forEach((result) {
-//             placeAreas
-//                 .add([result.data()['latitude'], result.data()['longitude']]);
-//           });
-//         });
-//       }
-
-//       for (var area in placeAreas) {
-//         double plat = area[0];
-//         double plong = area[1];
-
-//         for (var ptype in placeTypes) {
-//           //fetch data from Places API
-//           var result = await googlePlace.search.getNearBySearch(
-//               Location(lat: plat, lng: plong), 1500,
-//               type: ptype);
-
-//           var nearBySearrchResults = result!.results;
-
-//           if (nearBySearrchResults != null) {
-//             for (var placeInfo in nearBySearrchResults) {
-//               if (placeInfo != null) {
-//                 var businessStatus = placeInfo.businessStatus;
-//                 var location;
-//                 var longitude;
-//                 var latitude;
-//                 var geometry = placeInfo.geometry;
-//                 if (geometry != null) {
-//                   location = geometry.location;
-//                   if (location != null) {
-//                     latitude = location.lat;
-//                     longitude = location.lng;
-//                   }
-//                 }
-
-//                 var placeName = placeInfo.name;
-//                 var openingHours = placeInfo.openingHours;
-//                 var openStatus;
-//                 if (openingHours != null) {
-//                   openStatus = openingHours.openNow;
-//                 }
-//                 var placeId = placeInfo.id;
-//                 var plusCode = placeInfo.plusCode;
-//                 var address;
-//                 if (plusCode != null) {
-//                   address = plusCode.compoundCode;
-//                 }
-//                 var rating = placeInfo.rating;
-//                 var userRatingsTotal = placeInfo.userRatingsTotal;
-//                 var photos = placeInfo.photos;
-//                 var photoReference;
-//                 if (photos != null) {
-//                   photoReference = photos[0].photoReference;
-//                 }
-//                 var description = placeInfo.vicinity;
-
-//                 TravelDestination travelDestination = TravelDestination(
-//                     businessStatus: businessStatus.toString(),
-//                     placeId: placeId.toString(),
-//                     placeName: placeName.toString(),
-//                     photoReference: photoReference.toString(),
-//                     rating: rating.toString(),
-//                     userRatingsTotal: userRatingsTotal.toString(),
-//                     latitude: latitude,
-//                     longitude: longitude,
-//                     description: description.toString(),
-//                     openStatus: openStatus.toString(),
-//                     address: address.toString(),
-//                     weather: []);
-
-//                 //default image
-//                 Uint8List image =
-//                     (await rootBundle.load('assets/default_place_image.jpg'))
-//                         .buffer
-//                         .asUint8List();
-
-//                 var imageResult = await this
-//                     .googlePlace
-//                     .photos
-//                     .get(travelDestination.photoReference, 0, 400);
-//                 if (imageResult != null) {
-//                   image = imageResult;
-//                 }
-
-//                 PlaceInformation placeInformation =
-//                     PlaceInformation(travelDestination, image);
-
-//                 preferredPlaces.add(placeInformation);
-//               }
-//             }
-//           }
-//         }
-//       }
-
-//       if (this.mounted) {
-//         setState(() {
-//           isFetchingPreferences = false;
-//         });
-//       }

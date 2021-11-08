@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_travel_planner/screens/HomeScreen.dart';
 import 'package:smart_travel_planner/screens/user/LoginScreen.dart';
 import 'util/const.dart';
 import 'package:firebase_core/firebase_core.dart';
