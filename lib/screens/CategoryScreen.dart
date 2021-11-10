@@ -9,7 +9,6 @@ import 'package:smart_travel_planner/appBrain/placeInformation.dart';
 import 'package:smart_travel_planner/util/const.dart';
 import '../widgets/vertical_place_item.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
-import 'package:http/http.dart' as http;
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);

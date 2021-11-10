@@ -120,12 +120,6 @@ class _HomePageState extends State<HomePage> {
             address: address.toString(),
           );
 
-          //default image
-          // Uint8List image =
-          //     (await rootBundle.load('assets/default_place_image.jpg'))
-          //         .buffer
-          //         .asUint8List();
-
           var image = await this
               .googlePlace
               .photos

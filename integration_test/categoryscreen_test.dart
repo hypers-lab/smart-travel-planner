@@ -34,7 +34,7 @@ Future<void> main() async {
         await tester.enterText(
             find.byKey(Key('EmailTextFormField')), 'dulajkavinda.1998@gmail.com');
         await tester.enterText(find.byKey(Key('PasswordTextFormField')), 'abcd1234');
-        await tester.press(find.byKey(Key('LoginButton')));
+        await tester.press(find.byKey(Key('LoginButton')),warnIfMissed: false);
         await tester.pump(Duration(seconds: 40));
         await tester.pumpAndSettle();
         await tester.press(find.byKey(Key('category-button')));

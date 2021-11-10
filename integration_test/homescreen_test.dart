@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:smart_travel_planner/main.dart';
-import 'package:smart_travel_planner/screens/HomeViewScreen.dart';
 
 Future<void> main() async {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -21,9 +20,9 @@ Future<void> main() async {
         await tester.press(find.byKey(Key('LoginButton')),warnIfMissed: false);
         await tester.pump(Duration(seconds: 30));
         await tester.pumpAndSettle();
+        expect(find.text("Where are you \ngoing?"), findsOneWidget);
         expect(find.byType(SingleChildScrollView), findsOneWidget);
       });
-
 
       testWidgets('Recent Visted Places horizontal scroll view testing', (WidgetTester tester) async {
         await Firebase.initializeApp();
@@ -35,9 +34,9 @@ Future<void> main() async {
         await tester.press(find.byKey(Key('LoginButton')),warnIfMissed: false);
         await tester.pump(Duration(seconds: 30));
         await tester.pumpAndSettle();
-        expect(find.byType(SingleChildScrollView), findsOneWidget);
+        expect(find.text("Recently Visited Places"), findsOneWidget);
+        expect(find.byKey(Key('RecentVistedPlaces')), findsOneWidget);
       });
-
 
       testWidgets('Preferences horizontal scroll view testing', (WidgetTester tester) async {
         await Firebase.initializeApp();
@@ -49,9 +48,9 @@ Future<void> main() async {
         await tester.press(find.byKey(Key('LoginButton')),warnIfMissed: false);
         await tester.pump(Duration(seconds: 30));
         await tester.pumpAndSettle();
-        expect(find.byType(SingleChildScrollView), findsOneWidget);
+        expect(find.text("Your Prefernces May Be..."), findsOneWidget);
+        expect(find.byKey(Key('PreferncesPlaces')), findsOneWidget);
       });
-
 
       testWidgets('Nearby Places vertical scroll view testing', (WidgetTester tester) async {
         await Firebase.initializeApp();
@@ -63,11 +62,12 @@ Future<void> main() async {
         await tester.press(find.byKey(Key('LoginButton')),warnIfMissed: false);
         await tester.pump(Duration(seconds: 30));
         await tester.pumpAndSettle();
-        expect(find.byType(SingleChildScrollView), findsOneWidget);
+        expect(find.text("Places NearBy"), findsOneWidget);
+        expect(find.byKey(Key('NearByPlaces')), findsOneWidget);
       });
 
     });
   });
 }
 
-//flutter drive --driver=test_driver/integration_driver.dart --target=integration_test/homeviewscreen_test.dart --no-sound-null-safety
+//flutter drive --driver=test_driver/integration_driver.dart --target=integration_test/homeviewscreen_test.dart
