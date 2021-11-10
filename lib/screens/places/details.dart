@@ -37,9 +37,12 @@ class _DetailsState extends State<Details> {
   void _showRatingAppDialog() {
     Navigator.pop(context);
     final _ratingDialog = RatingDialog(
-      title: Text('Rate Travel Place'),
+      title: Text('Rate Travel Place',textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.w700),),
       message: Text('Rating the place and tell others what you think.'
-          ' Add a comment if you want.'),
+          ' Add a comment if you want.',style: TextStyle(
+        fontSize: 18.0,
+        fontWeight: FontWeight.w500,
+      )),
       submitButtonText: 'Submit',
       onCancelled: () => print('cancelled'),
       onSubmitted: (response) {
@@ -384,7 +387,7 @@ class _DetailsState extends State<Details> {
                   Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${place.travelDestination.address}",
+                      "${(place.travelDestination.address=="null")?"Sri Lanka":place.travelDestination.address}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -400,7 +403,7 @@ class _DetailsState extends State<Details> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "\u{2B50} ${place.travelDestination.rating.toString()} \u{1F4AD} ${place.travelDestination.userRatingsTotal} Reviews",
+                  "\u{2B50} ${(place.travelDestination.rating.toString()=="null")?"No Ratings":place.travelDestination.rating.toString()} \u{1F4AD} ${(place.travelDestination.userRatingsTotal=="null")?"No":place.travelDestination.userRatingsTotal} Reviews",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -413,7 +416,7 @@ class _DetailsState extends State<Details> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "\u{1F4C9} ${place.travelDestination.businessStatus}",
+                  "\u{1F4C9} ${(place.travelDestination.businessStatus=="null")?"No Operational Status":place.travelDestination.businessStatus}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,

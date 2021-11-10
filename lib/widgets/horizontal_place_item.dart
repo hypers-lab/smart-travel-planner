@@ -45,7 +45,7 @@ class HorizontalPlaceItem extends StatelessWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  place.travelDestination.rating.toString(),
+                  (place.travelDestination.rating.toString()=="null")?"No Rating":place.travelDestination.rating.toString()+"\u{2B50}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13.0,

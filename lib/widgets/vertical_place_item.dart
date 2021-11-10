@@ -58,7 +58,7 @@ class VerticalPlaceItem extends StatelessWidget {
                           width: MediaQuery.of(context).size.width - 180,
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "${place.travelDestination.address}",
+                            "${(place.travelDestination.address=="null")?"Sri Lanka":place.travelDestination.address}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -75,7 +75,7 @@ class VerticalPlaceItem extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Ratings: ${place.travelDestination.rating}",
+                        "Ratings: ${(place.travelDestination.rating.toString()=="null")?"No Ratings":place.travelDestination.rating.toString()}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14.0,
