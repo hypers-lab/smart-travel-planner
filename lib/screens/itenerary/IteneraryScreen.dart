@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:smart_travel_planner/appBrain/TravelDestination.dart';
 import 'package:smart_travel_planner/appBrain/Trip.dart';
 import 'package:smart_travel_planner/appBrain/TripInformation.dart';
@@ -48,6 +49,27 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
       });
   }
 
+  late Position _currentPosition = Position(
+      longitude: 0.0,
+      latitude: 0.0,
+      timestamp: DateTime.now(),
+      accuracy: 0.0,
+      altitude: 0.0,
+      heading: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0);
+
+  // Method for retrieving the current location
+  _getCurrentLocation() async {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      _currentPosition = position;
+      //print('Current Location: $_currentPosition');
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
   getRecommendedPlaces() async {
     final String uid = TravelDestination.getCurrentUserId();
     await FirebaseFirestore.instance
@@ -57,6 +79,22 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
         .then((snapshot) async {
       //print(snapshot["preferredAreas"]);
       if (snapshot["preferredAreas"].length > 0) {
+        List<String> types = [];
+        if (snapshot["preferredTypes"].length > 0) {
+          for (int typeId in snapshot["preferredTypes"]) {
+            FirebaseFirestore.instance
+                .collection("placeTypes")
+                .where("placeId", isEqualTo: typeId)
+                .get()
+                .then((QuerySnapshot querySnapshot) async {
+              if (querySnapshot.docs.length > 0) {
+                querySnapshot.docs.forEach((doc) async {
+                  types.add(snapshot["placeName"]);
+                });
+              }
+            });
+          }
+        }
         for (int areaId in snapshot["preferredAreas"]) {
           List<PlaceInformation> recomendedDoPlaces = [];
           List<PlaceInformation> recomendedEatPlaces = [];
@@ -397,6 +435,341 @@ class _IteneraryScreenState extends State<IteneraryScreen> {
               });
             }
           });
+        }
+      } else {
+        for (int i = 0; i < 5; i++) {
+          List<PlaceInformation> recomendedDoPlaces = [];
+          List<PlaceInformation> recomendedEatPlaces = [];
+          List<PlaceInformation> recomendedStayPlaces = [];
+
+          await _getCurrentLocation();
+          var doResult = await googlePlace.search.getNearBySearch(
+            Location(
+                lat: _currentPosition.latitude,
+                lng: _currentPosition.longitude),
+            3500,
+            type: "movie_theater|museum|tourist_attraction",
+          );
+          //print(doResult);
+          if (doResult != null) {
+            var nearBySearrchResults = doResult.results;
+            //print(nearBySearrchResults);
+            if (nearBySearrchResults != null) {
+              for (var placeInfo in nearBySearrchResults) {
+                // ignore: unnecessary_null_comparison
+                if (placeInfo != null) {
+                  var businessStatus = placeInfo.businessStatus;
+                  var location;
+                  var longitude;
+                  var latitude;
+                  var geometry = placeInfo.geometry;
+
+                  if (geometry != null) {
+                    location = geometry.location;
+                    if (location != null) {
+                      latitude = location.lat;
+                      longitude = location.lng;
+                    }
+                  }
+                  var placeName = placeInfo.name;
+                  var openingHours = placeInfo.openingHours;
+                  var openStatus;
+                  if (openingHours != null) {
+                    openStatus = openingHours.openNow;
+                  }
+                  var placeId = placeInfo.placeId;
+                  var plusCode = placeInfo.plusCode;
+                  var address;
+                  if (plusCode != null) {
+                    address = plusCode.compoundCode;
+                  }
+                  var rating = placeInfo.rating;
+                  var userRatingsTotal = placeInfo.userRatingsTotal;
+                  var photos = placeInfo.photos;
+                  var photoReference;
+                  if (photos != null) {
+                    photoReference = photos[0].photoReference;
+                  }
+                  var description = placeInfo.vicinity;
+
+                  TravelDestination travelDestination = TravelDestination(
+                    businessStatus: businessStatus.toString(),
+                    placeId: placeId.toString(),
+                    placeName: placeName.toString(),
+                    photoReference: photoReference.toString(),
+                    rating: rating.toString(),
+                    userRatingsTotal: userRatingsTotal.toString(),
+                    latitude: latitude!,
+                    longitude: longitude!,
+                    description: description.toString(),
+                    openStatus: openStatus.toString(),
+                    address: address.toString(),
+                  );
+
+                  //default image
+                  Uint8List image =
+                      (await rootBundle.load('assets/default_place_image.jpg'))
+                          .buffer
+                          .asUint8List();
+
+                  var imageResult = await this
+                      .googlePlace
+                      .photos
+                      .get(travelDestination.photoReference, 0, 400);
+                  if (imageResult != null) {
+                    image = imageResult;
+                  }
+
+                  PlaceInformation placeInformation =
+                      PlaceInformation(travelDestination, image);
+
+                  recomendedDoPlaces.add(placeInformation);
+                }
+              }
+            }
+          }
+
+          // ================ Eat ================
+          var eatResult = await googlePlace.search.getNearBySearch(
+            Location(
+                lat: _currentPosition.latitude,
+                lng: _currentPosition.longitude),
+            3500,
+            type: "restaurant",
+          );
+          //print(doResult);
+          if (eatResult != null) {
+            var nearBySearrchResults = eatResult.results;
+            //print(nearBySearrchResults);
+            if (nearBySearrchResults != null) {
+              for (var placeInfo in nearBySearrchResults) {
+                // ignore: unnecessary_null_comparison
+                if (placeInfo != null) {
+                  var businessStatus = placeInfo.businessStatus;
+                  var location;
+                  var longitude;
+                  var latitude;
+                  var geometry = placeInfo.geometry;
+
+                  if (geometry != null) {
+                    location = geometry.location;
+                    if (location != null) {
+                      latitude = location.lat;
+                      longitude = location.lng;
+                    }
+                  }
+                  var placeName = placeInfo.name;
+                  var openingHours = placeInfo.openingHours;
+                  var openStatus;
+                  if (openingHours != null) {
+                    openStatus = openingHours.openNow;
+                  }
+                  var placeId = placeInfo.placeId;
+                  var plusCode = placeInfo.plusCode;
+                  var address;
+                  if (plusCode != null) {
+                    address = plusCode.compoundCode;
+                  }
+                  var rating = placeInfo.rating;
+                  var userRatingsTotal = placeInfo.userRatingsTotal;
+                  var photos = placeInfo.photos;
+                  var photoReference;
+                  if (photos != null) {
+                    photoReference = photos[0].photoReference;
+                  }
+                  var description = placeInfo.vicinity;
+
+                  TravelDestination travelDestination = TravelDestination(
+                    businessStatus: businessStatus.toString(),
+                    placeId: placeId.toString(),
+                    placeName: placeName.toString(),
+                    photoReference: photoReference.toString(),
+                    rating: rating.toString(),
+                    userRatingsTotal: userRatingsTotal.toString(),
+                    latitude: latitude!,
+                    longitude: longitude!,
+                    description: description.toString(),
+                    openStatus: openStatus.toString(),
+                    address: address.toString(),
+                  );
+
+                  //default image
+                  Uint8List image =
+                      (await rootBundle.load('assets/default_place_image.jpg'))
+                          .buffer
+                          .asUint8List();
+
+                  var imageResult = await this
+                      .googlePlace
+                      .photos
+                      .get(travelDestination.photoReference, 0, 400);
+                  if (imageResult != null) {
+                    image = imageResult;
+                  }
+
+                  PlaceInformation placeInformation =
+                      PlaceInformation(travelDestination, image);
+
+                  recomendedEatPlaces.add(placeInformation);
+                }
+              }
+            }
+          }
+
+          // ================ Stay ================
+          var stayResult = await googlePlace.search.getNearBySearch(
+            Location(
+                lat: _currentPosition.latitude,
+                lng: _currentPosition.longitude),
+            3500,
+            type: "lodging",
+          );
+          //print(doResult);
+          if (stayResult != null) {
+            var nearBySearrchResults = stayResult.results;
+            //print(nearBySearrchResults);
+            if (nearBySearrchResults != null) {
+              for (var placeInfo in nearBySearrchResults) {
+                // ignore: unnecessary_null_comparison
+                if (placeInfo != null) {
+                  var businessStatus = placeInfo.businessStatus;
+                  var location;
+                  var longitude;
+                  var latitude;
+                  var geometry = placeInfo.geometry;
+
+                  if (geometry != null) {
+                    location = geometry.location;
+                    if (location != null) {
+                      latitude = location.lat;
+                      longitude = location.lng;
+                    }
+                  }
+                  var placeName = placeInfo.name;
+                  var openingHours = placeInfo.openingHours;
+                  var openStatus;
+                  if (openingHours != null) {
+                    openStatus = openingHours.openNow;
+                  }
+                  var placeId = placeInfo.placeId;
+                  var plusCode = placeInfo.plusCode;
+                  var address;
+                  if (plusCode != null) {
+                    address = plusCode.compoundCode;
+                  }
+                  var rating = placeInfo.rating;
+                  var userRatingsTotal = placeInfo.userRatingsTotal;
+                  var photos = placeInfo.photos;
+                  var photoReference;
+                  if (photos != null) {
+                    photoReference = photos[0].photoReference;
+                  }
+                  var description = placeInfo.vicinity;
+
+                  TravelDestination travelDestination = TravelDestination(
+                    businessStatus: businessStatus.toString(),
+                    placeId: placeId.toString(),
+                    placeName: placeName.toString(),
+                    photoReference: photoReference.toString(),
+                    rating: rating.toString(),
+                    userRatingsTotal: userRatingsTotal.toString(),
+                    latitude: latitude!,
+                    longitude: longitude!,
+                    description: description.toString(),
+                    openStatus: openStatus.toString(),
+                    address: address.toString(),
+                  );
+
+                  //default image
+                  Uint8List image =
+                      (await rootBundle.load('assets/default_place_image.jpg'))
+                          .buffer
+                          .asUint8List();
+
+                  var imageResult = await this
+                      .googlePlace
+                      .photos
+                      .get(travelDestination.photoReference, 0, 400);
+                  if (imageResult != null) {
+                    image = imageResult;
+                  }
+
+                  PlaceInformation placeInformation =
+                      PlaceInformation(travelDestination, image);
+
+                  recomendedStayPlaces.add(placeInformation);
+                }
+              }
+            }
+          }
+          // ===== Create recommended trips ========
+          String tripName = "Near By " + i.toString();
+          DateTime now = DateTime.now();
+          String userdId = TravelDestination.getCurrentUserId();
+          List<dynamic> places = [];
+
+          if (recomendedDoPlaces.length > 0 &&
+              recomendedEatPlaces.length > 0 &&
+              recomendedStayPlaces.length > 0) {
+            //eat - place 1
+            PlaceInformation place1 = getRandomPlace(recomendedEatPlaces);
+            places.add(place1.travelDestination.placeId);
+
+            //do - place 2
+            PlaceInformation place2 = getRandomPlace(recomendedDoPlaces);
+            places.add(place2.travelDestination.placeId);
+
+            // eat - place 3
+            PlaceInformation place3 = getRandomPlace(recomendedEatPlaces);
+            places.add(place3.travelDestination.placeId);
+
+            // do - place 4
+            PlaceInformation place4 = getRandomPlace(recomendedDoPlaces);
+            places.add(place4.travelDestination.placeId);
+
+            // do - place 5
+            PlaceInformation place5 = getRandomPlace(recomendedDoPlaces);
+            places.add(place5.travelDestination.placeId);
+
+            // eat - place 6
+            PlaceInformation place6 = getRandomPlace(recomendedEatPlaces);
+            places.add(place6.travelDestination.placeId);
+
+            // stay = place 7
+            PlaceInformation place7 = getRandomPlace(recomendedStayPlaces);
+            places.add(place7.travelDestination.placeId);
+
+            Trip trip = Trip(
+                documentID: "",
+                tripName: tripName,
+                places: places,
+                date: now,
+                image: place6.travelDestination.photoReference,
+                status: 0,
+                userId: userdId);
+
+            //default image
+            Uint8List image =
+                (await rootBundle.load('assets/default_place_image.jpg'))
+                    .buffer
+                    .asUint8List();
+
+            var imageResult = await this
+                .googlePlace
+                .photos
+                .get(place6.travelDestination.photoReference, 0, 400);
+            if (imageResult != null) {
+              image = imageResult;
+            }
+
+            TripInformation tripInformation = TripInformation(trip, image);
+
+            recomendedTrips.add(tripInformation);
+
+            setState(() {
+              isRecommendFetching = false;
+            });
+          }
         }
       }
     });
