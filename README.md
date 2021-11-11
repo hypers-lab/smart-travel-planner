@@ -26,7 +26,7 @@ For help getting started with our app, view our below documentations, which offe
 
 <br />
 <br />
----
+\
 ## Acknowledgement
 
 - [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview)
