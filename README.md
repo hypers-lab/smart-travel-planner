@@ -13,13 +13,13 @@ Introduction: [YouTube Video](https://www.youtube.com/watch?v=9VbHaTpXq-Q)
 ## Documentations
 For help getting started with our app, view our below documentations, which offers tutorials, samples, guidance on mobile development, and a full API reference.
 
-- [Project Proposal]()
-- [Project Schedule]()
-- [Project Feasibility Document](https://docs.google.com/document/d/1DdIjR16eA99_wcENQOdLDDpVT8coJ16W/edit#)
-- [SRS](https://docs.google.com/document/d/1WVqoB54ei-XZI7a4bMvTFo9cNAtnVppa/edit#heading=h.49x2ik5)
-- [Design Document]()
-- [Test Plan](https://docs.google.com/document/d/1VPCKzzdg2zFMHsGI8vO-8d0jhhNmAEM1/edit)
-- [Final Report](https://docs.google.com/document/d/1ui2V2-h1RLwelKhSdNKu04iITn9bX8qf/edit)
+- [Project Proposal](https://docs.google.com/document/d/134SHe5b-mEbFt74IFxLUV2tA2mpe9pjz/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
+- [Project Schedule](https://drive.google.com/file/d/1GkYSc95hHLcU3sNkUbtbJylidpJbFivx/view?usp=sharing)
+- [Project Feasibility Document](https://docs.google.com/document/d/1DdIjR16eA99_wcENQOdLDDpVT8coJ16W/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
+- [SRS](https://docs.google.com/document/d/1WVqoB54ei-XZI7a4bMvTFo9cNAtnVppa/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
+- [Design Document](https://docs.google.com/document/d/1o4-fJ4whHWer2rqYKpb1L7oGWE_Y3FY2/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
+- [Test Plan](https://docs.google.com/document/d/1VPCKzzdg2zFMHsGI8vO-8d0jhhNmAEM1/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
+- [Final Report]()
 
 ## Acknowledgement
 A great thanks to:
