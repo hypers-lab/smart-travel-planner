@@ -45,3 +45,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/key.properties
+**/upload-keystore.jks
+pubspec.lock
+note.txt
+
+.metadata
+.vscode/
+.dart_tool/
