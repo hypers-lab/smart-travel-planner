@@ -1,16 +1,25 @@
-# smartTravelPlanner
+# Smart Travel Planner
 
-A new Flutter project.
+Smart Travel Planner is an Online Travel Planning Application that helps travelers by recommending travel places and dynamically generating a travel itinerary considering constraints such as traveler preferences. This is an Android Mobile Application.
 
-## Getting Started
+Introduction: [YouTube Video](https://www.youtube.com/watch?v=9VbHaTpXq-Q)
 
-This project is a starting point for a Flutter application.
+## Contributers
 
-A few resources to get you started if this is your first Flutter project:
+- [Charangan Vasantharajan](https://www.linkedin.com/in/charangan/)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Documentations
+For help getting started with our app, view our below documentations, which offers tutorials, samples, guidance on mobile development, and a full API reference.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Project Proposal]()
+- [Project Schedule]()
+- [Project Feasibility Document](https://docs.google.com/document/d/1DdIjR16eA99_wcENQOdLDDpVT8coJ16W/edit#)
+- [SRS](https://docs.google.com/document/d/1WVqoB54ei-XZI7a4bMvTFo9cNAtnVppa/edit#heading=h.49x2ik5)
+- [Design Document]()
+- [Test Plan](https://docs.google.com/document/d/1VPCKzzdg2zFMHsGI8vO-8d0jhhNmAEM1/edit)
+- [Final Report](https://docs.google.com/document/d/1ui2V2-h1RLwelKhSdNKu04iITn9bX8qf/edit)
+
+## Screenshots
+
+# Welcome Screen
+[<img align="left" alt="welcome-screeen" src="assets/screenshots/1.jpg" />]
