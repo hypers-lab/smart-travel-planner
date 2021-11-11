@@ -21,8 +21,5 @@ For help getting started with our app, view our below documentations, which offe
 
 ## Screenshots
 
-# Welcome Screen
 <img align="left" alt="welcome-screeen" src="assets/screenshots/1.jpg" />
-
-# Home Screen
 <img align="right" alt="welcome-screeen" src="assets/screenshots/2.jpg" />
