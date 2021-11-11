@@ -129,7 +129,7 @@ class _ProfilePicState extends State<ProfilePic> {
                           context: context,
                           builder: (context) {
                             return Padding(
-                              padding: EdgeInsets.fromLTRB(20, 170, 20, 360),
+                              padding: EdgeInsets.fromLTRB(20, 170, 20, 320),
                               child: Dialog(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),

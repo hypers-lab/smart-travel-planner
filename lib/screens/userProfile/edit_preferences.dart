@@ -20,7 +20,7 @@ class _PreferenceState extends State<Preference> {
   List _myActivitiesTypes = [];
   List _myActivitiesAreas = [];
 
-  //The drop down list
+  //The drop down items' list for preferred areas
   List preferredAreas = [
     'Ampara',
     'Anuradhapura',
@@ -48,6 +48,8 @@ class _PreferenceState extends State<Preference> {
     'Trincomalee',
     'Vavuniya'
   ];
+
+  //The drop down items' list for preferred place types
   List preferredTypes = [
     'Cafe',
     'Church',
@@ -83,7 +85,8 @@ class _PreferenceState extends State<Preference> {
           color: Colors.black,
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PreferenceOfUser()));
+              MaterialPageRoute(builder: (context) => PreferenceOfUser())
+            );
           },
         ),
       ),
@@ -129,11 +132,16 @@ class _PreferenceState extends State<Preference> {
                         SizedBox(
                           height: 80,
                         ),
+
+                        //buttons for save and cancel
                         Container(
                           width: (MediaQuery.of(context).size.width) / 2 + 30,
                           child: Row(
                             children: [
+
+                              //cancel button
                               button(
+                                  key:Key("cancelButtonPreference"),
                                   text: 'Cancel',
                                   color: Colors.red.shade900,
                                   onPressed: () {
@@ -146,22 +154,31 @@ class _PreferenceState extends State<Preference> {
                               SizedBox(
                                 width: 10,
                               ),
+
+                              //save button
                               button(
-                                  text: 'Save',
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content:
+                                key: Key("saveButtonPreference"),
+                                text: 'Save',
+                                onPressed: () {
+                                  ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                      SnackBar(
+                                        key: Key("snackbarPreference"),
+                                        content:
                                           Text('Your preferences are saved'),
-                                    ));
-                                    _sendToServer();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                PreferenceOfUser()));
-                                  },
-                                  color: Colors.teal.shade900),
+                                      )
+                                    );
+                                  //call _sendToServer function to send the preferences to database
+                                  _sendToServer();
+                                    
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>PreferenceOfUser()
+                                    )
+                                  );
+                                },
+                                color: Colors.teal.shade900),
                             ],
                           ),
                         ),
@@ -173,9 +190,10 @@ class _PreferenceState extends State<Preference> {
             ),
     );
   }
-
+  //widget dropdown for selecting preferred areas
   GFMultiSelect preferenceItemAreas() {
     return GFMultiSelect(
+      key: Key("area"),
       items: preferredAreas,
       onSelect: (value) {
         print('Selected $value');
@@ -202,7 +220,11 @@ class _PreferenceState extends State<Preference> {
       ),
       submitButton: Text(
         'OK',
+        key: Key('submitButton'),
       ),
+      cancelButton: Text(
+        'CANCEL',
+         key: Key('cancelButton1'),),
       dropdownTitleTileTextStyle:
           const TextStyle(fontSize: 14, color: Colors.black54),
       padding: const EdgeInsets.fromLTRB(18, 2, 20, 2),
@@ -212,8 +234,10 @@ class _PreferenceState extends State<Preference> {
     );
   }
 
+  //widget dropdown for selecting preferred place types
   GFMultiSelect preferenceItemTypes() {
     return GFMultiSelect(
+      key: Key("place"),
       items: preferredTypes,
       onSelect: (value) {
         print('Selected $value');
@@ -241,6 +265,9 @@ class _PreferenceState extends State<Preference> {
       submitButton: Text(
         'OK',
       ),
+      cancelButton: Text(
+        'CANCEL',
+         key: Key('cancelButton2'),),
       dropdownTitleTileTextStyle:
           const TextStyle(fontSize: 14, color: Colors.black54),
       padding: const EdgeInsets.fromLTRB(18, 2, 20, 2),
@@ -256,7 +283,7 @@ class _PreferenceState extends State<Preference> {
     var firebaseUser = FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance
         .collection('userPreferences')
-        .doc(firebaseUser!.uid)
+        .doc(firebaseUser?.uid)
         .update({
       'preferredTypes': _myActivitiesTypes,
       'preferredAreas': _myActivitiesAreas,
@@ -265,6 +292,6 @@ class _PreferenceState extends State<Preference> {
 
   //save the values
   _saveForm() {
-    _formkey.currentState!.save();
+    _formkey.currentState?.save();
   }
 }

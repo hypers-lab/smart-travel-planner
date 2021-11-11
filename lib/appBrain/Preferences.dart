@@ -23,7 +23,7 @@ class UserPreferences {
     return "";
   }
  
-  //get user details from server
+  //get user details from database
   void getUserPreferences() {
     final String uid = getCurrentUserId();
      try{

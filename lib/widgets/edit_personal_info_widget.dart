@@ -12,6 +12,7 @@ class EditPersonalInfoItem extends StatefulWidget {
 }
 
 class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
+  
 // for send the details to the server
   late String name;
   late String phonenumber;
@@ -28,6 +29,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         key: _formkey,
         child: Column(
           children: [
+            //call each widgets which are created seperately
             buildNameFormField(),
             SizedBox(height: 45),
             buildAgeFormField(),
@@ -38,10 +40,12 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
             SizedBox(height: 40),
             Padding(
               padding: EdgeInsets.fromLTRB(
-                  (widthm - 274) / 2, 20, (widthm - 274) / 2, 0),
+                (widthm - 274) / 2, 20, (widthm - 274) / 2, 0),
               child: Row(
                 children: [
+                  //cancel button
                   button(
+                      key: Key("cancelButton"),
                       text: 'Cancel',
                       color: Colors.red.shade900,
                       onPressed: () {
@@ -53,15 +57,20 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
                   SizedBox(
                     width: 10,
                   ),
+                  //save button
                   button(
+                    key: Key("saveButton"),
                     text: 'Save',
                     color: Colors.teal.shade900,
                     onPressed: () {
                       if (_formkey.currentState!.validate()) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text('YOUR INFORMATIONS ARE SAVED'),
+                          key: Key("snackbarEditPersonalInfo"),
                         ));
+                        //call the function to store the details in documents
                         _sendToServer();
+                        //navigate to the personal info screen
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -115,6 +124,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     return TextFormField(
       key: Key("phoneNumberField"),
       validator: (value) {
+        Key("error-empty-phone-number-field");
         if (value!.length < 10 && value.length > 0) {
           return "Phone number should have 10 numbers";
         } else {
@@ -158,6 +168,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
         name = value!;
       },
       validator: (value) {
+        Key("error-empty-name-field");
         if (value!.length > 100 && value.isNotEmpty) {
           return "Enter a valid name";
         } else {
@@ -188,6 +199,7 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
     return TextFormField(
       key: Key("ageField"),
       validator: (value) {
+        Key("error-empty-age-field");
         var numValue = int.tryParse(value!);
         if (value.isNotEmpty && numValue! < 6) {
           return "Age should be greater than 5";
@@ -225,11 +237,11 @@ class _EditPersonalInfoItemState extends State<EditPersonalInfoItem> {
   // to update the informations of current user to firestore
   _sendToServer() {
     if (_formkey.currentState!.validate()) {
-      _formkey.currentState!.save();
+      _formkey.currentState?.save();
       var firebaseUser = FirebaseAuth.instance.currentUser;
       FirebaseFirestore.instance
           .collection('user_personal_information')
-          .doc(firebaseUser!.uid)
+          .doc(firebaseUser?.uid)
           .update({
         'name': name,
         'age': age,

@@ -16,8 +16,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  var firebaseUser = FirebaseAuth.instance.currentUser;
+  // final FirebaseAuth auth = FirebaseAuth.instance;
+  // var firebaseUser = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +36,11 @@ class _ChangePasswordState extends State<ChangePassword> {
           ),
         ),
         body: SingleChildScrollView(
-            child: Container(
+          child: Container(
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/edit2.jpg'), fit: BoxFit.fill)),
+            image: DecorationImage(
+              image: AssetImage('assets/edit2.jpg'), 
+            fit: BoxFit.fill)),
           child: Form(
             key: _formkey,
             child: Container(
@@ -48,11 +49,15 @@ class _ChangePasswordState extends State<ChangePassword> {
                   alignment: Alignment.center,
                   child: Column(
                     children: [
+
+                      //======>test form field for old password<=====
                       TextFormField(
+                        key: Key('oldPassword'),
                         onSaved: (value) {
                           oldpassword = value!;
                         },
                         validator: (value) {
+                          Key("error-empty-old-password-field");
                           if (value!.isEmpty) {
                             return 'Please enter your old password';
                           }
@@ -74,16 +79,19 @@ class _ChangePasswordState extends State<ChangePassword> {
                           fillColor: Colors.green[100],
                         ),
                       ),
+
                       SizedBox(
                         height: 50,
                       ),
 
-                      //=======>For new password<==========
+                      //======>test form field For new password<=======
                       TextFormField(
+                        key: Key("newPassword"),
                         onSaved: (value) {
                           newpassword = value!;
                         },
                         validator: (value) {
+                          Key("error-empty-new-password-field");
                           if (value!.isEmpty) {
                             return 'Please enter a new password';
                           } else {
@@ -110,16 +118,19 @@ class _ChangePasswordState extends State<ChangePassword> {
                           fillColor: Colors.green[100],
                         ),
                       ),
+
                       SizedBox(
                         height: 50,
                       ),
 
-                      //===========>To confirm new password<================
+                      //=====>textform field to confirm new password<========
                       TextFormField(
+                        key: Key('confirmPassword'),
                         onSaved: (value) {
                           confirmpassword = value!;
                         },
                         validator: (value) {
+                          Key("error-empty-confirm-password-field");
                           if (value!.isEmpty) {
                             return 'Please re-enter the new password';
                           }
@@ -145,17 +156,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                           fillColor: Colors.green[100],
                         ),
                       ),
+
                       SizedBox(
                         height: 40,
                       ),
 
-                      //Buttons
+                      //save and cancel Buttons
                       Padding(
                           padding: EdgeInsets.fromLTRB(
                               (widthm - 270) / 2, 20, (widthm - 270) / 2, 0),
                           child: Row(
                             children: [
+                              //cancel button
                               button(
+                                  key: Key("cancelButtonPassword"),
                                   text: 'Cancel',
                                   color: Colors.red.shade900,
                                   onPressed: () {
@@ -165,16 +179,20 @@ class _ChangePasswordState extends State<ChangePassword> {
                                             builder: (context) =>
                                                 ProfilePage()));
                                   }),
+
                               SizedBox(
                                 width: 10,
                               ),
+                              //save button
                               button(
+                                key: Key("saveButtonPassword"),
                                 color: Colors.teal.shade900,
                                 text: 'Save',
                                 onPressed: () {
                                   if (_formkey.currentState!.validate()) {
                                     //No error in validator
                                     _formkey.currentState!.save();
+                                    //call changePassword function
                                     _changePassword();
                                   }
                                 },
@@ -188,6 +206,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         )));
   }
 
+  //function for change the password
   void _changePassword() async {
     var firebaseUser = FirebaseAuth.instance.currentUser;
     String email = firebaseUser!.email.toString();
@@ -197,20 +216,24 @@ class _ChangePasswordState extends State<ChangePassword> {
     String password = oldpassword;
     String newPassword = newpassword;
 
+    //check the old password is correct or not by signin with old password
     try {
       // ignore: unused_local_variable
       UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
       );
 
+      //if old password is correct, then update the old password with new password
       firebaseUser.updatePassword(newPassword).then((_) {
         print("Successfully changed password");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
-              'Password has been changed, Please login with your new password'),
+            'Password has been changed, Please login with your new password'),
         ));
+
+        //update password and move to login screen
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -218,7 +241,8 @@ class _ChangePasswordState extends State<ChangePassword> {
         );
       }).catchError((error) {
         print("Password can't be changed" + error.toString());
-        //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+        //This might happen, when the wrong password is in,
+        //the user isn't found, or if the user hasn't logged in recently.
       });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

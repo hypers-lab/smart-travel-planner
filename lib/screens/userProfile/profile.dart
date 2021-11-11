@@ -106,7 +106,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => PersonalInfoScreen()));
-                    }),
+                    }
+                ),
                 ProfileMenu(
                     text: 'Preferences',
                     icon: Icon(Icons.favorite_outline_rounded),
@@ -115,14 +116,16 @@ class _ProfilePageState extends State<ProfilePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => PreferenceOfUser()));
-                    }),
+                    }
+                ),
                 ProfileMenu(
                     text: 'History',
                     icon: Icon(Icons.history),
                     press: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => History()));
-                    }),
+                    }
+                ),
                 ProfileMenu(
                     text: 'Change password',
                     icon: Icon(Icons.security_outlined),
@@ -131,7 +134,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => ChangePassword()));
-                    }),
+                    }
+                ),
                 ProfileMenu(
                     text: 'Signout',
                     icon: Icon(Icons.logout),
@@ -141,13 +145,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         MaterialPageRoute(builder: (context) => LoginScreen()),
                         (Route<dynamic> route) => false,
                       );
-                    }),
+                    }
+                ),
               ],
             ),
           ),
         ),
       ),
-      //),
     );
   }
 }

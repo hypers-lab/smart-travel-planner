@@ -19,33 +19,5 @@ void main() {
       expect(visitedHistory.address, '163Ven Baddegama Wimalawansa Mawatha, Colombo');
       
     });
-
-  //   test('Visited places details should be recorded.', () async {
-  //     final instance = MockFirestoreInstance();
-  //     final snaapshot=await instance
-  //     .collection("visitedPlaces")
-  //     .where('userId', isEqualTo: 'xjtZPHcYBVWbKGcTkpALlfGkWoM2')
-  //       .get()
-  //       .then((querySnapshot) async {
-  //     querySnapshot.docs.forEach((result) {
-  //       VisitedHistory history = VisitedHistory(
-  //         placeName: result['placeName'],
-  //         reviewScore: result['reviewScore'].toString(),
-  //         city: result['address'],
-  //         address: result['description'],
-  //       );
-  //     });
-
-  //     final snapshot = await instance
-  //     .collection('visitedPlaces')
-  //     .get();
-
-  //     expect(snapshot.docs.length, 1);
-  //     expect(snapshot.docs.first['placeName'],
-  //         "");
-
-  //     instance.dump();
-  //   });
-  // });
   });
 }

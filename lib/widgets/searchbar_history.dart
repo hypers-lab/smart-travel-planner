@@ -8,19 +8,21 @@ class HistorySearchBar extends StatefulWidget {
 }
 
 class _HistorySearchBarState extends State<HistorySearchBar> {
+
   final TextEditingController _searchControl = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: Container(
-          decoration: BoxDecoration(
-            color: Colors.blueGrey[50],
-            borderRadius: BorderRadius.all(
-              Radius.circular(5.0),
-            ),
+        decoration: BoxDecoration(
+          color: Colors.blueGrey[50],
+          borderRadius: BorderRadius.all(
+            Radius.circular(5.0),
           ),
-          child: Stack(children: <Widget>[
+        ),
+        child: Stack(
+          children: <Widget>[
             TextField(
               style: TextStyle(
                 fontSize: 15.0,
@@ -53,7 +55,9 @@ class _HistorySearchBarState extends State<HistorySearchBar> {
               maxLines: 1,
               controller: _searchControl,
             ),
-          ])),
+          ]
+        )
+      ),
     );
   }
 }

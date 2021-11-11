@@ -37,6 +37,7 @@ class VisitedHistory {
         .get()
         .then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
+        // ignore: unused_local_variable
         VisitedHistory history = VisitedHistory(
           placeName: result['placeName'],
           reviewScore: result['reviewScore'].toString(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget button({
+  required Key key,
   required String text,
   required VoidCallback onPressed,
   required Color color,
@@ -9,7 +10,7 @@ Widget button({
       height: 40,
       width: 100,
       child: ElevatedButton(
-        key: Key("saveButton"),
+        key: key,
         onPressed: onPressed,
         child: Text(text),
         style: ElevatedButton.styleFrom(

@@ -57,7 +57,7 @@ class UserDetails {
           .update({
         'name': name,
         'age': age,
-        'phone number': phonenumber,
+        'phone_number': phonenumber,
         'gender': gender
       });
     }

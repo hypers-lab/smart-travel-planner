@@ -105,6 +105,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   SizedBox(
                     height: 40,
                   ),
+                  //the reused infoContent widget
                   infoContent(
                       information: '${firebaseUser!.email}', title: 'Email'),
                   infoContent(information: '$username', title: 'Name'),
@@ -112,9 +113,12 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   infoContent(
                       information: '$userphonenumber', title: 'Phone Number'),
                   infoContent(information: '$usergender', title: 'Gender'),
+
+                  //Edit personal information button
                   Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: ElevatedButton(
+                        //navigate to edit personal info screen if user pressed the button
                         onPressed: () {
                           Navigator.push(
                               context,

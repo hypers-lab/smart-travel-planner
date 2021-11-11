@@ -22,6 +22,7 @@ class _PreferenceOfUserState extends State<PreferenceOfUser> {
 
   final String uid = UserPreferences.getCurrentUserId();
 
+  //list for the areas and place types
   List preferredAreas = [
     'Ampara',
     'Anuradhapura',
@@ -91,7 +92,7 @@ class _PreferenceOfUserState extends State<PreferenceOfUser> {
 
     await FirebaseFirestore.instance
         .collection('userPreferences')
-        .doc((FirebaseAuth.instance.currentUser!).uid)
+        .doc((FirebaseAuth.instance.currentUser)?.uid)
         .get()
         .then((value) {
       UserPreferences userPreference = UserPreferences(
@@ -120,9 +121,9 @@ class _PreferenceOfUserState extends State<PreferenceOfUser> {
     });
   }
 
-  //instance for firebase and current user
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  var firebaseUser = FirebaseAuth.instance.currentUser;
+  // //instance for firebase and current user
+  // final FirebaseAuth auth = FirebaseAuth.instance;
+  // var firebaseUser = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,6 +154,8 @@ class _PreferenceOfUserState extends State<PreferenceOfUser> {
                   SizedBox(
                     height: 80,
                   ),
+
+                  //show the preferred place and area in the screen
                   infoContent(
                       information: parea, title: 'Your preferred areas'),
                   SizedBox(height: 30),
@@ -192,6 +195,7 @@ class _PreferenceOfUserState extends State<PreferenceOfUser> {
   }
 }
 
+//reused widget inside the body content
 Widget infoContent({
   required String information,
   required String title,

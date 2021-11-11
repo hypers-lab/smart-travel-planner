@@ -6,13 +6,10 @@ void main() {
   group('UserPreferences:', () {
     test('UserPreferences object should be created.', () {
       UserPreferences userPreferences = UserPreferences(
-          
           areas: ['Kandy','Jaffna'], types: ['Lodging'],
       );
-
       expect(userPreferences.types, ['Lodging']);
       expect(userPreferences.areas, ['Kandy','Jaffna']);
-      
     });
 
     test('User Preferences should be recorded.', () async {

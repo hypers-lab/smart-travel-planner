@@ -13,9 +13,9 @@ void main() {
       );
 
       expect(userDetails.name, 'maathangi');
-      expect(userDetails.age, 23);
+      expect(userDetails.age, '23');
       expect(userDetails.gender, 'female');
-      expect(userDetails.phonenumber, 0767479308);
+      expect(userDetails.phonenumber, '0767479308');
     });
 
     test('User information should be recorded.', () async {
@@ -26,7 +26,7 @@ void main() {
           .update({
         'name': 'B.Maathangi',
         'age': 28,
-        'phone number': 0777700000,
+        'phone_number': '0777700000',
         'gender': 'female'
       });
 
