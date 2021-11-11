@@ -53,3 +53,5 @@ note.txt
 .metadata
 .vscode/
 .dart_tool/
+lcov.info
+coverage/
