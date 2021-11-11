@@ -7,6 +7,8 @@ Introduction: [YouTube Video](https://www.youtube.com/watch?v=9VbHaTpXq-Q)
 ## Contributers
 
 - [Charangan Vasantharajan](https://www.linkedin.com/in/charangan/)
+- [D.M.D.K. Dasanayake](https://www.linkedin.com/in/dulaj-kavinda-dasanayake/)
+- [Maathangi Baskaran](https://www.linkedin.com/in/maathangi-baskaran/)
 
 ## Documentations
 For help getting started with our app, view our below documentations, which offers tutorials, samples, guidance on mobile development, and a full API reference.
