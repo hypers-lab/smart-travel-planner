@@ -20,7 +20,7 @@ For help getting started with our app, view our below documentations, which offe
 - [Final Report](https://docs.google.com/document/d/1ui2V2-h1RLwelKhSdNKu04iITn9bX8qf/edit)
 
 ## Acknowledgement
-
+A great thanks to:
 - [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview)
 - [Open Weather](https://openweathermap.org/)
 
