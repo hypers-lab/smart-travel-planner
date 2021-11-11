@@ -22,11 +22,11 @@ For help getting started with our app, view our below documentations, which offe
 ## Screenshots
 
 <img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/1.jpg" />
-<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/2.jpg" />
+<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/2.jpg" />\
 
 <br />
 <br />
-\
+
 ## Acknowledgement
 
 - [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview)
