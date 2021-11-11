@@ -19,15 +19,13 @@ For help getting started with our app, view our below documentations, which offe
 - [Test Plan](https://docs.google.com/document/d/1VPCKzzdg2zFMHsGI8vO-8d0jhhNmAEM1/edit)
 - [Final Report](https://docs.google.com/document/d/1ui2V2-h1RLwelKhSdNKu04iITn9bX8qf/edit)
 
-## Screenshots
-
-[<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/1.jpg" />]()
-[<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/2.jpg" />]()
-
-<br />
-<br />
-
 ## Acknowledgement
 
 - [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview)
 - [Open Weather](https://openweathermap.org/)
+
+
+## Screenshots
+
+<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/1.jpg" />
+<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/2.jpg" />
