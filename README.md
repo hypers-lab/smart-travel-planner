@@ -19,7 +19,8 @@ For help getting started with our app, view our below documentations, which offe
 - [SRS](https://docs.google.com/document/d/1WVqoB54ei-XZI7a4bMvTFo9cNAtnVppa/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
 - [Design Document](https://docs.google.com/document/d/1o4-fJ4whHWer2rqYKpb1L7oGWE_Y3FY2/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
 - [Test Plan](https://docs.google.com/document/d/1VPCKzzdg2zFMHsGI8vO-8d0jhhNmAEM1/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
-- [Final Report]()
+- [Final Report](https://docs.google.com/document/d/1ui2V2-h1RLwelKhSdNKu04iITn9bX8qf/edit)
+- [User Manual](https://docs.google.com/document/d/1ss9nAh7JgW3veAGLNN2a5b9nqKTPJq63/edit)
 
 ### Support
 - [Activity Diagrams](https://lucid.app/lucidchart/a1ea6cfb-eabb-433e-9009-cdd71e16c662/edit?invitationId=inv_e95b9814-75b9-48ad-a0e0-bb1562cb1033&page=0_0#)
