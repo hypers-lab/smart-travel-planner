@@ -21,6 +21,10 @@ For help getting started with our app, view our below documentations, which offe
 - [Test Plan](https://docs.google.com/document/d/1VPCKzzdg2zFMHsGI8vO-8d0jhhNmAEM1/edit?usp=sharing&ouid=109216611364830050993&rtpof=true&sd=true)
 - [Final Report]()
 
+### Support
+- [Activity Diagrams](https://lucid.app/lucidchart/a1ea6cfb-eabb-433e-9009-cdd71e16c662/edit?invitationId=inv_e95b9814-75b9-48ad-a0e0-bb1562cb1033&page=0_0#)
+- [Class and Sequence Diagrams](https://lucid.app/lucidchart/2095712d-63e1-422e-9106-ff23fb28b16c/edit?invitationId=inv_17a6842a-111b-4992-b8ea-2049e37abb8f&page=I7I1blNnXu2o#)
+
 ## Acknowledgement
 A great thanks to:
 - [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview)
