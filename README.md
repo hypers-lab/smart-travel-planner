@@ -23,8 +23,8 @@ For help getting started with our app, view our below documentations, which offe
 - [User Manual](https://drive.google.com/file/d/1jZS6vdrQR5vDM_xe3o6D3WV-zXs75Rbz/view?usp=sharing)
 
 ### Support
-- [Activity Diagrams](https://lucid.app/lucidchart/a1ea6cfb-eabb-433e-9009-cdd71e16c662/edit?invitationId=inv_e95b9814-75b9-48ad-a0e0-bb1562cb1033&page=0_0#)
-- [Class and Sequence Diagrams](https://lucid.app/lucidchart/2095712d-63e1-422e-9106-ff23fb28b16c/edit?invitationId=inv_17a6842a-111b-4992-b8ea-2049e37abb8f&page=I7I1blNnXu2o#)
+- [Activity Diagrams](https://lucid.app/lucidchart/a1ea6cfb-eabb-433e-9009-cdd71e16c662/edit?viewport_loc=-409%2C20%2C2219%2C1041%2CBN61ja-nHnns&invitationId=inv_e95b9814-75b9-48ad-a0e0-bb1562cb1033)
+- [Class and Sequence Diagrams](https://lucid.app/lucidchart/2095712d-63e1-422e-9106-ff23fb28b16c/edit?viewport_loc=-356%2C-86%2C4088%2C1919%2CCF0qfgCI~q76&invitationId=inv_17a6842a-111b-4992-b8ea-2049e37abb8f)
 
 ## Acknowledgement
 A great thanks to:
