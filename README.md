@@ -1,6 +1,6 @@
 # Smart Travel Planner
 
-Smart Travel Planner is an Online Travel Planning Application that helps travelers by recommending travel places and dynamically generating a travel itinerary considering constraints such as traveler preferences. This is an Android Mobile Application.
+Smart Travel Planner is an Online Travel Planning Application that helps travelers by recommending travel places and dynamically generating a travel itinerary considering constraints such as traveler preferences. This is an Android Mobile Application. This system provides location information, rating, reviews, and weather conditions of the places. Also, provides travel itinerary recommendations based on the user preferences.
 
 Introduction: [YouTube Video](https://www.youtube.com/watch?v=9VbHaTpXq-Q)
 
@@ -36,5 +36,7 @@ A great thanks to:
 
 ## Screenshots
 
-<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/1.jpg" />
-<img align="left" alt="welcome-screeen" width="300px"  src="assets/screenshots/2.jpg" />
+<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/1.jpg" />
+<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/2.jpg" />
+<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/3.jpg" />
+<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/4.jpg" />
