@@ -36,7 +36,7 @@ A great thanks to:
 
 ## Screenshots
 
-<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/1.jpg" />
-<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/2.jpg" />
-<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/3.jpg" />
-<img align="left" alt="welcome-screeen" width="300px"  src="assets/Screenshots/4.jpg" />
+<img align="left" alt="Signin-screeen" width="300px"  src="assets/Screenshots/1.jpg" />
+<img align="left" alt="Welcome-screeen" width="300px"  src="assets/Screenshots/2.jpg" />
+<img align="left" alt="TravelDestination-screeen" width="300px"  src="assets/Screenshots/3.jpg" />
+<img align="left" alt="RecommendedPlaces-screeen" width="300px"  src="assets/Screenshots/4.jpg" />
