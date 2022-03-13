@@ -36,13 +36,12 @@ A great thanks to:
 
 ## Screenshots
 
-<p align="left">
+<p>
 <img align="left" alt="Signin-screeen" width="250px" height="520" src="assets/Screenshots/1.jpg" />
 <img align="left" alt="Welcome-screeen" width="250px" height="520" src="assets/Screenshots/2.jpg" />
 <img align="left" alt="TravelDestination-screeen" width="250px" height="520" src="assets/Screenshots/3.jpg" />
 <p/>
-# -
-<p align="left">
+<p>
 <img align="left" alt="RecommendedPlaces-screeen" width="250px" height="520" src="assets/Screenshots/4.jpg" />
 <img align="left" alt="CategoryBasedPlaces-screeen" width="250px" height="520" src="assets/Screenshots/5.png" />
 <img align="left" alt="WeatherDialog-screeen" width="250px" height="520" src="assets/Screenshots/6.jpg" />
