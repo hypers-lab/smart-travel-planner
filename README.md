@@ -40,3 +40,5 @@ A great thanks to:
 <img align="left" alt="Welcome-screeen" width="220px"  src="assets/Screenshots/2.jpg" />
 <img align="left" alt="TravelDestination-screeen" width="220px"  src="assets/Screenshots/3.jpg" />
 <img align="left" alt="RecommendedPlaces-screeen" width="220px"  src="assets/Screenshots/4.jpg" />
+<img align="left" alt="CategoryBasedPlaces-screeen" width="220px"  src="assets/Screenshots/5.png" />
+<img align="left" alt="WeatherDialog-screeen" width="220px"  src="assets/Screenshots/6.jpg" />
